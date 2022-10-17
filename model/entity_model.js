@@ -17,7 +17,7 @@ const students = sequelize.define('students', {
         allowNull : false
     },
     role : {
-        type : DataTypes.TINYINT,
+        type : DataTypes.INTEGER,
         allowNull : false
     },
     profile_image_url : {
@@ -46,7 +46,7 @@ const conselours = sequelize.define('conselours', {
         allowNull : false
     },
     role : {
-        type : DataTypes.TINYINT,
+        type : DataTypes.INTEGER,
         allowNull : false
     },
     profile_image_url : {
@@ -66,7 +66,7 @@ const reservations = sequelize.define('reservations', {
         primaryKey : true,
         allowNull : false
     },
-    nim_student : {
+    nim : {
         type : DataTypes.TEXT,
         allowNull : false
     },
@@ -75,7 +75,7 @@ const reservations = sequelize.define('reservations', {
         allowNull : false
     },
     status : {
-        type : DataTypes.TINYINT,
+        type : DataTypes.INTEGER,
         allowNull : false
     },
     description : {
@@ -87,13 +87,8 @@ const reservations = sequelize.define('reservations', {
 })
 
 students.hasMany(reservations,{
-    foreignKey : 'nim_student',
+    foreignKey : 'nim',
     as : 'reservations'
-})
-
-reservations.hasOne(students, {
-    foreignKey : 'nim_student',
-    as : 'student'
 })
 
 module.exports =  {
