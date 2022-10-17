@@ -1,0 +1,21 @@
+{
+  "name": "simlk-api",
+  "main": "index.js",
+  "dependencies": {
+    "express": "^4.18.2",
+    "nodemon": "^2.0.20",
+    "pg": "^8.8.0",
+    "pg-hstore": "^2.3.4",
+    "pm2": "^5.2.2",
+    "postgres": "^3.3.1",
+    "sequelize": "^6.25.2"
+  },
+  "scripts": {
+    "start": "pm2 start index.js --name backend-prod",
+    "start:development": "pm2 start index.js --name backend-dev",
+    "stop": "pm2 stop index.js --name backend-prod",
+    "stop:development": "pm2 stop index.js --name backend-dev",
+    "dev": "nodemon index.js",
+    "build": "webpack --mode production --config webpack.config.js"
+  }
+}
