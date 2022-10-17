@@ -55,9 +55,37 @@ const getProfile = (nim) => {
     })
 }
 
+const isStudentExist = (nim) => {
+    return students.findOne({
+        where : {
+            nim : nim
+        },
+    }).then(function(_data){
+        return true
+    }).catch(function(_error){
+        return false
+    })
+}
+
+const updatePicture = (linkPicture, nim) => {
+    return students.update({
+        profile_image_url : linkPicture
+    }, {
+        where : {
+            nim : nim
+        }
+    }).then(function(data){
+        return JSON.stringify(data,null,2)
+    }).catch(function(_error){
+        return nil
+    })
+}
+
 module.exports = {
     createStudents,
     deleteFcmToken,
     searchStudentByNimWithReservations,
-    getProfile
+    getProfile,
+    isStudentExist,
+    updatePicture
 }
