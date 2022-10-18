@@ -7,7 +7,7 @@ const dotenv = require('dotenv');
 
 dotenv.config()
 
-sequelize.sync({alter:true, drop: false});
+sequelize.sync({});
 
 const app = express()
 

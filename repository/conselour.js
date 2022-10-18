@@ -1,5 +1,5 @@
 const {conselours} = require('../model/entity_model')
-
+const bcrypt = require('bcrypt')
 
 
 const searchByEmail = (email) => {
@@ -8,7 +8,7 @@ const searchByEmail = (email) => {
             email : email
         }
     }).then(function(data){
-        return JSON.stringify(data,null,2)
+        return data
     }).catch(function(_error){
         return null
     })
@@ -20,30 +20,67 @@ const searchById = (id) => {
             id : id
         }
     }).then(function(data){
-        return JSON.stringify(data,null,2)
+        return data
     }).catch(function(_error){
         return null
     })
 }
 
 const createCounselor = (name,email, password, major, profile_image_url, fcm_token) =>{
+    let bcryptPassword = bcrypt.hashSync(password, 10);
     return conselours.create({
         email : email,
-        password : password,
+        password : bcryptPassword,
         name : name,
         major : major,
         role : 0,
         profile_image_url : profile_image_url,
         fcm_token : fcm_token
     }).then(function(data){
-        return JSON.stringify(data,null,2)
+        return data
     }).catch(function(_error){
         return null
+    })
+}
+
+const loginConselours = (email, password) => {
+    return conselours.findOne({
+        where: {
+            email: email,
+        }
+    }).then(function(data){
+        if(data){
+            if(bcrypt.compareSync(password, data.password)){
+                return  data
+            }else{
+                return false;
+            }
+        }else{
+            return null;
+        }
+    }).catch(function(_err){
+        return null;
+    });
+}
+
+const updateFcmToken = (id,fcmToken) => {
+    return conselours.update({
+        fcm_token : fcmToken
+    }, {
+        where : {
+            id : id
+        }
+    }).then(function(data){
+        return data
+    }).catch(function(_error){
+        return
     })
 }
 
 module.exports = {
     searchByEmail,
     searchById,
-    createCounselor
+    createCounselor,
+    loginConselours,
+    updateFcmToken
 }
