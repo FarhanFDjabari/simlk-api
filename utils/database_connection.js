@@ -1,6 +1,8 @@
 const { Sequelize } = require('sequelize');
 
-const sequelize = new Sequelize('postgres://postgres:dqBcTXKBKz2liFpd@db.sjdijscmtkwnljhhfeuu.supabase.co:5432/postgres');
+const driver = process.env
+
+const sequelize = new Sequelize(`postgres://postgres:${driver.DB_PASS}@${driver.DB_HOST}:${driver.DB_PORT}/postgres`);
 
 
 
