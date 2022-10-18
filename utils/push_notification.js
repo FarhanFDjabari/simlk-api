@@ -16,3 +16,7 @@ const sendNotif = (fcmToken, title, body, data) => {
         return err
     })
 }
+
+module.exports = {
+    sendNotif
+}
