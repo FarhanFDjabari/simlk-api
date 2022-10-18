@@ -37,11 +37,16 @@ const conselours = sequelize.define('conselours', {
         primaryKey : true,
         allowNull : false
     },
-    name : {
+    email : {
+        type : DataTypes.TEXT,
+        allowNull : false,
+        unique : true
+    },
+    password : {
         type : DataTypes.TEXT,
         allowNull : false
     },
-    password : {
+    name : {
         type : DataTypes.TEXT,
         allowNull : false
     },
