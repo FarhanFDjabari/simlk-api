@@ -24,7 +24,7 @@ auth.post('/login-siam', async (req, res) => {
     if (!isStudentExist){
         const student  = await studentsService.createStudents(result.nim,result.nama,result.prodi, result.image, fcm_token)
         if (student){
-            return response.responseSuccess(res, StatusCodes.CREATED, token, "Success auth with siam")
+            return response.responseSuccess(res, StatusCodes.CREATED,  {token : token}, "Success auth with siam")
         }
         return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail to create student")
     }
@@ -33,14 +33,18 @@ auth.post('/login-siam', async (req, res) => {
 })
 
 
-auth.post('/login-conselor', async (req, res) => {
-    const {email, password} = req.body
+auth.post('/login-konselor', async (req, res) => {
+
+    //Kurang fcm token service
+    const {email, password, fcm_token} = req.body
 
     const conselor = await conselorService.searchByEmail(email)
 
     if (!conselor){
         return response.responseFailure(res, StatusCodes.BAD_REQUEST, "Email not found")
     }
+
+    console.log(conselor)
 
     const isSame = bcrypt.compare(password, conselor.password)
 
@@ -53,10 +57,13 @@ auth.post('/login-conselor', async (req, res) => {
     return response.responseSuccess(res, StatusCodes.OK, {token : token}, "Login success")
 })
 
-auth.post('/register-conselor-dummy', async (req, res)=>{
+auth.post('/register-conselour-dummy', async (req, res)=>{
     const {name,email, password, major, profile_image_url, fcm_token} = req.body
-    const conselor = await conselorService.createCounselor(name,email, password, major, profile_image_url, fcm_token)
 
+    const enPass = bcrypt.hashSync(password,10)
+
+    const conselor = await conselorService.createCounselor(name,email, enPass, major, profile_image_url, fcm_token)
+    console.log(conselor)
     if (!conselor){
         return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail to save conselor")
     }

@@ -28,9 +28,9 @@ const searchById = (id) => {
 
 const createCounselor = (name,email, password, major, profile_image_url, fcm_token) =>{
     return conselours.create({
-        name : name,
         email : email,
         password : password,
+        name : name,
         major : major,
         role : 0,
         profile_image_url : profile_image_url,
