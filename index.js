@@ -4,6 +4,7 @@ const {students, reservations} = require('./model/entity_model')
 
 sequelize.sync({})
 
+
 // students.create({
 //     nim : "215150201111007",
 //     name : "aditya rizky ramadhan",

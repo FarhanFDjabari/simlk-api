@@ -147,5 +147,7 @@ conselours.hasMany(notificationsConselour, {
 module.exports =  {
     reservations,
     conselours,
-    students
+    students,
+    notificationsConselour,
+    notificationsStudent
 }
