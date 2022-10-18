@@ -74,8 +74,11 @@ const isStudentExist = (nim) => {
         where : {
             nim : nim
         },
-    }).then(function(_data){
-        return true
+    }).then(function(data){
+        if (data){
+            return true
+        }
+        return false
     }).catch(function(_error){
         return false
     })

@@ -1,7 +1,7 @@
 var axios = require('axios');
 
 
-const authToSiam = (nim, password) => {
+const authToSiam =  async (nim, password) => {
     var data = { nim: nim, password: password };
 
     var config = {
@@ -12,15 +12,14 @@ const authToSiam = (nim, password) => {
         data: data
     };
 
-    axios(config)
+    return axios(config)
         .then(function (response) {
-            console.log(JSON.stringify(response.data));
+            return response.data.data
         })
-        .catch(function (error) {
-            console.log(JSON.stringify(error));
+        .catch(function (_error) {
+            return null
         });
 }
-
 
 module.exports = {
     authToSiam

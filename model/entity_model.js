@@ -41,6 +41,10 @@ const conselours = sequelize.define('conselours', {
         type : DataTypes.TEXT,
         allowNull : false
     },
+    password : {
+        type : DataTypes.TEXT,
+        allowNull : false
+    },
     major : {
         type : DataTypes.TEXT,
         allowNull : false
@@ -86,7 +90,7 @@ const reservations = sequelize.define('reservations', {
     }
 })
 
-const notificationsStudent = sequelize.define('notifications_user', {
+const notificationsStudent = sequelize.define('notifications_student', {
     id : {
         type : DataTypes.INTEGER,
         autoIncrement : true,
@@ -136,7 +140,7 @@ students.hasMany(reservations,{
 
 students.hasMany(notificationsStudent, {
     foreignKey : 'nim',
-    as : 'notifications_conselour'
+    as : 'notifications_student'
 })
 
 conselours.hasMany(notificationsConselour, {

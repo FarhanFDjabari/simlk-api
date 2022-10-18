@@ -1,35 +1,51 @@
-const {sequelize} = require('./utils/database_connection')
-const {students, reservations} = require('./model/entity_model')
+const { sequelize } = require('./utils/database_connection')
+const { auth } = require('./controller/auth')
+const express = require('express');
+const cors = require("cors");
+const bodyParser = require('body-parser');
+const dotenv = require('dotenv');
 
+dotenv.config()
 
-sequelize.sync({})
+sequelize.sync({alter:true, drop: false});
 
+const app = express()
 
-// students.create({
-//     nim : "215150201111007",
-//     name : "aditya rizky ramadhan",
-//     major : "TIF",
-//     role : 1,
-//     profile_image_url : "link",
-//     fcm_token : null
-// })
+app.use(
+    cors({
+        //array of allowed origins
+        origin: [
+            "*",
+        ],
+        credentials: true,
+        methods: "GET,POST,DELETE,PUT,PATCH",
+        crossDomain: true,
+        allowedHeaders: [
+            "Content-Type",
+            "Authorization",
+            "Accept",
+            "Origin",
+            "X-Requested-With",
+            "X-HTTP-Method-Override",
+        ],
+        preflightContinue: false,
+        optionsSuccessStatus: 204,
+    })
+);
 
-// reservations.create({
-//     nim : '215150201111007',
-//     reservation_time : '17-10-2022 21:00',
-//     status : 1,
-//     description : 'bla bla'
-// })
-// students.findAll({
-//     where : {
-//         nim : '215150201111007',
-//     },
-//     include : 'reservations'
-// }).then(function(data){
-//     console.log(JSON.stringify(data, null, 2))
-// }).catch(function(err){
-//     console.log(err)
-// })
+app.use(
+    bodyParser.urlencoded({
+        extended: true,
+    })
+);
+
+app.use(bodyParser.json());
+
+app.use('/auth', auth)
+
+app.listen(process.env.PORT, () => {
+    console.log(`Server is running on port ${process.env.PORT}`);
+})
 
 
 
