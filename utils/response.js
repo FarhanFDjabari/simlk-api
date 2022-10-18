@@ -2,16 +2,16 @@ function responseSuccess(res,statusCode, data, message) {
     return res.status(statusCode).json({
         status_code : statusCode,
         status: true,
-        data,
+        data : data,
         message: message
     });
 }
 
-function responseFailure(res, statusCode, data, message) {
+function responseFailure(res, statusCode, message) {
     return res.status(statusCode).json({
         status_code : statusCode,
         status: false,
-        data: data,
+        data: null,
         message: message
     });
 }

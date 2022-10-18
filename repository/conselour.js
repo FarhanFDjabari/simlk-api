@@ -26,7 +26,7 @@ const searchById = (id) => {
     })
 }
 
-const createCounselor = (name,email, password, major, role, profile_image_url, fcm_token) =>{
+const createCounselor = (name,email, password, major, profile_image_url, fcm_token) =>{
     return conselours.create({
         name : name,
         email : email,
@@ -44,5 +44,6 @@ const createCounselor = (name,email, password, major, role, profile_image_url, f
 
 module.exports = {
     searchByEmail,
-    searchById
+    searchById,
+    createCounselor
 }

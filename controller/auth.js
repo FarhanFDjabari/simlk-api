@@ -3,7 +3,9 @@ const auth = express.Router()
 const { authToSiam } = require('../utils/siam_request')
 const response = require('../utils/response')
 const studentsService = require('../repository/students')
+const conselorService = require('../repository/conselour')
 const jwt = require('../middleware/jwt_auth')
+const bcrypt = require('bcrypt')
 const {StatusCodes} = require('http-status-codes')
 
 auth.post('/login-siam', async (req, res) => {
@@ -13,7 +15,7 @@ auth.post('/login-siam', async (req, res) => {
     const result = await authToSiam(nim, password)
 
     if (!result) {
-        return response.responseFailure(res, StatusCodes.UNAUTHORIZED, null, "Password or Username is false")
+        return response.responseFailure(res, StatusCodes.UNAUTHORIZED,  "Password or Username is false")
     }
 
     const isStudentExist = await studentsService.isStudentExist(result.nim)
@@ -24,12 +26,45 @@ auth.post('/login-siam', async (req, res) => {
         if (student){
             return response.responseSuccess(res, StatusCodes.CREATED, token, "Success auth with siam")
         }
-        return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, null, "Fail to create student")
+        return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail to create student")
     }
 
-    return response.responseSuccess(res, StatusCodes.OK, token, "Success auth with siam")
+    return response.responseSuccess(res, StatusCodes.OK, {token : token}, "Success auth with siam")
 })
 
+
+auth.post('/login-conselor', async (req, res) => {
+    const {email, password} = req.body
+
+    const conselor = await conselorService.searchByEmail(email)
+
+    if (!conselor){
+        return response.responseFailure(res, StatusCodes.BAD_REQUEST, "Email not found")
+    }
+
+    const isSame = bcrypt.compare(password, conselor.password)
+
+    if (!isSame){
+        return response.responseFailure(res, StatusCodes.UNAUTHORIZED, "Password don't match")
+    }
+
+    const token = jwt.generateToken(conselor.id)
+
+    return response.responseSuccess(res, StatusCodes.OK, {token : token}, "Login success")
+})
+
+auth.post('/register-conselor-dummy', async (req, res)=>{
+    const {name,email, password, major, profile_image_url, fcm_token} = req.body
+    const conselor = await conselorService.createCounselor(name,email, password, major, profile_image_url, fcm_token)
+
+    if (!conselor){
+        return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail to save conselor")
+    }
+
+    const token = jwt.generateToken(conselor.id)
+
+    return response.responseSuccess(res, StatusCodes.CREATED, {token : token}, "Success create conselour")
+})
 
 module.exports = {
     auth
