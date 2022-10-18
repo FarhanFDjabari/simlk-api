@@ -12,7 +12,7 @@ const createStudents = (nim, name, major, profile_image_url, fcm_token) => {
     }).then(function(data){
         return JSON.stringify(data,null,2)
     }).catch(function(_error){
-        return nil
+        return null
     })
 }
 
@@ -26,7 +26,7 @@ const deleteFcmToken = (nim) => {
     }).then(function(data){
         return JSON.stringify(data,null,2)
     }).catch(function(_error){
-        return nil
+        return null
     })
 }
 
@@ -40,7 +40,7 @@ const addFcmToken = (nim, token) => {
     }).then(function(data){
         return JSON.stringify(data,null,2)
     }).catch(function(_error){
-        return nil
+        return null
     })
 }
 
@@ -53,7 +53,7 @@ const searchStudentByNimWithReservations = (nim) => {
     }).then(function(data){
         return JSON.stringify(data,null,2)
     }).catch(function(_error){
-        return nil
+        return null
     })
 }
 
@@ -65,7 +65,7 @@ const getProfile = (nim) => {
     }).then(function(data){
         return JSON.stringify(data,null,2)
     }).catch(function(_error){
-        return nil
+        return null
     })
 }
 
@@ -94,7 +94,7 @@ const updatePicture = (linkPicture, nim) => {
     }).then(function(data){
         return JSON.stringify(data,null,2)
     }).catch(function(_error){
-        return nil
+        return null
     })
 }
 
