@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "817662386729",
+    "project_id": "simpl-k",
+    "storage_bucket": "simpl-k.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:817662386729:android:4ec17eaa963553f6c2f238",
+        "android_client_info": {
+          "package_name": "com.example.simlk_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "817662386729-ak1fn3a2qeo9goip31i320256o02hdpa.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDSJVzuizgtZos-X_KSFVotxojxPt7kjNg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "817662386729-ak1fn3a2qeo9goip31i320256o02hdpa.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "817662386729-fujk411bh20hdhf9vhh31ddjv1huus2j.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.simlkApp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

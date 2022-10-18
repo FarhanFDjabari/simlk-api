@@ -86,9 +86,62 @@ const reservations = sequelize.define('reservations', {
     }
 })
 
+const notificationsStudent = sequelize.define('notifications_user', {
+    id : {
+        type : DataTypes.INTEGER,
+        autoIncrement : true,
+        primaryKey : true,
+        allowNull : false
+    },
+    nim : {
+        type : DataTypes.TEXT,
+        allowNull : false
+    },
+    title : {
+        type : DataTypes.TEXT
+    },
+    body : {
+        type : DataTypes.TEXT
+    },
+    data : {
+        type : DataTypes.TEXT
+    }
+})
+
+const notificationsConselour = sequelize.define('notifications_conselour', {
+    id : {
+        type : DataTypes.INTEGER,
+        autoIncrement : true,
+        primaryKey : true,
+        allowNull : false
+    },
+    conselour_id : {
+        type : DataTypes.INTEGER
+    },
+    title : {
+        type : DataTypes.TEXT
+    },
+    body : {
+        type : DataTypes.TEXT
+    },
+    data : {
+        type : DataTypes.TEXT
+    }
+})
+
 students.hasMany(reservations,{
     foreignKey : 'nim',
     as : 'reservations'
+})
+
+students.hasMany(notificationsStudent, {
+    foreignKey : 'nim',
+    as : 'notifications_conselour'
+})
+
+conselours.hasMany(notificationsConselour, {
+    foreignKey : 'conselour_id',
+    as : 'notifications_conselour'
 })
 
 module.exports =  {
