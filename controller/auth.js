@@ -19,7 +19,7 @@ auth.post('/login-siam', async (req, res) => {
     }
 
     const isStudentExist = await studentsService.isStudentExist(result.nim)
-    const token = jwt.generateToken(result.nim)
+    const token = jwt.generateToken(result.nim, 1)
 
     if (!isStudentExist) {
         const student = await studentsService.createStudents(result.nim, result.nama, result.prodi, result.image, fcm_token)
@@ -38,9 +38,9 @@ auth.post('/login-konselor', async (req, res) => {
     //Kurang fcm token service
     const { email, password, fcm_token } = req.body
 
-    const conselor = await conselorService.loginConselours(email,password)
+    const conselor = await conselorService.loginConselours(email, password)
 
-    if (conselor == false){
+    if (conselor == false) {
         return response.responseFailure(res, StatusCodes.UNAUTHORIZED, "Password don't match")
     }
 
@@ -50,13 +50,13 @@ auth.post('/login-konselor', async (req, res) => {
 
     console.log(conselor)
     console.log(conselor.id)
-    const token = jwt.generateToken(conselor.id)
+    const token = jwt.generateToken(conselor.id, 0)
 
 
     const isFail = await conselorService.updateFcmToken(conselor.id, fcm_token)
 
     console.log(isFail)
-    if (isFail == null){
+    if (isFail == null) {
         return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail to login")
     }
 
@@ -74,6 +74,30 @@ auth.post('/register-conselour-dummy', async (req, res) => {
     const token = jwt.generateToken(conselor.id)
 
     return response.responseSuccess(res, StatusCodes.CREATED, { token: token }, "Success create conselour")
+})
+
+auth.get('/logout', jwt.validateToken, async (req, res) => {
+    //claims jwt
+    const role = req.user.role
+    const id = req.user.id
+
+    if (role == 0){
+        const data = await conselorService.updateFcmToken(id, null)
+        if (!data){
+            return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail to logout conselor")
+        }
+        return response.responseSuccess(res, StatusCodes.OK, null, "Success logout")
+    }
+
+    if (role == 1){
+        const data = await studentsService.updateFcmToken(id, null)
+        if (!data){
+            return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail to logout conselor")
+        }
+        return response.responseSuccess(res, StatusCodes.OK, null, "Success logout")
+    }
+    return response.responseFailure(res, StatusCodes.BAD_REQUEST, "Fail logout")
+
 })
 
 module.exports = {

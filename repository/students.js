@@ -16,21 +16,7 @@ const createStudents = (nim, name, major, profile_image_url, fcm_token) => {
     })
 }
 
-const deleteFcmToken = (nim) => {
-    return students.update({
-        fcm_token : null
-    }, {
-        where : {
-            nim : nim
-        }
-    }).then(function(data){
-        return data
-    }).catch(function(_error){
-        return null
-    })
-}
-
-const addFcmToken = (nim, token) => {
+const updateFcmToken = (nim, token) => {
     return students.update({
         fcm_token : token
     }, {
@@ -102,10 +88,9 @@ const updatePicture = (linkPicture, nim) => {
 
 module.exports = {
     createStudents,
-    deleteFcmToken,
     searchStudentByNimWithReservations,
     getProfile,
     isStudentExist,
     updatePicture,
-    addFcmToken
+    updateFcmToken
 }

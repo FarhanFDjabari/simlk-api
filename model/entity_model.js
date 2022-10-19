@@ -83,15 +83,21 @@ const reservations = sequelize.define('reservations', {
         type : DataTypes.TEXT,
         allowNull : false
     },
+    time_hours : {
+        type : DataTypes.TEXT,
+        allowNull : false
+    },
     status : {
         type : DataTypes.INTEGER,
         allowNull : false
     },
     description : {
-        type : DataTypes.TEXT
+        type : DataTypes.TEXT,
+        allowNull : false
     },
     report : {
-        type : DataTypes.TEXT
+        type : DataTypes.TEXT,
+        allowNull : false
     }
 })
 

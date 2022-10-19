@@ -1,12 +1,16 @@
 const jwt = require("jsonwebtoken");
+const dotenv = require('dotenv');
+
+
+dotenv.config('../.env')
 const env = process.env;
 
-const generateToken = (userId) => {
+const generateToken = (userId, userRole) => {
     const payload = {
         id: userId,
+        role: userRole
     };
     return jwt.sign(payload, env.JWT_SECRET, {
-        expiresIn: "48h",
     });
 }
 
