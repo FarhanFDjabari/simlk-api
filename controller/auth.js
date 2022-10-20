@@ -5,7 +5,6 @@ const response = require('../utils/response')
 const studentsService = require('../repository/students')
 const conselorService = require('../repository/conselour')
 const jwt = require('../middleware/jwt_auth')
-const bcrypt = require('bcrypt')
 const { StatusCodes } = require('http-status-codes')
 
 auth.post('/login-siam', async (req, res) => {
