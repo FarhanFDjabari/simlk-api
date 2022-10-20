@@ -67,7 +67,7 @@ auth.post('/register-conselour-dummy', async (req, res) => {
     const { name, email, password, major, fcm_token } = req.body
 
     const { avatar } = req.files
-    let nameFile = `${nim}${avatar.name}`
+    let nameFile = `${email}${avatar.name}`
     avatar.name = nameFile
     let link = generateLink(avatar.name)
     let status = await uploadToSupabase(avatar)
