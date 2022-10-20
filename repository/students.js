@@ -16,6 +16,23 @@ const createStudents = (nim, name, major, profile_image_url, fcm_token) => {
     })
 }
 
+const updateProfile = (nim, id_line, no_hp, dpa, profile_image_url) => {
+    return students.update({
+        no_hp : no_hp,
+        id_line : id_line,
+        dpa : dpa,
+        profile_image_url : profile_image_url
+    }, {
+        where : {
+            nim : nim
+        }
+    }).then(function(data){
+        return data
+    }).catch(function(_error){
+        return null
+    })
+}
+
 const updateFcmToken = (nim, token) => {
     return students.update({
         fcm_token : token
@@ -92,5 +109,6 @@ module.exports = {
     getProfile,
     isStudentExist,
     updatePicture,
-    updateFcmToken
+    updateFcmToken,
+    updateProfile
 }

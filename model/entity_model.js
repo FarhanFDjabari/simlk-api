@@ -24,6 +24,16 @@ const students = sequelize.define('students', {
         type : DataTypes.TEXT,
         allowNull : false
     },
+    no_hp : {
+        type : DataTypes.TEXT,
+
+    },
+    id_line : {
+        type : DataTypes.TEXT,
+    },
+    dpa : {
+        type : DataTypes.TEXT,
+    },
     fcm_token : {
         type : DataTypes.TEXT,
         allowNull : true

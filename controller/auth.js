@@ -6,6 +6,11 @@ const studentsService = require('../repository/students')
 const conselorService = require('../repository/conselour')
 const jwt = require('../middleware/jwt_auth')
 const { StatusCodes } = require('http-status-codes')
+const { generateLink } = require('../utils/link_image')
+const { uploadToSupabase } = require('../utils/supabase_storage')
+
+
+
 
 auth.post('/login-siam', async (req, res) => {
     const { nim, password, fcm_token } = req.body
@@ -59,14 +64,24 @@ auth.post('/login-konselor', async (req, res) => {
 })
 
 auth.post('/register-conselour-dummy', async (req, res) => {
-    const { name, email, password, major, profile_image_url, fcm_token } = req.body
+    const { name, email, password, major, fcm_token } = req.body
 
-    const conselor = await conselorService.createCounselor(name, email, password, major, profile_image_url, fcm_token)
+    const { avatar } = req.files
+    let nameFile = `${nim}${avatar.name}`
+    avatar.name = nameFile
+    let link = generateLink(avatar.name)
+    let status = await uploadToSupabase(avatar)
+
+    if (!status) {
+        return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail when upload image")
+    }
+
+    const conselor = await conselorService.createCounselor(name, email, password, major, link, fcm_token)
     if (conselor == null) {
         return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail to save conselor")
     }
 
-    const token = jwt.generateToken(conselor.id)
+    const token = jwt.generateToken(conselor.id, 0)
 
     return response.responseSuccess(res, StatusCodes.CREATED, { token: token }, "Success create conselour")
 })
@@ -76,17 +91,17 @@ auth.get('/logout', jwt.validateToken, async (req, res) => {
     const role = req.user.role
     const id = req.user.id
 
-    if (role == 0){
+    if (role == 0) {
         const data = await conselorService.updateFcmToken(id, null)
-        if (!data){
+        if (!data) {
             return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail to logout conselor")
         }
         return response.responseSuccess(res, StatusCodes.OK, null, "Success logout")
     }
 
-    if (role == 1){
+    if (role == 1) {
         const data = await studentsService.updateFcmToken(id, null)
-        if (!data){
+        if (!data) {
             return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail to logout conselor")
         }
         return response.responseSuccess(res, StatusCodes.OK, null, "Success logout")
