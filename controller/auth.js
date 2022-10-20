@@ -48,14 +48,10 @@ auth.post('/login-konselor', async (req, res) => {
         return response.responseFailure(res, StatusCodes.BAD_REQUEST, "Email not found")
     }
 
-    console.log(conselor)
-    console.log(conselor.id)
     const token = jwt.generateToken(conselor.id, 0)
-
 
     const isFail = await conselorService.updateFcmToken(conselor.id, fcm_token)
 
-    console.log(isFail)
     if (isFail == null) {
         return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail to login")
     }
