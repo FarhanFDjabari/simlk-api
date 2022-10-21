@@ -28,7 +28,9 @@ reservationsSchedule.get('/',jwt.validateToken, async (req, res) => {
         return response.responseFailure(res, StatusCodes.UNAUTHORIZED, "You are not allowed to see this")
     }
 
-    const data = await reservationsService.paginate()
+    const {limit, page} = req.query
+
+    const data = await reservationsService.paginateFinish(page, limit)
 
     if (!data){
         return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Failed query in database")

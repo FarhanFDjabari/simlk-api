@@ -48,7 +48,7 @@ const getByNim = (nim) => {
 
 
 
-const paginate = (page, limit) => {
+const paginateFinish = (page, limit) => {
     if (!page){
         page = 1
     }
@@ -69,28 +69,71 @@ const paginate = (page, limit) => {
         where: {
             reservation_time: {
                 [Op.between]: [start, end]
-            }
+            },
+            status : 4
         }
     }).then(function (data) {
-        // let arr = data.rows
-        // arr.forEach((element, index) => {
-        //     console.log(element.reservation_time)
-        //     let localDate = new Date(element.reservation_time)
-        //     arr[index].reservation_time = localDate.toLocaleString(undefined, {timeZone:"Asia/Jakarta"})
-        //     console.log(localDate.toDateString())
-        //     console.log(arr[index].reservation_time)
-        // })
-        // data.rows = arr
         return data
     }).catch(function (_error) {
         return null
     })
 }
 
+const paginateFinishByNim = (page, limit, nim) => {
+    if (!page){
+        page = 1
+    }
+    if (!limit){
+        limit = 20
+    }
+
+    const start = new Date();
+    start.setHours(0, 0, 0, 0);
+
+    const end = new Date();
+    end.setDate(end.getDate() + 5);
+    end.setHours(23, 59, 59, 999);
+
+    return reservations.findAndCountAll({
+        offset: (page - 1) * limit,
+        limit: limit,
+        where: {
+            reservation_time: {
+                [Op.between]: [start, end]
+            },
+            nim : nim,
+            status : 4,
+        }
+    }).then(function (data) {
+        return data
+    }).catch(function (_error) {
+        return null
+    })
+}
+
+const findNotFinishByNim = (nim) => {
+    return reservations.findAndCountAll({
+        where : {
+            status : {
+                [Op.between]: [1, 3]
+            },
+            nim : nim
+        }
+    }).then(function (data) {
+        return data
+    }).catch(function (_error) {
+        return null
+    })
+
+}
+
+
 module.exports = {
     createReservation,
     getAll,
     getById,
     getByNim,
-    paginate
+    paginateFinish,
+    findNotFinishByNim,
+    paginateFinishByNim
 }
