@@ -1,6 +1,7 @@
 const { sequelize } = require('./utils/database_connection')
 const { auth } = require('./controller/auth')
-const {students} = require('./controller/student')
+const { students } = require('./controller/student')
+const { reservationsSchedule } = require('./controller/reservation_schedules')
 const express = require('express');
 const cors = require("cors");
 const bodyParser = require('body-parser');
@@ -8,9 +9,10 @@ const dotenv = require('dotenv');
 const uploadExpress = require('express-fileupload');
 
 
+
 dotenv.config()
 
-sequelize.sync({alter : true});
+sequelize.sync({ alter: true });
 
 const app = express()
 
@@ -50,6 +52,7 @@ app.use(bodyParser.json());
 
 app.use('/auth', auth)
 app.use('/mahasiswa', students)
+app.use('/reservation-schedules', reservationsSchedule)
 
 app.listen(process.env.PORT, () => {
     console.log(`Server is running on port ${process.env.PORT}`);
