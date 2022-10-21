@@ -77,10 +77,25 @@ const updateFcmToken = (id,fcmToken) => {
     })
 }
 
+const updateAvatar = (id, profile_image_url) => {
+    return conselours.update({
+        profile_image_url : profile_image_url
+    }, {
+        where : {
+            id : id
+        }
+    }).then(function(data){
+        return data
+    }).catch(function(_error){
+        return
+    })
+}
+
 module.exports = {
     searchByEmail,
     searchById,
     createCounselor,
     loginConselours,
-    updateFcmToken
+    updateFcmToken,
+    updateAvatar
 }
