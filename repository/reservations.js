@@ -111,8 +111,16 @@ const paginateFinishByNim = (page, limit, nim) => {
     })
 }
 
-const findNotFinishByNim = (nim) => {
+const findNotFinishByNim = (nim, page, limit) => {
+    if (!page){
+        page = 1
+    }
+    if (!limit){
+        limit = 20
+    }
     return reservations.findAndCountAll({
+        offset: (page - 1) * limit,
+        limit: limit,
         where : {
             status : {
                 [Op.between]: [1, 3]
@@ -124,7 +132,45 @@ const findNotFinishByNim = (nim) => {
     }).catch(function (_error) {
         return null
     })
+}
 
+const updateStatus = (id, status) => {
+    return reservations.update({
+        status : status
+    }, {
+        where : {
+            id : id
+        }
+    }).then(function (data) {
+        return data
+    }).catch(function (_error) {
+        return null
+    })
+}
+
+const deleteById = (id) => {
+    return reservations.destroy({
+        where : {
+            id : id
+        }
+    }).then(function (data) {
+        return data
+    }).catch(function (_error) {
+        return null
+    })
+}
+
+const getByDay = (day) => {
+    const day = new Date(day)
+    return reservations.findAll({
+        where : {
+            reservation_time : day
+        }
+    }).then(function (data) {
+        return data
+    }).catch(function (_error) {
+        return null
+    })
 }
 
 
@@ -135,5 +181,8 @@ module.exports = {
     getByNim,
     paginateFinish,
     findNotFinishByNim,
-    paginateFinishByNim
+    paginateFinishByNim,
+    updateStatus,
+    deleteById,
+    getByDay
 }
