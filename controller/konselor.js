@@ -6,7 +6,7 @@ const jwt = require('../middleware/jwt_auth')
 const { StatusCodes } = require('http-status-codes')
 const { uploadToSupabase } = require('../utils/supabase_storage')
 const { generateLink } = require('../utils/link_image')
-const nanoid = require('nanoid');
+const { v4: uuidv4 } = require('uuid');
 
 conselour.get('/profile', jwt.validateToken, async (req, res) => {
     let id = req.user.id
@@ -24,7 +24,7 @@ conselour.put('/profile', jwt.validateToken, async (req, res) => {
     let id = req.user.id
     if (req.files) {
         const { avatar } = req.files
-        let unique = nanoid.nanoid()
+        let unique = uuidv4()
         let nameFile = `${unique}${id}${avatar.name}`
         avatar.name = nameFile
         let link = generateLink(avatar.name)

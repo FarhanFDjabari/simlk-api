@@ -17,14 +17,14 @@
     "http-status-codes": "^2.2.0",
     "jsonwebtoken": "^8.5.1",
     "md5": "^2.3.0",
-    "nanoid": "^4.0.0",
     "node-fetch": "^3.2.10",
     "nodemon": "^2.0.20",
     "pg": "^8.8.0",
     "pg-hstore": "^2.3.4",
     "pm2": "^5.2.2",
     "postgres": "^3.3.1",
-    "sequelize": "^6.25.2"
+    "sequelize": "^6.25.2",
+    "uuid": "^9.0.0"
   },
   "scripts": {
     "start": "pm2 start index.js --name backend-prod",
