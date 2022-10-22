@@ -33,10 +33,10 @@ conselour.put('/profile', jwt.validateToken, async (req, res) => {
             return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail when upload image")
         }
         const updateData = await conseloursService.updateAvatar(id, link)
-        if (!updateData){
+        if (!updateData) {
             return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail when update database")
         }
-        return response.responseSuccess(res, StatusCodes.OK, updatedData, "Success update profile" )
+        return response.responseSuccess(res, StatusCodes.OK, updatedData, "Success update profile")
     }
     return response.responseFailure(res, StatusCodes.BAD_REQUEST, "Profile not update")
 })

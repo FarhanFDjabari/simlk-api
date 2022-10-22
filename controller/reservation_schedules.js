@@ -11,75 +11,75 @@ const { StatusCodes } = require('http-status-codes')
 reservationsSchedule.post('/', jwt.validateToken, async (req, res) => {
     const nim = req.user.id
 
-    const {reservation_time, time_hours, description} = req.body
+    const { reservation_time, time_hours, description } = req.body
 
-    const data = reservationsService.createReservation(nim,reservation_time, time_hours, description)
+    const data = reservationsService.createReservation(nim, reservation_time, time_hours, description)
 
-    if (!data){
+    if (!data) {
         return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Failed save in database")
     }
 
-    return response.responseSuccess(res, StatusCodes.CREATED, data, "success save to database" )
+    return response.responseSuccess(res, StatusCodes.CREATED, data, "success save to database")
 })
 
-reservationsSchedule.get('/',jwt.validateToken, async (req, res) => {
+reservationsSchedule.get('/', jwt.validateToken, async (req, res) => {
     let role = req.user.role
-    if(role==1){
+    if (role == 1) {
         return response.responseFailure(res, StatusCodes.UNAUTHORIZED, "You are not allowed to see this")
     }
 
-    const {limit, page} = req.query
+    const { limit, page } = req.query
 
     const data = await reservationsService.paginateFinish(page, limit)
 
-    if (!data){
+    if (!data) {
         return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Failed query in database")
     }
 
-    return response.responseSuccess(res, StatusCodes.OK, data, "success query databas" )
+    return response.responseSuccess(res, StatusCodes.OK, data, "success query databas")
 })
 
-reservationsSchedule.get('/:id',jwt.validateToken, async (req, res) => {
+reservationsSchedule.get('/:id', jwt.validateToken, async (req, res) => {
     let id = req.params.id
 
     const data = await reservationsService.getById(id)
 
-    if (!data){
+    if (!data) {
         return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Failed query in database")
     }
 
-    return response.responseSuccess(res, StatusCodes.OK, data, "success query in database" )
+    return response.responseSuccess(res, StatusCodes.OK, data, "success query in database")
 })
 
-reservationsSchedule.delete('/:id',jwt.validateToken, async (req, res) => {
+reservationsSchedule.delete('/:id', jwt.validateToken, async (req, res) => {
     let id = req.params.id
     let role = req.user.role
 
-    if (role == 1){
-        return response.responseFailure(res, StatusCodes.UNAUTHORIZED, "You unauthorized to delete data" )
+    if (role == 1) {
+        return response.responseFailure(res, StatusCodes.UNAUTHORIZED, "You unauthorized to delete data")
     }
     const data = await reservationsService.deleteById(id)
 
-    if (!data){
+    if (!data) {
         return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Failed query in database")
     }
 
-    return response.responseSuccess(res, StatusCodes.OK, data, "success delete data in database" )
+    return response.responseSuccess(res, StatusCodes.OK, data, "success delete data in database")
 })
 
-reservationsSchedule.put('/:id', jwt.validateToken, async (req, res)=>{
+reservationsSchedule.put('/:id', jwt.validateToken, async (req, res) => {
     let role = req.user.role
     let idData = req.params.id
 
-    if (role == 1){
-        return response.responseFailure(res, StatusCodes.UNAUTHORIZED, "You unauthorized to delete data" )
+    if (role == 1) {
+        return response.responseFailure(res, StatusCodes.UNAUTHORIZED, "You unauthorized to delete data")
     }
 
     const { report } = req.body
 
-    const data = await reservationsService.updateReport(id, report)
+    const data = await reservationsService.updateReport(idData, report)
 
-    if(!data){
+    if (!data) {
         return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Failed update report")
     }
 
