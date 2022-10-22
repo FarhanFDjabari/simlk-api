@@ -22,21 +22,15 @@ reservationsSchedule.post('/', jwt.validateToken, async (req, res) => {
     return response.responseSuccess(res, StatusCodes.CREATED, data, "success save to database")
 })
 
+
+//Ambil buat kalender
 reservationsSchedule.get('/', jwt.validateToken, async (req, res) => {
-    let role = req.user.role
-    if (role == 1) {
-        return response.responseFailure(res, StatusCodes.UNAUTHORIZED, "You are not allowed to see this")
-    }
-
-    const { limit, page } = req.query
-
-    const data = await reservationsService.paginateFinish(page, limit)
-
+    const data = await reservationsService.reservationSchedule()
     if (!data) {
         return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Failed query in database")
     }
 
-    return response.responseSuccess(res, StatusCodes.OK, data, "success query databas")
+    return response.responseSuccess(res, StatusCodes.OK, data, "success query database")
 })
 
 reservationsSchedule.get('/:id', jwt.validateToken, async (req, res) => {
