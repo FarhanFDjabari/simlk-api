@@ -49,10 +49,10 @@ const getByNim = (nim) => {
 
 
 const paginateFinish = (page, limit) => {
-    if (!page){
+    if (!page) {
         page = 1
     }
-    if (!limit){
+    if (!limit) {
         limit = 20
     }
 
@@ -70,7 +70,7 @@ const paginateFinish = (page, limit) => {
             reservation_time: {
                 [Op.between]: [start, end]
             },
-            status : 4
+            status: 4
         }
     }).then(function (data) {
         return data
@@ -80,10 +80,10 @@ const paginateFinish = (page, limit) => {
 }
 
 const paginateFinishByNim = (page, limit, nim) => {
-    if (!page){
+    if (!page) {
         page = 1
     }
-    if (!limit){
+    if (!limit) {
         limit = 20
     }
 
@@ -101,8 +101,8 @@ const paginateFinishByNim = (page, limit, nim) => {
             reservation_time: {
                 [Op.between]: [start, end]
             },
-            nim : nim,
-            status : 4,
+            nim: nim,
+            status: 4,
         }
     }).then(function (data) {
         return data
@@ -114,8 +114,8 @@ const paginateFinishByNim = (page, limit, nim) => {
 const finishByNim = (nim) => {
     return reservations.findAll({
         where: {
-            nim : nim,
-            status : 4,
+            nim: nim,
+            status: 4,
         }
     }).then(function (data) {
         return data
@@ -125,20 +125,20 @@ const finishByNim = (nim) => {
 }
 
 const findNotFinishByNim = (nim, page, limit) => {
-    if (!page){
+    if (!page) {
         page = 1
     }
-    if (!limit){
+    if (!limit) {
         limit = 20
     }
     return reservations.findAndCountAll({
         offset: (page - 1) * limit,
         limit: limit,
-        where : {
-            status : {
+        where: {
+            status: {
                 [Op.between]: [1, 3]
             },
-            nim : nim
+            nim: nim
         }
     }).then(function (data) {
         return data
@@ -149,10 +149,10 @@ const findNotFinishByNim = (nim, page, limit) => {
 
 const updateStatus = (id, status) => {
     return reservations.update({
-        status : status
+        status: status
     }, {
-        where : {
-            id : id
+        where: {
+            id: id
         }
     }).then(function (data) {
         return data
@@ -163,8 +163,8 @@ const updateStatus = (id, status) => {
 
 const deleteById = (id) => {
     return reservations.destroy({
-        where : {
-            id : id
+        where: {
+            id: id
         }
     }).then(function (data) {
         return data
@@ -176,8 +176,8 @@ const deleteById = (id) => {
 const getByDay = (day) => {
     const dayReq = new Date(day)
     return reservations.findAll({
-        where : {
-            reservation_time : dayReq
+        where: {
+            reservation_time: dayReq
         }
     }).then(function (data) {
         return data
@@ -188,10 +188,10 @@ const getByDay = (day) => {
 
 const updateReport = (id, report) => {
     return reservations.update({
-        report : report
+        report: report
     }, {
-        where : {
-            id : id
+        where: {
+            id: id
         }
     }).then(function (data) {
         return data
