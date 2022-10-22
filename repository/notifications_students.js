@@ -12,8 +12,12 @@ const createNotif = (nim, title, body, data) => {
     })
 }
 
-const getAllNotif = () => {
-    return notificationsStudent.findAll().then(function (data) {
+const getAllNotif = (nim) => {
+    return notificationsStudent.findAll({
+        where : {
+            nim : nim
+        }
+    }).then(function (data) {
         return data
     }).catch(function (_error) {
         return null

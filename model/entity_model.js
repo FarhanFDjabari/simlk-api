@@ -131,6 +131,10 @@ const notificationsStudent = sequelize.define('notifications_student', {
     },
     data: {
         type: DataTypes.TEXT
+    },
+    is_read : {
+        type : DataTypes.INTEGER,
+        defaultValue : 0
     }
 })
 
@@ -152,6 +156,10 @@ const notificationsConselour = sequelize.define('notifications_conselour', {
     },
     data: {
         type: DataTypes.TEXT
+    },
+    is_read : {
+        type : DataTypes.INTEGER,
+        defaultValue : 0
     }
 })
 
