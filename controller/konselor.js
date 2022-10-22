@@ -41,3 +41,6 @@ conselour.put('/profile', jwt.validateToken, async (req, res) => {
     return response.responseFailure(res, StatusCodes.BAD_REQUEST, "Profile not update")
 })
 
+module.exports = {
+    conselour
+}

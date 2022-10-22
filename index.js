@@ -2,6 +2,8 @@ const { sequelize } = require('./utils/database_connection')
 const { auth } = require('./controller/auth')
 const { students } = require('./controller/student')
 const { reservationsSchedule } = require('./controller/reservation_schedules')
+const { reservationsStatus } = require('./controller/reservation_status');
+const { conselour } = require('./controller/konselor');
 const express = require('express');
 const cors = require("cors");
 const bodyParser = require('body-parser');
@@ -53,6 +55,9 @@ app.use(bodyParser.json());
 app.use('/auth', auth)
 app.use('/mahasiswa', students)
 app.use('/reservation-schedules', reservationsSchedule)
+app.use('/reservasion-status', reservationsStatus)
+app.use('konselor', conselour)
+
 
 app.listen(process.env.PORT, () => {
     console.log(`Server is running on port ${process.env.PORT}`);
