@@ -53,7 +53,7 @@ app.use(
 app.use(bodyParser.json());
 
 
-app.use('/test', async (req, res) => {
+app.get('/test', async (req, res) => {
     res.status(200).json({
         text : "Hello World",
     })
