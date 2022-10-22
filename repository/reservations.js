@@ -1,5 +1,5 @@
 const reservations = require('../model/entity_model').reservations
-const { Op } = require('sequelize');
+const { Op, where } = require('sequelize');
 
 const createReservation = (nim, reservation_time, time_hours, description) => {
     return reservations.create({
@@ -111,6 +111,19 @@ const paginateFinishByNim = (page, limit, nim) => {
     })
 }
 
+const finishByNim = (nim) => {
+    return reservations.findAll({
+        where: {
+            nim : nim,
+            status : 4,
+        }
+    }).then(function (data) {
+        return data
+    }).catch(function (_error) {
+        return null
+    })
+}
+
 const findNotFinishByNim = (nim, page, limit) => {
     if (!page){
         page = 1
@@ -161,10 +174,24 @@ const deleteById = (id) => {
 }
 
 const getByDay = (day) => {
-    const day = new Date(day)
+    const dayReq = new Date(day)
     return reservations.findAll({
         where : {
-            reservation_time : day
+            reservation_time : dayReq
+        }
+    }).then(function (data) {
+        return data
+    }).catch(function (_error) {
+        return null
+    })
+}
+
+const updateReport = (id, report) => {
+    return reservations.update({
+        report : report
+    }, {
+        where : {
+            id : id
         }
     }).then(function (data) {
         return data
@@ -184,5 +211,7 @@ module.exports = {
     paginateFinishByNim,
     updateStatus,
     deleteById,
-    getByDay
+    getByDay,
+    finishByNim,
+    updateReport
 }

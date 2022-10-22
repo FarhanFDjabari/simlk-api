@@ -39,6 +39,52 @@ reservationsSchedule.get('/',jwt.validateToken, async (req, res) => {
     return response.responseSuccess(res, StatusCodes.OK, data, "success query databas" )
 })
 
+reservationsSchedule.get('/:id',jwt.validateToken, async (req, res) => {
+    let id = req.params.id
+
+    const data = await reservationsService.getById(id)
+
+    if (!data){
+        return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Failed query in database")
+    }
+
+    return response.responseSuccess(res, StatusCodes.OK, data, "success query in database" )
+})
+
+reservationsSchedule.delete('/:id',jwt.validateToken, async (req, res) => {
+    let id = req.params.id
+    let role = req.user.role
+
+    if (role == 1){
+        return response.responseFailure(res, StatusCodes.UNAUTHORIZED, "You unauthorized to delete data" )
+    }
+    const data = await reservationsService.deleteById(id)
+
+    if (!data){
+        return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Failed query in database")
+    }
+
+    return response.responseSuccess(res, StatusCodes.OK, data, "success delete data in database" )
+})
+
+reservationsSchedule.put('/:id', jwt.validateToken, async (req, res)=>{
+    let role = req.user.role
+    let idData = req.params.id
+
+    if (role == 1){
+        return response.responseFailure(res, StatusCodes.UNAUTHORIZED, "You unauthorized to delete data" )
+    }
+
+    const { report } = req.body
+
+    const data = await reservationsService.updateReport(id, report)
+
+    if(!data){
+        return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Failed update report")
+    }
+
+    return response.responseSuccess(res, StatusCodes.OK, data, "Success update report")
+})
 
 module.exports = {
     reservationsSchedule
