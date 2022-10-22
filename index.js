@@ -4,6 +4,7 @@ const { students } = require('./controller/student')
 const { reservationsSchedule } = require('./controller/reservation_schedules')
 const { reservationsStatus } = require('./controller/reservation_status');
 const { conselour } = require('./controller/konselor');
+const { reservationsStudent } = require('./controller/reservation_students');
 const express = require('express');
 const cors = require("cors");
 const bodyParser = require('body-parser');
@@ -56,7 +57,8 @@ app.use('/auth', auth)
 app.use('/mahasiswa', students)
 app.use('/reservation-schedules', reservationsSchedule)
 app.use('/reservasion-status', reservationsStatus)
-app.use('konselor', conselour)
+app.use('/konselor', conselour)
+app.use('/reservation-student', reservationsStudent)
 
 
 app.listen(process.env.PORT, () => {
