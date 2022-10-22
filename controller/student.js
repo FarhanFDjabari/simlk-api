@@ -2,6 +2,7 @@ const express = require('express');
 const students = express.Router()
 const response = require('../utils/response')
 const studentsService = require('../repository/students')
+const reservationsService = require('../repository/reservations')
 const jwt = require('../middleware/jwt_auth')
 const { StatusCodes } = require('http-status-codes')
 const { uploadToSupabase } = require('../utils/supabase_storage')
@@ -45,6 +46,26 @@ students.put('/profile', jwt.validateToken, async (req, res) => {
         return response.responseSuccess(res, StatusCodes.OK, updatedData, "Success update profile")
     }
 })
+
+
+students.get('/history-completed', jwt.validateToken, async (req, res) => {
+    const nim = req.user.id
+    const data = reservationsService.getByNim(nim)
+    if (!data) {
+        return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail when query database")
+    }
+    return response.responseSuccess(res, StatusCodes.OK, data, "Success get history completed")
+})
+
+students.get('/history-uncompleted', jwt.validateToken, async (req, res) => {
+    const nim = req.user.id
+    const data = reservationsService.getByNim(nim)
+    if (!data) {
+        return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail when query database")
+    }
+    return response.responseSuccess(res, StatusCodes.OK, data, "Success get history uncompleted")
+})
+
 
 
 

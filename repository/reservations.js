@@ -41,7 +41,8 @@ const getById = (id) => {
 const getByNim = (nim) => {
     return reservations.findOne({
         where: {
-            nim: nim
+            nim: nim,
+            status : 4
         }
     }).then(function (data) {
         return data
