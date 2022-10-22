@@ -1,0 +1,40 @@
+name: Deploy SIMLK Backend
+on:
+  push:
+    branches: [master]
+jobs:
+  web-deploy:
+    name: 🎉 Deploy SIMLK Backend
+    runs-on: ubuntu-latest
+        
+    steps:
+      - name: 🚚 Get latest code
+        uses: actions/checkout@v2
+
+      - name: 🚀 Remove existing directory
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /home/djabari_dev/simlk-api
+      - name: 📁 Send files via SFTP
+        uses: wlixcc/SFTP-Deploy-Action@v1.2.4
+        with:
+            username: ${{ secrets.SSH_USERNAME }} 
+            server: ${{ secrets.SSH_HOST }} 
+            ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }} 
+            local_path: './*'
+            remote_path: '/home/djabari_dev/simlk-api'
+           
+      - name: 🌟 Run server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /home/djabari_dev/simlk-api
+            npm install
+            # pm2 restart simlk
