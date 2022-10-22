@@ -52,6 +52,12 @@ app.use(
 
 app.use(bodyParser.json());
 
+
+app.use('/test', async (req, res) => {
+    res.status(200).json({
+        text : "Hello World",
+    })
+})
 app.use('/auth', auth)
 app.use('/mahasiswa', students)
 app.use('/reservation-schedules', reservationsSchedule)
