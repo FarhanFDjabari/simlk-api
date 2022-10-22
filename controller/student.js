@@ -66,10 +66,6 @@ students.get('/history-uncompleted', jwt.validateToken, async (req, res) => {
     return response.responseSuccess(res, StatusCodes.OK, data, "Success get history uncompleted")
 })
 
-
-
-
-
 module.exports = {
     students
 }
