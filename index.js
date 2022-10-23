@@ -6,6 +6,7 @@ const { reservationsStatus } = require('./controller/reservation_status');
 const { conselour } = require('./controller/konselor');
 const { reservationsStudent } = require('./controller/reservation_students');
 const { reservationsHistory } = require('./controller/reservation_history');
+const { notifications } = require('./controller/notifications');
 const express = require('express');
 const cors = require("cors");
 const bodyParser = require('body-parser');
@@ -65,6 +66,7 @@ app.use('/reservasion-status', reservationsStatus)
 app.use('/konselor', conselour)
 app.use('/reservation-student', reservationsStudent)
 app.use('/reservation-history', reservationsHistory)
+app.use('/notifications', notifications)
 
 
 app.listen(process.env.PORT, () => {
