@@ -28,13 +28,13 @@ jobs:
             local_path: './*'
             remote_path: '/home/djabari_dev/simlk-api'
 
-      - name: 🌟 Run server
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            cd /home/djabari_dev/simlk-api
-            npm install
-            pm2 start index.js --name backend-dev
+      # - name: 🌟 Run server
+      #   uses: appleboy/ssh-action@master
+      #   with:
+      #     host: ${{ secrets.SSH_HOST }}
+      #     username: ${{ secrets.SSH_USERNAME }}
+      #     key: ${{ secrets.SSH_PRIVATE_KEY }}
+      #     script: |
+      #       cd /home/djabari_dev/simlk-api
+      #       npm install
+      #       pm2 start index.js --name backend-dev
