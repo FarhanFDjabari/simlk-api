@@ -20,8 +20,51 @@ const getAllNotif = () => {
     })
 }
 
+const getById = (id) => {
+    return notificationsConselour.findOne({
+        where : {
+            id : id
+        }
+    }).then(function (data) {
+        return data
+    }).catch(function (_error) {
+        return null
+    })
+}
+
+const updateIsRead = (id, is_read) => {
+    return notificationsConselour.update({
+        is_read : is_read
+    }, {
+        where : {
+            id : id
+        }
+    }).then(function (data) {
+        return data
+    }).catch(function (_error) {
+        return null
+    })
+}
+
+const markAllRead = () => {
+    return notificationsConselour.update({
+        is_read : 1
+    }, {
+        where : {
+            is_read : 0
+        }
+    }).then(function (data) {
+        return data
+    }).catch(function (_error) {
+        return null
+    })
+}
+
 
 module.exports = {
     createNotif,
-    getAllNotif
+    getAllNotif,
+    getById,
+    updateIsRead,
+    markAllRead
 }
