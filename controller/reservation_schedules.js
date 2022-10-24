@@ -5,7 +5,7 @@ const reservationsService = require('../repository/reservations')
 const jwt = require('../middleware/jwt_auth')
 const { StatusCodes } = require('http-status-codes')
 const sendNotif = require('../utils/push_notification')
-const conseloursService = require('../repository/conselour')
+const notifService = require('../repository/notifications_conselour')
 
 reservationsSchedule.post('/', jwt.validateToken, async (req, res) => {
     const nim = req.user.id
@@ -18,8 +18,10 @@ reservationsSchedule.post('/', jwt.validateToken, async (req, res) => {
         return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Failed save in database")
     }
 
-
-    const isSuccess = await sendNotif.sendNotifToAll("Mahasiswa Membuat Reservasi", "body", "data")
+    let title = "Permintaan Bimbingan Konseling Baru"
+    let body = `${nim} membuat permintaan reservasi baru. Mohon untuk segera di proses`
+    let notif = notifService.createNotif(nim, title, body, JSON.stringify(data))
+    const isSuccess = await sendNotif.sendNotifToAll(title, body, data)
     if (!isSuccess) {
         return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Sucess save in database but fail when send notif")
     }

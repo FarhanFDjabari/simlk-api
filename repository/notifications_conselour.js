@@ -1,10 +1,11 @@
 const { notificationsConselour } = require('../model/entity_model')
 
-const createNotif = (nim, title, body, data) => {
+const createNotif = (id, title, body, data) => {
     return notificationsConselour.create({
-        nim : nim,
+        id : id,
         title : title,
-        body : body
+        body : body,
+        data : data
     }).then(function (data) {
         return data
     }).catch(function (_error) {
