@@ -62,7 +62,7 @@ app.get('/test', async (req, res) => {
 app.use('/auth', auth)
 app.use('/mahasiswa', students)
 app.use('/reservation-schedules', reservationsSchedule)
-app.use('/reservasion-status', reservationsStatus)
+app.use('/reservation-status', reservationsStatus)
 app.use('/konselor', conselour)
 app.use('/reservation-student', reservationsStudent)
 app.use('/reservation-history', reservationsHistory)

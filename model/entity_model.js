@@ -109,6 +109,14 @@ const reservations = sequelize.define('reservations', {
     report: {
         type: DataTypes.TEXT,
         allowNull: true
+    },
+    location : {
+        type: DataTypes.TEXT,
+        allowNull: true
+    },
+    type : {
+        type: DataTypes.TEXT,
+        allowNull: true
     }
 })
 

@@ -1,12 +1,13 @@
 const reservations = require('../model/entity_model').reservations
 const { Op } = require('sequelize');
 
-const createReservation = (nim, reservation_time, time_hours, description) => {
+const createReservation = (nim, reservation_time, time_hours, description, type) => {
     return reservations.create({
         nim: nim,
         reservation_time: reservation_time,
         time_hours: time_hours,
-        description: description
+        description: description,
+        type : type
     }).then(function (data) {
         return data
     }).catch(function (_error) {
@@ -39,7 +40,7 @@ const getById = (id) => {
 }
 
 const getByNim = (nim) => {
-    return reservations.findOne({
+    return reservations.findAll({
         where: {
             nim: nim,
             status : 4
@@ -166,6 +167,20 @@ const updateStatus = (id, status) => {
     })
 }
 
+const updateLocation = (id, location) => {
+    return reservations.update({
+        location : location
+    }, {
+        where: {
+            id: id
+        }
+    }).then(function (data) {
+        return data
+    }).catch(function (_error) {
+        return null
+    })
+}
+
 const deleteById = (id) => {
     return reservations.destroy({
         where: {
@@ -239,5 +254,6 @@ module.exports = {
     getByDay,
     finishByNim,
     updateReport,
-    reservationSchedule
+    reservationSchedule,
+    updateLocation
 }

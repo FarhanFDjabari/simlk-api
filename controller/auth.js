@@ -114,7 +114,11 @@ auth.get('/logout', jwt.validateToken, async (req, res) => {
 auth.get('/dummy-data', async (req, res) => {
     const data = await conselorService.getAllToken()
     console.log(data)
-    return response.responseSuccess(res, StatusCodes.OK, data, "success")
+    const tokens = []
+    for (i = 0; i < data.length; i++) {
+        tokens[i] = data[i].fcm_token
+    }
+    return response.responseSuccess(res, StatusCodes.OK, tokens, "success")
 })
 
 module.exports = {

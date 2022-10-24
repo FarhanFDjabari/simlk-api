@@ -10,9 +10,9 @@ const conseloursService = require('../repository/conselour')
 reservationsSchedule.post('/', jwt.validateToken, async (req, res) => {
     const nim = req.user.id
 
-    const { reservation_time, time_hours, description } = req.body
+    const { reservation_time, time_hours, description, type } = req.body
 
-    const data = reservationsService.createReservation(nim, reservation_time, time_hours, description)
+    const data = reservationsService.createReservation(nim, reservation_time, time_hours, description, type)
 
     if (!data) {
         return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Failed save in database")

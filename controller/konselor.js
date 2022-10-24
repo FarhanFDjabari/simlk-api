@@ -11,7 +11,7 @@ const { v4: uuidv4 } = require('uuid');
 conselour.get('/profile', jwt.validateToken, async (req, res) => {
     let id = req.user.id
 
-    const data = conseloursService.searchById(id)
+    const data = await conseloursService.searchById(id)
 
     if (!data) {
         return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail when query database")
@@ -36,7 +36,7 @@ conselour.put('/profile', jwt.validateToken, async (req, res) => {
         if (!updateData) {
             return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail when update database")
         }
-        return response.responseSuccess(res, StatusCodes.OK, updatedData, "Success update profile")
+        return response.responseSuccess(res, StatusCodes.OK, updateData, "Success update profile")
     }
     return response.responseFailure(res, StatusCodes.BAD_REQUEST, "Profile not update")
 })

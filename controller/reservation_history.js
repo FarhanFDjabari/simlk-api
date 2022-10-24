@@ -17,7 +17,7 @@ reservationsHistory.get('/', jwt.validateToken, async (req, res) => {
 
 reservationsHistory.get('/:nim', jwt.validateToken, async (req, res) => {
     let nim = req.params.nim
-    const data = reservationsService.getByNim(nim)
+    const data = await reservationsService.getByNim(nim)
     if (!data) {
         return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Failed query in database")
     }
