@@ -4,9 +4,8 @@ const response = require('../utils/response')
 const reservationsService = require('../repository/reservations')
 const jwt = require('../middleware/jwt_auth')
 const { StatusCodes } = require('http-status-codes')
-
-
-
+const sendNotif = require('../utils/push_notification')
+const conseloursService = require('../repository/conselour')
 
 reservationsSchedule.post('/', jwt.validateToken, async (req, res) => {
     const nim = req.user.id
@@ -19,9 +18,14 @@ reservationsSchedule.post('/', jwt.validateToken, async (req, res) => {
         return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Failed save in database")
     }
 
+
+    const isSuccess = await sendNotif.sendNotifToAll("Mahasiswa Membuat Reservasi", "body", "data")
+    if (!isSuccess){
+        return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Sucess save in database but fail when send notif")
+    }
+
     return response.responseSuccess(res, StatusCodes.CREATED, data, "success save to database")
 })
-
 
 //Ambil buat kalender
 reservationsSchedule.get('/', jwt.validateToken, async (req, res) => {

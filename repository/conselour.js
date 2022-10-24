@@ -95,14 +95,14 @@ const getAllToken = () => {
     return conselours.findAll({
         attributes : ['fcm_token'],
         where : {
-            fcmToken : {
-                [Op.not] : null
+            fcm_token : {
+                [Op.ne] : null
             }
         }
     }).then(function (data) {
         return data
     }).catch(function (_error) {
-        return
+        return null
     })
 }
 

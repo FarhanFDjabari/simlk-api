@@ -8,6 +8,7 @@ const { StatusCodes } = require('http-status-codes')
 const { uploadToSupabase } = require('../utils/supabase_storage')
 const { generateLink } = require('../utils/link_image')
 
+
 students.get('/profile', jwt.validateToken, async (req, res) => {
     const nim = req.user.id
     const data = await studentsService.getProfile(nim)

@@ -3,15 +3,15 @@ const serviceConselour = require('../repository/conselour')
 
 
 //bikin function
-const sendNotif = (fcmToken, title, body, data) => {
-    firebaseApp.messaging().sendToDevice(fcmToken, {
+const sendNotif = (fcmToken, title, body, dataNotif) => {
+    return firebaseApp.messaging().sendToDevice(fcmToken, {
         notification : {
             title : title,
             body : body,
         },
-        data : data,
-    }).then(function(data){
-        return data
+        data : dataNotif,
+    }).then(function(dataSend){
+        return dataSend
     }).catch(function(err){
         console.log(err)
         return null
@@ -19,22 +19,22 @@ const sendNotif = (fcmToken, title, body, data) => {
 }
 
 const sendNotifToAll = async (title, body, data) => {
-    const data = serviceConselour.getAllToken().then(function(data){
-        return data
+    const dataConselour = serviceConselour.getAllToken().then(function(dataSend){
+        return dataSend
     }).catch(function(err){
         console.log(err)
         return null
     })
 
-    firebaseApp.messaging().sendMulticast({
+    return firebaseApp.messaging().sendMulticast({
         notification : {
             title : title,
             body : body,
         },
         data : data,
-        tokens : data.fcmToken
-    }).then(function(data){
-        return data
+        tokens : dataConselour.fcm_token
+    }).then(function(dataSendNotif){
+        return dataSendNotif
     }).catch(function(err){
         console.log(err)
         return null
@@ -42,5 +42,6 @@ const sendNotifToAll = async (title, body, data) => {
 }
 
 module.exports = {
-    sendNotif
+    sendNotif,
+    sendNotifToAll
 }
