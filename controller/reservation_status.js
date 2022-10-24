@@ -21,7 +21,7 @@ reservationsStatus.get('/', jwt.validateToken, async (req, res) => {
     let fcm = reservation.fcm_token
 
     if (fcm) {
-        let isSuccess = await sendNotif.sendNotif(fcm, "Laporan Anda Diberikan", "body", "data")
+        let isSuccess = await sendNotif.sendNotif(fcm, "Status Anda Diupdate", "body", "data")
         if (!isSuccess) {
             return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Sucess save in database but fail when send notif")
         }
