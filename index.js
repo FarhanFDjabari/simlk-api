@@ -64,7 +64,7 @@ app.use('/mahasiswa', students)
 app.use('/reservation-schedules', reservationsSchedule)
 app.use('/reservation-status', reservationsStatus)
 app.use('/konselor', conselour)
-app.use('/reservation-student', reservationsStudent)
+app.use('/reservation-mahasiswa', reservationsStudent)
 app.use('/reservation-history', reservationsHistory)
 app.use('/notifications', notifications)
 
