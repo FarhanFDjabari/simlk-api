@@ -20,7 +20,7 @@ reservationsSchedule.post('/', jwt.validateToken, async (req, res) => {
 
 
     const isSuccess = await sendNotif.sendNotifToAll("Mahasiswa Membuat Reservasi", "body", "data")
-    if (!isSuccess){
+    if (!isSuccess) {
         return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Sucess save in database but fail when send notif")
     }
 
@@ -76,6 +76,17 @@ reservationsSchedule.put('/:id', jwt.validateToken, async (req, res) => {
     const { report } = req.body
 
     const data = await reservationsService.updateReport(idData, report)
+
+    const reservation = await reservationsService.getById(idData)
+
+    let fcm = reservation.fcm_token
+
+    if (fcm) {
+        let isSuccess = await sendNotif.sendNotif(fcm, "Laporan Anda Diberikan", "body", "data")
+        if (!isSuccess) {
+            return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Sucess save in database but fail when send notif")
+        }
+    }
 
     if (!data) {
         return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Failed update report")
