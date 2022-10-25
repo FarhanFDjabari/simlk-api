@@ -25,15 +25,6 @@ reservationsStudent.get('/reservations', jwt.validateToken, async (req, res) => 
     return response.responseSuccess(res, StatusCodes.OK, data, "Success query")
 })
 
-reservationsStudent.get('/reservation-date/:date', jwt.validateToken, async (req, res) => {
-    const date = req.params.date
-    const data = await reservationsService.getReservationsByDate(date)
-    if (!data) {
-        return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Failure query database")
-    }
-    return response.responseSuccess(res, StatusCodes.OK, data, "Success query")
-})
-
 
 
 
