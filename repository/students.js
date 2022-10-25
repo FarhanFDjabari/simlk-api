@@ -102,9 +102,7 @@ const updatePicture = (linkPicture, nim) => {
 }
 
 const getAllStudent = () => {
-    return students.findAll({
-        include: 'reservations'
-    }).then(function (data) {
+    return students.findAll().then(function (data) {
         return data
     }).catch(function (_error) {
         return null

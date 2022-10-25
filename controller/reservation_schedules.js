@@ -31,6 +31,8 @@ reservationsSchedule.post('/', jwt.validateToken, async (req, res) => {
         return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Sucess save in database but fail when send notif")
     }
 
+    console.log(isSuccess)
+
     return response.responseSuccess(res, StatusCodes.CREATED, data, "success save to database")
 })
 

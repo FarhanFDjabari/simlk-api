@@ -225,10 +225,34 @@ const reservationSchedule = () => {
     start.setHours(0, 0, 0, 0);
 
     const end = new Date();
-    end.setDate(end.getDate() + 5);
+    end.setDate(end.getDate() + 366);
     end.setHours(23, 59, 59, 999);
 
     return reservations.findAll({
+        where: {
+            reservation_time: {
+                [Op.between]: [start, end]
+            },
+        }
+    }).then(function (data) {
+        return data
+    }).catch(function (_error) {
+        return null
+    })
+}
+
+
+const getReservationsByDate = (date) => {
+    const start = new Date(date);
+    start.setHours(0, 0, 0 ,0)
+    console.log(start)
+
+    const end = new Date();
+    end.setDate(start.getDate());
+    end.setHours(23, 59, 59, 999);
+
+    return reservations.findAll({
+        attributes : ['time_hours'],
         where: {
             reservation_time: {
                 [Op.between]: [start, end]
@@ -255,5 +279,6 @@ module.exports = {
     finishByNim,
     updateReport,
     reservationSchedule,
-    updateLocation
+    updateLocation,
+    getReservationsByDate
 }

@@ -16,7 +16,7 @@ reservationsStudent.get('/', jwt.validateToken, async (req, res) => {
     return response.responseSuccess(res, StatusCodes.OK, data, "Success query")
 })
 
-reservationsStudent.get('/all', jwt.validateToken, async (req, res) => {
+reservationsStudent.get('/reservations', jwt.validateToken, async (req, res) => {
     const nim = req.user.id
     const data = await studentsService.searchStudentByNimWithReservations(nim)
     if (!data) {
@@ -24,6 +24,19 @@ reservationsStudent.get('/all', jwt.validateToken, async (req, res) => {
     }
     return response.responseSuccess(res, StatusCodes.OK, data, "Success query")
 })
+
+reservationsStudent.get('/reservation-date/:date', jwt.validateToken, async (req, res) => {
+    const date = req.params.date
+    const data = await reservationsService.getReservationsByDate(date)
+    if (!data) {
+        return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Failure query database")
+    }
+    return response.responseSuccess(res, StatusCodes.OK, data, "Success query")
+})
+
+
+
+
 
 
 module.exports = {

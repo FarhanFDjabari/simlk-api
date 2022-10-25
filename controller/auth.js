@@ -4,6 +4,7 @@ const { authToSiam } = require('../utils/siam_request')
 const response = require('../utils/response')
 const studentsService = require('../repository/students')
 const conselorService = require('../repository/conselour')
+const reserService = require('../repository/reservations')
 const jwt = require('../middleware/jwt_auth')
 const { StatusCodes } = require('http-status-codes')
 const { generateLink } = require('../utils/link_image')
@@ -119,6 +120,13 @@ auth.get('/dummy-data', async (req, res) => {
         tokens[i] = data[i].fcm_token
     }
     return response.responseSuccess(res, StatusCodes.OK, tokens, "success")
+})
+
+auth.get('/dummy-tanggal', async (req, res) => {
+    const { date } = req.query
+    const data = await reserService.getReservationsByDate(date)
+    console.log(data)
+    return response.responseSuccess(res, StatusCodes.OK, data, "success")
 })
 
 module.exports = {
