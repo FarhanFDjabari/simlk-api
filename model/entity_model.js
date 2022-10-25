@@ -153,9 +153,6 @@ const notificationsConselour = sequelize.define('notifications_conselour', {
         primaryKey: true,
         allowNull: false
     },
-    conselour_id: {
-        type: DataTypes.INTEGER
-    },
     title: {
         type: DataTypes.TEXT
     },
@@ -179,11 +176,6 @@ students.hasMany(reservations, {
 students.hasMany(notificationsStudent, {
     foreignKey: 'nim',
     as: 'notifications_student'
-})
-
-conselours.hasMany(notificationsConselour, {
-    foreignKey: 'conselour_id',
-    as: 'notifications_conselour'
 })
 
 module.exports = {
