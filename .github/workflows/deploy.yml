@@ -36,5 +36,6 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd /home/djabari_dev/simlk-api
+            sudo pm2 delete backend-dev
             sudo npm install
             sudo pm2 start index.js --name backend-dev
