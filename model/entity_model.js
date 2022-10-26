@@ -31,6 +31,9 @@ const students = sequelize.define('students', {
     id_line: {
         type: DataTypes.TEXT,
     },
+    email : {
+        type : DataTypes.TEXT
+    },
     dpa: {
         type: DataTypes.TEXT,
     },

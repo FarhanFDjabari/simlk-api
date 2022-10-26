@@ -16,12 +16,13 @@ const createStudents = (nim, name, major, profile_image_url, fcm_token) => {
     })
 }
 
-const updateProfile = (nim, id_line, no_hp, dpa, profile_image_url) => {
+const updateProfile = (nim, id_line, no_hp, dpa, profile_image_url, email) => {
     return students.update({
         no_hp: no_hp,
         id_line: id_line,
         dpa: dpa,
-        profile_image_url: profile_image_url
+        profile_image_url: profile_image_url,
+        email : email
     }, {
         where: {
             nim: nim

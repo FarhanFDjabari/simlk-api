@@ -23,10 +23,10 @@ students.get('/profile', jwt.validateToken, async (req, res) => {
 students.put('/profile', jwt.validateToken, async (req, res) => {
     const nim = req.user.id
     const studentData = await studentsService.getProfile(nim)
-    const { id_line, no_hp, dpa } = req.body
+    const { id_line, no_hp, dpa, email } = req.body
 
     if (!req.files) {
-        const updatedData = await studentsService.updateProfile(nim, id_line, no_hp, dpa, studentData.profile_image_url)
+        const updatedData = await studentsService.updateProfile(nim, id_line, no_hp, dpa, studentData.profile_image_url, email)
         if (!updatedData) {
             return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail when update database")
         }
@@ -40,7 +40,7 @@ students.put('/profile', jwt.validateToken, async (req, res) => {
         if (!status) {
             return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail when upload image")
         }
-        const updatedData = await studentsService.updateProfile(studentData.nim, studentData.id_line, studentData.no_hp, studentData.dpa, link)
+        const updatedData = await studentsService.updateProfile(studentData.nim, studentData.id_line, studentData.no_hp, studentData.dpa, link, studentData.email)
         if (!updatedData) {
             return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail when update database")
         }
