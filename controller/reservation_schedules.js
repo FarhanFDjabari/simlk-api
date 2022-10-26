@@ -2,6 +2,7 @@ const express = require('express');
 const reservationsSchedule = express.Router()
 const response = require('../utils/response')
 const reservationsService = require('../repository/reservations')
+const studentsService = require('../repository/students')
 const jwt = require('../middleware/jwt_auth')
 const { StatusCodes } = require('http-status-codes')
 const sendNotif = require('../utils/push_notification')
@@ -57,14 +58,19 @@ reservationsSchedule.get('/', jwt.validateToken, async (req, res) => {
 
 reservationsSchedule.get('/:id', jwt.validateToken, async (req, res) => {
     let id = req.params.id
-
     const data = await reservationsService.getById(id)
 
-    if (!data) {
+    const mahasiswa = await studentsService.getProfile(data.nim)
+
+    if (!data || !mahasiswa) {
         return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Failed query in database")
     }
 
-    return response.responseSuccess(res, StatusCodes.OK, data, "success query in database")
+    const responseData = {
+        profile : mahasiswa,
+        reservation : data
+    }
+    return response.responseSuccess(res, StatusCodes.OK, responseData, "success query in database")
 })
 
 reservationsSchedule.delete('/:id', jwt.validateToken, async (req, res) => {

@@ -2,6 +2,7 @@ const express = require('express');
 const conselour = express.Router()
 const response = require('../utils/response')
 const conseloursService = require('../repository/conselour')
+const reservationsService = require('../repository/reservations')
 const jwt = require('../middleware/jwt_auth')
 const { StatusCodes } = require('http-status-codes')
 const { uploadToSupabase } = require('../utils/supabase_storage')

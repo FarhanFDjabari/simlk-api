@@ -1,5 +1,5 @@
-const { students } = require('../model/entity_model')
-
+const { students, reservations } = require('../model/entity_model')
+const { Op } = require('sequelize');
 
 const createStudents = (nim, name, major, profile_image_url, fcm_token) => {
     return students.create({
@@ -22,7 +22,7 @@ const updateProfile = (nim, id_line, no_hp, dpa, profile_image_url, email) => {
         id_line: id_line,
         dpa: dpa,
         profile_image_url: profile_image_url,
-        email : email
+        email: email
     }, {
         where: {
             nim: nim
@@ -53,7 +53,71 @@ const searchStudentByNimWithReservations = (nim) => {
         where: {
             nim: nim
         },
-        include: 'reservations'
+        include: {
+            model: reservations,
+            as : 'reservations',
+            where: {
+                status: {
+                    [Op.between]: [1, 3]
+                }
+            }
+        }
+    }).then(function (data) {
+        return data
+    }).catch(function (error) {
+        console.log(error)
+        return null
+    })
+}
+
+const searchStudentByNimWithHistory = (nim) => {
+    return students.findOne({
+        where: {
+            nim: nim
+        },
+        include: {
+            model: reservations,
+            as : 'reservations',
+            where: {
+                status: 4
+            }
+        }
+    }).then(function (data) {
+        return data
+    }).catch(function (_error) {
+        return null
+    })
+}
+
+const getStudentByNimWithHistory = () => {
+    return students.findAll({
+        include: {
+            model: reservations,
+            as : 'reservations',
+            where: {
+                status: 4
+            }
+        }
+    }).then(function (data) {
+        console.log(data)
+        return data
+    }).catch(function (error) {
+        console.log(error)
+        return null
+    })
+}
+
+
+const getStudentByNimWithReservations = () => {
+    return students.findOne({
+        include: {
+            model: 'reservations',
+            where: {
+                status: {
+                    [Op.between]: [1, 3]
+                }
+            }
+        }
     }).then(function (data) {
         return data
     }).catch(function (_error) {
@@ -114,10 +178,13 @@ const getAllStudent = () => {
 module.exports = {
     createStudents,
     searchStudentByNimWithReservations,
+    searchStudentByNimWithHistory,
     getProfile,
     isStudentExist,
     updatePicture,
     updateFcmToken,
     updateProfile,
-    getAllStudent
+    getAllStudent,
+    getStudentByNimWithHistory,
+    getStudentByNimWithReservations
 }

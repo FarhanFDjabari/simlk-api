@@ -130,16 +130,16 @@ const finishByNim = (nim) => {
     })
 }
 
-const findNotFinishByNim = (nim, page, limit) => {
-    if (!page) {
-        page = 1
-    }
-    if (!limit) {
-        limit = 20
-    }
-    return reservations.findAndCountAll({
-        offset: (page - 1) * limit,
-        limit: limit,
+const findNotFinishByNim = (nim) => {
+    // if (!page) {
+    //     page = 1
+    // }
+    // if (!limit) {
+    //     limit = 20
+    // }
+    return reservations.findAll({
+        // offset: (page - 1) * limit,
+        // limit: limit,
         where: {
             status: {
                 [Op.between]: [1, 3]
@@ -241,6 +241,28 @@ const reservationSchedule = () => {
     })
 }
 
+const reservationScheduleMahasiswa = () => {
+    const start = new Date();
+    start.setHours(0, 0, 0, 0);
+
+    const end = new Date();
+    end.setDate(end.getDate() + 366);
+    end.setHours(23, 59, 59, 999);
+
+    return reservations.findAll({
+        attributes : ['time_hours'],
+        where: {
+            reservation_time: {
+                [Op.between]: [start, end]
+            },
+        }
+    }).then(function (data) {
+        return data
+    }).catch(function (_error) {
+        return null
+    })
+}
+
 
 const getReservationsByDate = (date) => {
     const start = new Date(date);
@@ -280,5 +302,6 @@ module.exports = {
     updateReport,
     reservationSchedule,
     updateLocation,
-    getReservationsByDate
+    getReservationsByDate,
+    reservationScheduleMahasiswa
 }
