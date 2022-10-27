@@ -109,9 +109,10 @@ const getStudentByNimWithHistory = () => {
 
 
 const getStudentByNimWithReservations = () => {
-    return students.findOne({
+    return students.findAll({
         include: {
-            model: 'reservations',
+            model : reservations,
+            as: 'reservations',
             where: {
                 status: {
                     [Op.between]: [1, 3]
@@ -119,8 +120,10 @@ const getStudentByNimWithReservations = () => {
             }
         }
     }).then(function (data) {
+        console.log(`Data : ${data}`)
         return data
-    }).catch(function (_error) {
+    }).catch(function (error) {
+        console.log(`Error : ${error}`)
         return null
     })
 }
