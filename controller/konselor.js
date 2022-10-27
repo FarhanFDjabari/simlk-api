@@ -2,7 +2,7 @@ const express = require('express');
 const conselour = express.Router()
 const response = require('../utils/response')
 const conseloursService = require('../repository/conselour')
-const reservationsService = require('../repository/reservations')
+const studentService = require('../repository/students')
 const jwt = require('../middleware/jwt_auth')
 const { StatusCodes } = require('http-status-codes')
 const { uploadToSupabase } = require('../utils/supabase_storage')
@@ -41,6 +41,23 @@ conselour.put('/profile', jwt.validateToken, async (req, res) => {
     }
     return response.responseFailure(res, StatusCodes.BAD_REQUEST, "Profile not update")
 })
+
+conselour.get('/history-completed', jwt.validateToken, async (req, res) => {
+    const data = await studentService.getStudentByNimWithHistory()
+    if (!data) {
+        return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail when query database because no history")
+    }
+    return response.responseSuccess(res, StatusCodes.OK, data, "Success get history completed")
+})
+
+conselour.get('/history-uncompleted', jwt.validateToken, async (req, res) => {
+    const data = await studentService.getStudentByNimWithReservations()
+    if (!data) {
+        return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail when query database")
+    }
+    return response.responseSuccess(res, StatusCodes.OK, data, "Success get history uncompleted")
+})
+
 
 module.exports = {
     conselour
