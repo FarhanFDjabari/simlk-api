@@ -218,8 +218,10 @@ const getByDay = (day) => {
             reservation_time: dayReq
         }
     }).then(function (data) {
+        console.log(data)
         return data
-    }).catch(function (_error) {
+    }).catch(function (error) {
+        console.log(error)
         return null
     })
 }
@@ -286,10 +288,8 @@ const getReservationsByDate = (date) => {
     const start = new Date(date);
     start.setHours(0, 0, 0 ,0)
     console.log(start)
-
-    const end = new Date();
-    end.setDate(start.getDate());
-    end.setHours(23, 59, 59, 999);
+    var day = 60 * 60 * 24 * 1000;
+    const end = new Date(start.getTime() + day)
 
     return reservations.findAll({
         attributes : ['time_hours'],
@@ -299,8 +299,10 @@ const getReservationsByDate = (date) => {
             },
         }
     }).then(function (data) {
+        console.log(data)
         return data
-    }).catch(function (_error) {
+    }).catch(function (error) {
+        console.log(error)
         return null
     })
 }
