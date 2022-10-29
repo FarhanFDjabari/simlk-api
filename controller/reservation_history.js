@@ -7,7 +7,7 @@ const jwt = require('../middleware/jwt_auth')
 const { StatusCodes } = require('http-status-codes')
 
 reservationsHistory.get('/', jwt.validateToken, async (req, res) => {
-    const data = await studentsService.getAllStudent()
+    const data = await studentsService.searchStudentByNimWithHistory()
     if (!data) {
         return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Failed query in database")
     }
