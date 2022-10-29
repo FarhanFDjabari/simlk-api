@@ -109,14 +109,14 @@ const getStudentByNimWithHistory = () => {
 
 
 const getStudentByNimWithReservations = () => {
-    return students.findAll({
+    return reservations.findAll({
         include: {
-            model : reservations,
-            as: 'reservations',
-            where: {
-                status: {
-                    [Op.between]: [1, 3]
-                }
+            model : students,
+            as: 'student',
+        },
+        where: {
+            status: {
+                [Op.between]: [1, 3]
             }
         }
     }).then(function (data) {

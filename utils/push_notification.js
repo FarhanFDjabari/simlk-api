@@ -11,6 +11,7 @@ const sendNotif = (fcmToken, title, body, dataNotif) => {
         },
         data: { dataNotif },
     }).then(function (dataSend) {
+        console.log(dataSend)
         return dataSend
     }).catch(function (err) {
         console.log(err)
