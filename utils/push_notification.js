@@ -9,7 +9,9 @@ const sendNotif = (fcmToken, title, body, dataNotif) => {
             title: title,
             body: body,
         },
-        data: { dataNotif },
+        data: {
+            "data_notif" : "none",
+        }
     }).then(function (dataSend) {
         console.log(dataSend)
         return dataSend

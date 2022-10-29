@@ -71,9 +71,8 @@ notifications.post('/:id', jwt.validateToken, async (req, res) => {
     return response.responseSuccess(res, StatusCodes.OK, data, "Success update database")
 })
 
-notifications.post('/', jwt.validateToken, async (req, res) => {
+notifications.put('/', jwt.validateToken, async (req, res) => {
     let userRole = req.user.role
-    const { is_read } = req.body
     var data
     if (userRole == 0) {
         data = await notificationConselour.markAllRead()
