@@ -1,4 +1,5 @@
 const reservations = require('../model/entity_model').reservations
+const students = require('../model/entity_model').students
 const { Op } = require('sequelize');
 
 const createReservation = (nim, reservation_time, time_hours, description, type) => {
@@ -35,6 +36,23 @@ const getById = (id) => {
     }).then(function (data) {
         return data
     }).catch(function (_error) {
+        return null
+    })
+}
+
+const getByIdAndProfile = (id) => {
+    return reservations.findOne({
+        where: {
+            id: id
+        },
+        include : {
+            model : students,
+            as : 'student'
+        }
+    }).then(function (data) {
+        return data
+    }).catch(function (error) {
+        console.log(error)
         return null
     })
 }
@@ -303,5 +321,6 @@ module.exports = {
     reservationSchedule,
     updateLocation,
     getReservationsByDate,
-    reservationScheduleMahasiswa
+    reservationScheduleMahasiswa,
+    getByIdAndProfile
 }

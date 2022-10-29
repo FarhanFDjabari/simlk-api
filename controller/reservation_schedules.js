@@ -58,19 +58,23 @@ reservationsSchedule.get('/', jwt.validateToken, async (req, res) => {
 
 reservationsSchedule.get('/:id', jwt.validateToken, async (req, res) => {
     let id = req.params.id
-    const data = await reservationsService.getById(id)
-
-    const mahasiswa = await studentsService.getProfile(data.nim)
-
-    if (!data || !mahasiswa) {
-        return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Failed query in database")
+    console.log(id)
+    let role = req.user.role
+    console.log(role)
+    if (role == 1){
+        const data = await reservationsService.getById(id)
+        if (!data) {
+            return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Failed query in database")
+        }
+        return response.responseSuccess(res, StatusCodes.OK, data, "success query data in database")
+    } else if (role == 0){
+        const data = await reservationsService.getByIdAndProfile(id)
+        if (!data) {
+            return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Failed query in database")
+        }
+        return response.responseSuccess(res, StatusCodes.OK, data, "success query data in database")
     }
-
-    const responseData = {
-        profile : mahasiswa,
-        reservation : data
-    }
-    return response.responseSuccess(res, StatusCodes.OK, responseData, "success query in database")
+    return response.responseSuccess(res, StatusCodes.BAD_REQUEST, null, "Bad request")
 })
 
 reservationsSchedule.delete('/:id', jwt.validateToken, async (req, res) => {

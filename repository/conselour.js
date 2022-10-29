@@ -38,7 +38,8 @@ const createCounselor = (name, email, password, major, profile_image_url, fcm_to
         fcm_token: fcm_token
     }).then(function (data) {
         return data
-    }).catch(function (_error) {
+    }).catch(function (error) {
+        console.log(error)
         return null
     })
 }
