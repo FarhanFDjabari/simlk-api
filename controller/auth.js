@@ -112,22 +112,22 @@ auth.get('/logout', jwt.validateToken, async (req, res) => {
 })
 
 
-auth.get('/dummy-data', async (req, res) => {
-    const data = await conselorService.getAllToken()
-    console.log(data)
-    const tokens = []
-    for (i = 0; i < data.length; i++) {
-        tokens[i] = data[i].fcm_token
-    }
-    return response.responseSuccess(res, StatusCodes.OK, tokens, "success")
-})
+// auth.get('/dummy-data', async (req, res) => {
+//     const data = await conselorService.getAllToken()
+//     console.log(data)
+//     const tokens = []
+//     for (i = 0; i < data.length; i++) {
+//         tokens[i] = data[i].fcm_token
+//     }
+//     return response.responseSuccess(res, StatusCodes.OK, tokens, "success")
+// })
 
-auth.get('/dummy-tanggal', async (req, res) => {
-    const { date } = req.query
-    const data = await reserService.getReservationsByDate(date)
-    console.log(data)
-    return response.responseSuccess(res, StatusCodes.OK, data, "success")
-})
+// auth.get('/dummy-tanggal', async (req, res) => {
+//     const { date } = req.query
+//     const data = await reserService.getReservationsByDate(date)
+//     console.log(data)
+//     return response.responseSuccess(res, StatusCodes.OK, data, "success")
+// })
 
 module.exports = {
     auth

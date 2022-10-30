@@ -68,7 +68,7 @@ notifications.post('/:id', jwt.validateToken, async (req, res) => {
             return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Failure update database")
         }
     }
-    return response.responseSuccess(res, StatusCodes.OK, data, "Success update database")
+    return response.responseSuccess(res, StatusCodes.OK, null, "Success update database")
 })
 
 notifications.put('/', jwt.validateToken, async (req, res) => {
@@ -85,7 +85,7 @@ notifications.put('/', jwt.validateToken, async (req, res) => {
             return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Failure update database")
         }
     }
-    return response.responseSuccess(res, StatusCodes.OK, data, "Success update database")
+    return response.responseSuccess(res, StatusCodes.OK, null, "Success update database")
 })
 
 

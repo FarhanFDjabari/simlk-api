@@ -43,7 +43,7 @@ reservationsSchedule.post('/', jwt.validateToken, async (req, res) => {
 
     console.log(isSuccess)
 
-    return response.responseSuccess(res, StatusCodes.CREATED, data, "success save to database")
+    return response.responseSuccess(res, StatusCodes.CREATED, null, "success save to database")
 })
 
 //Ambil buat kalender
@@ -121,7 +121,7 @@ reservationsSchedule.put('/:id', jwt.validateToken, async (req, res) => {
         return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Failed update report")
     }
 
-    return response.responseSuccess(res, StatusCodes.OK, data, "Success update report")
+    return response.responseSuccess(res, StatusCodes.OK, null, "Success update report")
 })
 
 

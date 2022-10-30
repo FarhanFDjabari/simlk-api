@@ -37,7 +37,7 @@ conselour.put('/profile', jwt.validateToken, async (req, res) => {
         if (!updateData) {
             return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail when update database")
         }
-        return response.responseSuccess(res, StatusCodes.OK, updateData, "Success update profile")
+        return response.responseSuccess(res, StatusCodes.OK, null, "Success update profile")
     }
     return response.responseFailure(res, StatusCodes.BAD_REQUEST, "Profile not update")
 })
