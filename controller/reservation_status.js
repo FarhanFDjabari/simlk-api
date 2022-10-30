@@ -7,6 +7,7 @@ const notifService = require('../repository/notifications_students')
 const jwt = require('../middleware/jwt_auth')
 const { StatusCodes } = require('http-status-codes')
 const sendNotif = require('../utils/push_notification')
+const date = require('../utils/date_format')
 
 reservationsStatus.get('/', jwt.validateToken, async (req, res) => {
     const { status, id, location } = req.query
@@ -42,7 +43,7 @@ reservationsStatus.get('/', jwt.validateToken, async (req, res) => {
         title = "Permintaan Bimbingan Konseling Kamu Dalam Penanganan"
         body = "Konselor telah selesai memproses permintaan bimbingan konselingmu. Silahkan cek informasi lebih detail."
     } else if (reservation.status == 4) {
-        let tanggal_reservasi = reservation.reservation_time
+        let tanggal_reservasi = date.formatDate(reservation.reservation_time)
         title = "Bimbingan Konseling Telah Selesai"
         body = `Bimbingan konseling pada tanggal ${tanggal_reservasi} telah selesai. Konselor sedang dalam proses menulis laporan akhir`
     }
@@ -58,7 +59,7 @@ reservationsStatus.get('/', jwt.validateToken, async (req, res) => {
         }
     }
 
-    return response.responseSuccess(res, StatusCodes.OK, data, "Success update status")
+    return response.responseSuccess(res, StatusCodes.OK, null, "Success update status")
 })
 
 module.exports = {

@@ -2,10 +2,10 @@ const express = require('express');
 const reservationsSchedule = express.Router()
 const response = require('../utils/response')
 const reservationsService = require('../repository/reservations')
-const studentsService = require('../repository/students')
 const jwt = require('../middleware/jwt_auth')
 const { StatusCodes } = require('http-status-codes')
 const sendNotif = require('../utils/push_notification')
+const date = require('../utils/date_format')
 const notifService = require('../repository/notifications_conselour')
 
 reservationsSchedule.post('/', jwt.validateToken, async (req, res) => {
@@ -110,7 +110,8 @@ reservationsSchedule.put('/:id', jwt.validateToken, async (req, res) => {
     let fcm = reservation.fcm_token
 
     if (fcm) {
-        let isSuccess = await sendNotif.sendNotif(fcm,"Laporan Akhir Sesi Bimbingan Konseling Telah Selesai",  `Konselor telah selesai menulis laporan akhir sesi bimbingan konseling pada tanggal ${reservation.reservation_time}.`, "data")
+        let tanggal = date.formatDate(reservation.reservation_time)
+        let isSuccess = await sendNotif.sendNotif(fcm,"Laporan Akhir Sesi Bimbingan Konseling Telah Selesai",  `Konselor telah selesai menulis laporan akhir sesi bimbingan konseling pada tanggal ${tanggal}.`, "data")
         if (!isSuccess) {
             return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Sucess save in database but fail when send notif")
         }
