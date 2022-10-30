@@ -49,21 +49,15 @@ const updateFcmToken = (nim, token) => {
 }
 
 const searchStudentByNimWithReservations = (nim) => {
-    return students.findOne({
+    return reservations.findAll({
         where: {
-            nim: nim
-        },
-        include: {
-            model: reservations,
-            as : 'reservations',
-            where: {
-                status: {
-                    [Op.between]: [1, 3]
-                }
+            nim : nim,
+            status: {
+                [Op.between]: [1, 3]
             }
         }
     }).then(function (data) {
-        if (data == null){
+        if (data == null) {
             data = []
         }
         return data
@@ -80,13 +74,13 @@ const searchStudentByNimWithHistory = (nim) => {
         },
         include: {
             model: reservations,
-            as : 'reservations',
+            as: 'reservations',
             where: {
                 status: 4
             }
         }
     }).then(function (data) {
-        if (data == null){
+        if (data == null) {
             data = []
         }
         return data
@@ -99,13 +93,13 @@ const getStudentByNimWithHistory = () => {
     return students.findAll({
         include: {
             model: reservations,
-            as : 'reservations',
+            as: 'reservations',
             where: {
                 status: 4
             }
         }
     }).then(function (data) {
-        if (data == null){
+        if (data == null) {
             data = []
         }
         console.log(data)
@@ -120,7 +114,7 @@ const getStudentByNimWithHistory = () => {
 const getStudentByNimWithReservations = () => {
     return reservations.findAll({
         include: {
-            model : students,
+            model: students,
             as: 'student',
         },
         where: {
@@ -129,7 +123,7 @@ const getStudentByNimWithReservations = () => {
             }
         }
     }).then(function (data) {
-        if (data == null){
+        if (data == null) {
             data = []
         }
         console.log(`Data : ${data}`)
@@ -147,7 +141,7 @@ const getProfile = (nim) => {
         },
 
     }).then(function (data) {
-        if (data == null){
+        if (data == null) {
             data = []
         }
         return data
@@ -187,7 +181,7 @@ const updatePicture = (linkPicture, nim) => {
 
 const getAllStudent = () => {
     return students.findAll().then(function (data) {
-        if (data == null){
+        if (data == null) {
             data = []
         }
         return data
