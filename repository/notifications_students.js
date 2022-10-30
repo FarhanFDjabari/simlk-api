@@ -18,6 +18,9 @@ const getAllNotif = (nim) => {
             nim : nim
         }
     }).then(function (data) {
+        if (data == null){
+            data = []
+        }
         return data
     }).catch(function (_error) {
         return null

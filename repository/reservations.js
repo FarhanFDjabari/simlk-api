@@ -22,6 +22,9 @@ const getAll = () => {
             status : 4,
         }
     }).then(function (data) {
+        if (data == null){
+            data = []
+        }
         return data
     }).catch(function (_error) {
         return null
@@ -64,6 +67,9 @@ const getByNim = (nim) => {
             status : 4
         }
     }).then(function (data) {
+        if (data == null){
+            data = []
+        }
         return data
     }).catch(function (_error) {
         return null
@@ -129,6 +135,9 @@ const paginateFinishByNim = (page, limit, nim) => {
             status: 4,
         }
     }).then(function (data) {
+        if (data == null){
+            data = []
+        }
         return data
     }).catch(function (_error) {
         return null
@@ -142,6 +151,9 @@ const finishByNim = (nim) => {
             status: 4,
         }
     }).then(function (data) {
+        if (data == null){
+            data = []
+        }
         return data
     }).catch(function (_error) {
         return null
@@ -164,7 +176,11 @@ const findNotFinishByNim = (nim) => {
             },
             nim: nim
         }
+
     }).then(function (data) {
+        if (data == null){
+            data = []
+        }
         return data
     }).catch(function (_error) {
         return null
@@ -218,6 +234,9 @@ const getByDay = (day) => {
             reservation_time: dayReq
         }
     }).then(function (data) {
+        if (data == null){
+            data = []
+        }
         console.log(data)
         return data
     }).catch(function (error) {
@@ -255,6 +274,9 @@ const reservationSchedule = () => {
             },
         }
     }).then(function (data) {
+        if (data == null){
+            data = []
+        }
         return data
     }).catch(function (_error) {
         return null
@@ -277,6 +299,9 @@ const reservationScheduleMahasiswa = () => {
             },
         }
     }).then(function (data) {
+        if (data == null){
+            data = []
+        }
         return data
     }).catch(function (_error) {
         return null
@@ -300,6 +325,9 @@ const getReservationsByDate = (date) => {
         }
     }).then(function (data) {
         console.log(data)
+        if (data == null){
+            data = []
+        }
         return data
     }).catch(function (error) {
         console.log(error)

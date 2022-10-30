@@ -63,6 +63,9 @@ const searchStudentByNimWithReservations = (nim) => {
             }
         }
     }).then(function (data) {
+        if (data == null){
+            data = []
+        }
         return data
     }).catch(function (error) {
         console.log(error)
@@ -83,6 +86,9 @@ const searchStudentByNimWithHistory = (nim) => {
             }
         }
     }).then(function (data) {
+        if (data == null){
+            data = []
+        }
         return data
     }).catch(function (_error) {
         return null
@@ -99,6 +105,9 @@ const getStudentByNimWithHistory = () => {
             }
         }
     }).then(function (data) {
+        if (data == null){
+            data = []
+        }
         console.log(data)
         return data
     }).catch(function (error) {
@@ -120,6 +129,9 @@ const getStudentByNimWithReservations = () => {
             }
         }
     }).then(function (data) {
+        if (data == null){
+            data = []
+        }
         console.log(`Data : ${data}`)
         return data
     }).catch(function (error) {
@@ -133,7 +145,11 @@ const getProfile = (nim) => {
         where: {
             nim: nim
         },
+
     }).then(function (data) {
+        if (data == null){
+            data = []
+        }
         return data
     }).catch(function (_error) {
         return null
@@ -171,6 +187,9 @@ const updatePicture = (linkPicture, nim) => {
 
 const getAllStudent = () => {
     return students.findAll().then(function (data) {
+        if (data == null){
+            data = []
+        }
         return data
     }).catch(function (_error) {
         return null

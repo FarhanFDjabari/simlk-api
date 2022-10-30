@@ -14,6 +14,9 @@ const createNotif = (title, body, data) => {
 
 const getAllNotif = () => {
     return notificationsConselour.findAll().then(function (data) {
+        if (data == null){
+            data = []
+        }
         return data
     }).catch(function (_error) {
         return null
