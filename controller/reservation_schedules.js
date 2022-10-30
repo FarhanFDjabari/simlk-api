@@ -110,7 +110,7 @@ reservationsSchedule.put('/:id', jwt.validateToken, async (req, res) => {
     let fcm = reservation.fcm_token
 
     if (fcm) {
-        let isSuccess = await sendNotif.sendNotif(fcm, "Laporan Anda Diberikan", "body", "data")
+        let isSuccess = await sendNotif.sendNotif(fcm,"Laporan Akhir Sesi Bimbingan Konseling Telah Selesai",  `Konselor telah selesai menulis laporan akhir sesi bimbingan konseling pada tanggal ${reservation.reservation_time}.`, "data")
         if (!isSuccess) {
             return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Sucess save in database but fail when send notif")
         }
