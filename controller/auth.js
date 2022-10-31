@@ -23,6 +23,7 @@ auth.post('/login-siam', async (req, res) => {
         return response.responseFailure(res, StatusCodes.UNAUTHORIZED, "Password or Username is false")
     }
 
+
     const isStudentExist = await studentsService.isStudentExist(result.nim)
     const token = jwt.generateToken(result.nim, 1)
 
@@ -34,6 +35,10 @@ auth.post('/login-siam', async (req, res) => {
         return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail to create student")
     }
 
+    const updateFcm = await studentsService.updateFcmToken(nim,fcm_token)
+    if (!updateFcm){
+        return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail to login student")
+    }
     return response.responseSuccess(res, StatusCodes.OK, { token: token }, "Success auth with siam")
 })
 
