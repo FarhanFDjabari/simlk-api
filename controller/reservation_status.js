@@ -44,6 +44,7 @@ reservationsStatus.get('/', jwt.validateToken, async (req, res) => {
         body = "Konselor telah selesai memproses permintaan bimbingan konselingmu. Silahkan cek informasi lebih detail."
     } else if (reservation.status == 4) {
         let tanggal_reservasi = date.formatDate(reservation.reservation_time)
+        tanggal_reservasi = tanggal_reservasi + " " + reservation.time_hours
         title = "Bimbingan Konseling Telah Selesai"
         body = `Bimbingan konseling pada tanggal ${tanggal_reservasi} telah selesai. Konselor sedang dalam proses menulis laporan akhir`
     }
