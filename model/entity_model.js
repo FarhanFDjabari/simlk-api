@@ -120,6 +120,9 @@ const reservations = sequelize.define('reservations', {
     type: {
         type: DataTypes.TEXT,
         allowNull: true
+    },
+    file_report : {
+        type : DataTypes.TEXT
     }
 })
 
@@ -140,12 +143,12 @@ const notificationsStudent = sequelize.define('notifications_student', {
     body: {
         type: DataTypes.TEXT
     },
-    data: {
-        type: DataTypes.TEXT
-    },
     is_read: {
         type: DataTypes.INTEGER,
         defaultValue: 0
+    },
+    id_notif : {
+        type : DataTypes.INTEGER,
     }
 })
 
@@ -162,12 +165,12 @@ const notificationsConselour = sequelize.define('notifications_conselour', {
     body: {
         type: DataTypes.TEXT
     },
-    data: {
-        type: DataTypes.TEXT
-    },
     is_read: {
         type: DataTypes.INTEGER,
         defaultValue: 0
+    },
+    id_notif : {
+        type : DataTypes.INTEGER
     }
 })
 

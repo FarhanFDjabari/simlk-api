@@ -8,7 +8,7 @@ const createReservation = (nim, reservation_time, time_hours, description, type)
         reservation_time: reservation_time,
         time_hours: time_hours,
         description: description,
-        type : type
+        type: type
     }).then(function (data) {
         return data
     }).catch(function (_error) {
@@ -18,11 +18,11 @@ const createReservation = (nim, reservation_time, time_hours, description, type)
 
 const getAll = () => {
     return reservations.findAll({
-        where : {
-            status : 4,
+        where: {
+            status: 4,
         }
     }).then(function (data) {
-        if (data == null){
+        if (data == null) {
             data = []
         }
         return data
@@ -48,9 +48,9 @@ const getByIdAndProfile = (id) => {
         where: {
             id: id
         },
-        include : {
-            model : students,
-            as : 'student'
+        include: {
+            model: students,
+            as: 'student'
         }
     }).then(function (data) {
         return data
@@ -64,10 +64,10 @@ const getByNim = (nim) => {
     return reservations.findAll({
         where: {
             nim: nim,
-            status : 4
+            status: 4
         }
     }).then(function (data) {
-        if (data == null){
+        if (data == null) {
             data = []
         }
         return data
@@ -135,7 +135,7 @@ const paginateFinishByNim = (page, limit, nim) => {
             status: 4,
         }
     }).then(function (data) {
-        if (data == null){
+        if (data == null) {
             data = []
         }
         return data
@@ -151,7 +151,7 @@ const finishByNim = (nim) => {
             status: 4,
         }
     }).then(function (data) {
-        if (data == null){
+        if (data == null) {
             data = []
         }
         return data
@@ -178,7 +178,7 @@ const findNotFinishByNim = (nim) => {
         }
 
     }).then(function (data) {
-        if (data == null){
+        if (data == null) {
             data = []
         }
         return data
@@ -203,7 +203,7 @@ const updateStatus = (id, status) => {
 
 const updateLocation = (id, location) => {
     return reservations.update({
-        location : location
+        location: location
     }, {
         where: {
             id: id
@@ -234,7 +234,7 @@ const getByDay = (day) => {
             reservation_time: dayReq
         }
     }).then(function (data) {
-        if (data == null){
+        if (data == null) {
             data = []
         }
         console.log(data)
@@ -245,9 +245,10 @@ const getByDay = (day) => {
     })
 }
 
-const updateReport = (id, report) => {
+const updateReport = (id, report, file_report) => {
     return reservations.update({
-        report: report
+        report: report,
+        file_report: file_report
     }, {
         where: {
             id: id
@@ -274,7 +275,7 @@ const reservationSchedule = () => {
             },
         }
     }).then(function (data) {
-        if (data == null){
+        if (data == null) {
             data = []
         }
         return data
@@ -292,14 +293,14 @@ const reservationScheduleMahasiswa = () => {
     end.setHours(23, 59, 59, 999);
 
     return reservations.findAll({
-        attributes : ['time_hours'],
+        attributes: ['time_hours'],
         where: {
             reservation_time: {
                 [Op.between]: [start, end]
             },
         }
     }).then(function (data) {
-        if (data == null){
+        if (data == null) {
             data = []
         }
         return data
@@ -311,13 +312,13 @@ const reservationScheduleMahasiswa = () => {
 
 const getReservationsByDate = (date) => {
     const start = new Date(date);
-    start.setHours(0, 0, 0 ,0)
+    start.setHours(0, 0, 0, 0)
     console.log(start)
     var day = 60 * 60 * 24 * 1000;
     const end = new Date(start.getTime() + day)
 
     return reservations.findAll({
-        attributes : ['time_hours'],
+        attributes: ['time_hours'],
         where: {
             reservation_time: {
                 [Op.between]: [start, end]
@@ -325,12 +326,26 @@ const getReservationsByDate = (date) => {
         }
     }).then(function (data) {
         console.log(data)
-        if (data == null){
+        if (data == null) {
             data = []
         }
         return data
     }).catch(function (error) {
         console.log(error)
+        return null
+    })
+}
+
+const getReservationFromTimeAndNim = (nim, time, time_hours) => {
+    return reservations.findOne({
+        where: {
+            nim: nim,
+            time: time,
+            time_hours: time_hours
+        }
+    }).then(function (data) {
+        return data
+    }).catch(function (_error) {
         return null
     })
 }
@@ -352,5 +367,6 @@ module.exports = {
     updateLocation,
     getReservationsByDate,
     reservationScheduleMahasiswa,
-    getByIdAndProfile
+    getByIdAndProfile,
+    getReservationFromTimeAndNim
 }

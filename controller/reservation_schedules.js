@@ -8,6 +8,8 @@ const { StatusCodes } = require('http-status-codes')
 const sendNotif = require('../utils/push_notification')
 const date = require('../utils/date_format')
 const notifService = require('../repository/notifications_conselour')
+const uploadFile = require('../utils/supabase_storage')
+const generateLink = require('../utils/link_image')
 
 reservationsSchedule.post('/', jwt.validateToken, async (req, res) => {
     const nim = req.user.id
@@ -24,14 +26,16 @@ reservationsSchedule.post('/', jwt.validateToken, async (req, res) => {
 
     console.log(dataIsExist)
 
-    const data = reservationsService.createReservation(nim, reservation_time, time_hours, description, type)
+    const data = await reservationsService.createReservation(nim, reservation_time, time_hours, description, type)
     if (!data) {
         return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Failed save in database")
     }
 
+    const reservation = await reservationsService.getReservationFromTimeAndNim(nim, reservation_time, time_hours)
+
     let title = "Permintaan Bimbingan Konseling Baru"
     let body = `${nim} membuat permintaan reservasi baru. Mohon untuk segera di proses`
-    let notif = await notifService.createNotif(title, body, JSON.stringify(data))
+    let notif = await notifService.createNotif(title, body, JSON.stringify(data), reservation.id)
 
     if (!notif) {
         return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Sucess save in database but fail when save notif")
@@ -62,13 +66,13 @@ reservationsSchedule.get('/:id', jwt.validateToken, async (req, res) => {
     console.log(id)
     let role = req.user.role
     console.log(role)
-    if (role == 1){
+    if (role == 1) {
         const data = await reservationsService.getById(id)
         if (!data) {
             return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Failed query in database")
         }
         return response.responseSuccess(res, StatusCodes.OK, data, "success query data in database")
-    } else if (role == 0){
+    } else if (role == 0) {
         const data = await reservationsService.getByIdAndProfile(id)
         if (!data) {
             return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Failed query in database")
@@ -104,20 +108,45 @@ reservationsSchedule.put('/:id', jwt.validateToken, async (req, res) => {
 
     const { report } = req.body
 
-    const data = await reservationsService.updateReport(idData, report)
+    const { file_report } = req.files
+
+    var data
+
+    if (file || report){
+        const up = uploadFile.uploadToSupabase(file)
+        if (!up){
+            return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail upload file")
+        }
+        var link = generateLink.generateLink(file_report.name)
+        data = await reservationsService.updateReport(idData, report, link)
+    }
+
+    if (!file){
+        data = await reservationsService.updateReport(idData, report, "")
+    }
+
+
+    if(file){
+        const up = uploadFile.uploadToSupabase(file)
+        if (!up){
+            return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail upload file")
+        }
+        var link = generateLink.generateLink(file_report.name)
+        data = await reservationsService.updateReport(idData, "", link)
+    }
+
     const reservasi = await reservationsService.getById(idData)
-    console.log(reservasi)
+
     const students = await studentsService.getProfile(reservasi.nim)
 
-    console.log(students)
-
     let fcm = students.fcm_token
+
 
     if (fcm) {
         console.log(fcm)
         let tanggal_reservasi = date.formatDate(reservasi.reservation_time)
         tanggal_reservasi = tanggal_reservasi + " " + reservasi.time_hours
-        let isSuccess = await sendNotif.sendNotif(fcm,"Laporan Akhir Sesi Bimbingan Konseling Telah Selesai",  `Konselor telah selesai menulis laporan akhir sesi bimbingan konseling pada tanggal ${tanggal_reservasi}.`, "data")
+        let isSuccess = await sendNotif.sendNotif(fcm, "Laporan Akhir Sesi Bimbingan Konseling Telah Selesai", `Konselor telah selesai menulis laporan akhir sesi bimbingan konseling pada tanggal ${tanggal_reservasi}.`, "data")
         if (!isSuccess) {
             return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Sucess save in database but fail when send notif")
         }

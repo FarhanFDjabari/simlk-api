@@ -1,10 +1,10 @@
 const { notificationsConselour } = require('../model/entity_model')
 
-const createNotif = (title, body, data) => {
+const createNotif = (title, body, id_notif) => {
     return notificationsConselour.create({
         title : title,
         body : body,
-        data : data
+        id_notif : id_notif
     }).then(function (data) {
         return data
     }).catch(function (_error) {
@@ -69,5 +69,5 @@ module.exports = {
     getAllNotif,
     getById,
     updateIsRead,
-    markAllRead
+    markAllRead,
 }

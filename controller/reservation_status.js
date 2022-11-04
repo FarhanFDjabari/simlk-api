@@ -37,8 +37,8 @@ reservationsStatus.get('/', jwt.validateToken, async (req, res) => {
     let fcm = mahasiswa.fcm_token
     let title, body
     if (reservation.status == 2) {
-        title = "Permintaan Bimbingan Konseling Kamu Sedang Dalam Proses"
-        body = "Konselor sedang memproses permintaan bimbingan konselingmu"
+        title = "Permintaan Bimbingan Konseling Telah Dijadwalkan"
+        body = "Permintaan bimbingan konselingmu sudah dijadwalkan oleh konselor. Cek informasi lebih detail di dalam aplikasi."
     } else if (reservation.status == 3) {
         title = "Permintaan Bimbingan Konseling Kamu Dalam Penanganan"
         body = "Konselor telah selesai memproses permintaan bimbingan konselingmu. Silahkan cek informasi lebih detail."
@@ -48,7 +48,7 @@ reservationsStatus.get('/', jwt.validateToken, async (req, res) => {
         title = "Bimbingan Konseling Telah Selesai"
         body = `Bimbingan konseling pada tanggal ${tanggal_reservasi} telah selesai. Konselor sedang dalam proses menulis laporan akhir`
     }
-    const saveNotif = await notifService.createNotif(reservation.nim, title, body, JSON.stringify(reservation))
+    const saveNotif = await notifService.createNotif(reservation.nim, title, body, reservation.id)
     if (!saveNotif) {
         return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail save notif")
     }
