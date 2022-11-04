@@ -23,7 +23,7 @@ const sendNotif = (fcmToken, title, body) => {
     })
 }
 
-const sendNotifToAll = async (title, body, data) => {
+const sendNotifToAll = async (title, body) => {
     const dataConselour = await serviceConselour.getAllToken()
 
     if (!dataConselour) {
@@ -42,7 +42,6 @@ const sendNotifToAll = async (title, body, data) => {
             title: title,
             body: body,
         },
-        data: data,
         tokens: tokens
     }).then(function (dataSendNotif) {
         return dataSendNotif

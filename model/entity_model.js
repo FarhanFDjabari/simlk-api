@@ -147,7 +147,7 @@ const notificationsStudent = sequelize.define('notifications_student', {
         type: DataTypes.INTEGER,
         defaultValue: 0
     },
-    id_notif : {
+    id_reservasi : {
         type : DataTypes.INTEGER,
     }
 })
@@ -169,7 +169,7 @@ const notificationsConselour = sequelize.define('notifications_conselour', {
         type: DataTypes.INTEGER,
         defaultValue: 0
     },
-    id_notif : {
+    id_reservasi : {
         type : DataTypes.INTEGER
     }
 })

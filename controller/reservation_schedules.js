@@ -35,12 +35,12 @@ reservationsSchedule.post('/', jwt.validateToken, async (req, res) => {
 
     let title = "Permintaan Bimbingan Konseling Baru"
     let body = `${nim} membuat permintaan reservasi baru. Mohon untuk segera di proses`
-    let notif = await notifService.createNotif(title, body, JSON.stringify(data), reservation.id)
+    let notif = await notifService.createNotif(title, body, reservation.id)
 
     if (!notif) {
         return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Sucess save in database but fail when save notif")
     }
-    const isSuccess = await sendNotif.sendNotifToAll(title, body, data)
+    const isSuccess = await sendNotif.sendNotifToAll(title, body)
 
     if (!isSuccess) {
         return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Sucess save in database but fail when send notif")
@@ -108,31 +108,42 @@ reservationsSchedule.put('/:id', jwt.validateToken, async (req, res) => {
 
     const { report } = req.body
 
-    const { file_report } = req.files
+    var file_report
 
+    if (req.files){
+        file_report = req.files.file_report
+    }else {
+        file_report = null
+    }
+
+    console.log(report)
     var data
 
-    if (file || report){
-        const up = uploadFile.uploadToSupabase(file)
+    console.log(file_report!=null && report!=null)
+
+    if (file_report && report){
+        const up = uploadFile.uploadToSupabase(file_report)
         if (!up){
             return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail upload file")
         }
         var link = generateLink.generateLink(file_report.name)
-        data = await reservationsService.updateReport(idData, report, link)
+
+        data = await reservationsService.updateReport(idData, report)
+        data = await reservationsService.updateFileReport(idData, link)
     }
 
-    if (!file){
-        data = await reservationsService.updateReport(idData, report, "")
+    if (!file_report){
+        data = await reservationsService.updateReport(idData, report)
     }
 
 
-    if(file){
-        const up = uploadFile.uploadToSupabase(file)
+    if(file_report){
+        const up = uploadFile.uploadToSupabase(file_report)
         if (!up){
             return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail upload file")
         }
         var link = generateLink.generateLink(file_report.name)
-        data = await reservationsService.updateReport(idData, "", link)
+        data = await reservationsService.updateFileReport(idData, link)
     }
 
     const reservasi = await reservationsService.getById(idData)

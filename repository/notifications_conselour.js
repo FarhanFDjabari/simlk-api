@@ -1,10 +1,10 @@
 const { notificationsConselour } = require('../model/entity_model')
 
-const createNotif = (title, body, id_notif) => {
+const createNotif = (title, body, id_reservasi) => {
     return notificationsConselour.create({
-        title : title,
-        body : body,
-        id_notif : id_notif
+        title: title,
+        body: body,
+        id_reservasi: id_reservasi
     }).then(function (data) {
         return data
     }).catch(function (_error) {
@@ -14,7 +14,7 @@ const createNotif = (title, body, id_notif) => {
 
 const getAllNotif = () => {
     return notificationsConselour.findAll().then(function (data) {
-        if (data == null){
+        if (data == null) {
             data = []
         }
         return data
@@ -25,8 +25,8 @@ const getAllNotif = () => {
 
 const getById = (id) => {
     return notificationsConselour.findOne({
-        where : {
-            id : id
+        where: {
+            id: id
         }
     }).then(function (data) {
         return data
@@ -37,10 +37,10 @@ const getById = (id) => {
 
 const updateIsRead = (id, is_read) => {
     return notificationsConselour.update({
-        is_read : is_read
+        is_read: is_read
     }, {
-        where : {
-            id : id
+        where: {
+            id: id
         }
     }).then(function (data) {
         return data
@@ -51,10 +51,10 @@ const updateIsRead = (id, is_read) => {
 
 const markAllRead = () => {
     return notificationsConselour.update({
-        is_read : 1
+        is_read: 1
     }, {
-        where : {
-            is_read : 0
+        where: {
+            is_read: 0
         }
     }).then(function (data) {
         return data

@@ -245,10 +245,24 @@ const getByDay = (day) => {
     })
 }
 
-const updateReport = (id, report, file_report) => {
+const updateReport = (id, report) => {
     return reservations.update({
         report: report,
-        file_report: file_report
+
+    }, {
+        where: {
+            id: id
+        }
+    }).then(function (data) {
+        return data
+    }).catch(function (_error) {
+        return null
+    })
+}
+
+const updateFileReport = (id, file_report) => {
+    return reservations.update({
+        file_report: file_report,
     }, {
         where: {
             id: id
@@ -340,7 +354,7 @@ const getReservationFromTimeAndNim = (nim, time, time_hours) => {
     return reservations.findOne({
         where: {
             nim: nim,
-            time: time,
+            reservation_time: time,
             time_hours: time_hours
         }
     }).then(function (data) {
@@ -368,5 +382,6 @@ module.exports = {
     getReservationsByDate,
     reservationScheduleMahasiswa,
     getByIdAndProfile,
-    getReservationFromTimeAndNim
+    getReservationFromTimeAndNim,
+    updateFileReport
 }
