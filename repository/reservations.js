@@ -248,7 +248,7 @@ const getByDay = (day) => {
 const updateReport = (id, report) => {
     return reservations.update({
         report: report,
-
+        status : 4,
     }, {
         where: {
             id: id
@@ -263,6 +263,7 @@ const updateReport = (id, report) => {
 const updateFileReport = (id, file_report) => {
     return reservations.update({
         file_report: file_report,
+        status : 4,
     }, {
         where: {
             id: id
@@ -364,6 +365,20 @@ const getReservationFromTimeAndNim = (nim, time, time_hours) => {
     })
 }
 
+const setKonselor = (id_conselour, id) => {
+    return reservations.update({
+        id_conselour : id_conselour
+    }, {
+        where : {
+            id : id
+        }
+    }).then(function (data) {
+        return data
+    }).catch(function (_error) {
+        return null
+    })
+}
+
 module.exports = {
     createReservation,
     getAll,
@@ -383,5 +398,6 @@ module.exports = {
     reservationScheduleMahasiswa,
     getByIdAndProfile,
     getReservationFromTimeAndNim,
-    updateFileReport
+    updateFileReport,
+    setKonselor
 }

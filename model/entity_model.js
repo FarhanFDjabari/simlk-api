@@ -121,8 +121,11 @@ const reservations = sequelize.define('reservations', {
         type: DataTypes.TEXT,
         allowNull: true
     },
-    file_report : {
-        type : DataTypes.TEXT
+    file_report: {
+        type: DataTypes.TEXT
+    },
+    id_conselour: {
+        type: DataTypes.INTEGER,
     }
 })
 
@@ -147,8 +150,11 @@ const notificationsStudent = sequelize.define('notifications_student', {
         type: DataTypes.INTEGER,
         defaultValue: 0
     },
-    id_reservasi : {
-        type : DataTypes.INTEGER,
+    id_reservasi: {
+        type: DataTypes.INTEGER,
+    },
+    status : {
+        type : DataTypes.INTEGER
     }
 })
 
@@ -169,14 +175,24 @@ const notificationsConselour = sequelize.define('notifications_conselour', {
         type: DataTypes.INTEGER,
         defaultValue: 0
     },
-    id_reservasi : {
-        type : DataTypes.INTEGER
+    id_reservasi: {
+        type: DataTypes.INTEGER
     }
 })
 
 students.hasMany(reservations, {
     foreignKey: 'nim',
     as: 'reservations'
+})
+
+conselours.hasMany(reservations, {
+    foreignKey: 'id_conselour',
+    as: 'reservations'
+})
+
+reservations.belongsTo(students, {
+    foreignKey: 'id_conselour',
+    as: 'conselour'
 })
 
 students.hasMany(notificationsStudent, {
@@ -188,6 +204,8 @@ reservations.belongsTo(students, {
     foreignKey: 'nim',
     as: 'student'
 })
+
+
 
 module.exports = {
     reservations,

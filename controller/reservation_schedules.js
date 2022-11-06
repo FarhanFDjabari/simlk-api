@@ -101,9 +101,16 @@ reservationsSchedule.delete('/:id', jwt.validateToken, async (req, res) => {
 reservationsSchedule.put('/:id', jwt.validateToken, async (req, res) => {
     let role = req.user.role
     let idData = req.params.id
+    let idConselour = req.user.id
 
     if (role == 1) {
-        return response.responseFailure(res, StatusCodes.UNAUTHORIZED, "You unauthorized to delete data")
+        return response.responseFailure(res, StatusCodes.UNAUTHORIZED, "You unauthorized to edit data")
+    }
+
+    const reservasi = await reservationsService.getById(idData)
+
+    if (reservasi.id_conselour != idConselour){
+        return response.responseFailure(res, StatusCodes.UNAUTHORIZED, "You unauthorized to edit data")
     }
 
     const { report } = req.body
@@ -120,6 +127,7 @@ reservationsSchedule.put('/:id', jwt.validateToken, async (req, res) => {
     var data
 
     console.log(file_report!=null && report!=null)
+
 
     if (file_report && report){
         const up = uploadFile.uploadToSupabase(file_report)
@@ -146,7 +154,7 @@ reservationsSchedule.put('/:id', jwt.validateToken, async (req, res) => {
         data = await reservationsService.updateFileReport(idData, link)
     }
 
-    const reservasi = await reservationsService.getById(idData)
+
 
     const students = await studentsService.getProfile(reservasi.nim)
 
@@ -157,7 +165,7 @@ reservationsSchedule.put('/:id', jwt.validateToken, async (req, res) => {
         console.log(fcm)
         let tanggal_reservasi = date.formatDate(reservasi.reservation_time)
         tanggal_reservasi = tanggal_reservasi + " " + reservasi.time_hours
-        let isSuccess = await sendNotif.sendNotif(fcm, "Laporan Akhir Sesi Bimbingan Konseling Telah Selesai", `Konselor telah selesai menulis laporan akhir sesi bimbingan konseling pada tanggal ${tanggal_reservasi}.`, "data")
+        let isSuccess = await sendNotif.sendNotif(fcm, "Bimbingan Konseling Telah Selesai", `Konselor telah selesai menulis laporan akhir sesi bimbingan konseling pada tanggal ${tanggal_reservasi}.`, "data")
         if (!isSuccess) {
             return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Sucess save in database but fail when send notif")
         }

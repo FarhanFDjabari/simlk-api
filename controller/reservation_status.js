@@ -12,6 +12,7 @@ const date = require('../utils/date_format')
 reservationsStatus.get('/', jwt.validateToken, async (req, res) => {
     const { status, id, location } = req.query
     let role = req.user.role
+    let idConselour = req.user.id
     if (role != 0) {
         return response.responseFailure(res, StatusCodes.UNAUTHORIZED, "You are not allowed to use this endpoint")
     }
@@ -37,16 +38,18 @@ reservationsStatus.get('/', jwt.validateToken, async (req, res) => {
     let fcm = mahasiswa.fcm_token
     let title, body
     if (reservation.status == 2) {
+        const setCounselor = await reservationsService.setKonselor(idConselour, id)
+        if (!setCounselor){
+            return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Failed set conselour")
+        }
         title = "Permintaan Bimbingan Konseling Telah Dijadwalkan"
         body = "Permintaan bimbingan konselingmu sudah dijadwalkan oleh konselor. Cek informasi lebih detail di dalam aplikasi."
     } else if (reservation.status == 3) {
+        if (idConselour != reservation.id_conselour){
+            return response.responseFailure(res, StatusCodes.UNAUTHORIZED, "You are not allowed to use this endpoint")
+        }
         title = "Permintaan Bimbingan Konseling Kamu Dalam Penanganan"
         body = "Konselor telah selesai memproses permintaan bimbingan konselingmu. Silahkan cek informasi lebih detail."
-    } else if (reservation.status == 4) {
-        let tanggal_reservasi = date.formatDate(reservation.reservation_time)
-        tanggal_reservasi = tanggal_reservasi + " " + reservation.time_hours
-        title = "Bimbingan Konseling Telah Selesai"
-        body = `Bimbingan konseling pada tanggal ${tanggal_reservasi} telah selesai. Konselor sedang dalam proses menulis laporan akhir`
     }
     const saveNotif = await notifService.createNotif(reservation.nim, title, body, reservation.id)
     if (!saveNotif) {
