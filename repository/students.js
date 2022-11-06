@@ -1,4 +1,4 @@
-const { students, reservations } = require('../model/entity_model')
+const { students, reservations, conselours } = require('../model/entity_model')
 const { Op } = require('sequelize');
 
 const createStudents = (nim, name, major, profile_image_url, fcm_token) => {
@@ -55,6 +55,10 @@ const searchStudentByNimWithReservations = (nim) => {
             status: {
                 [Op.between]: [1, 3]
             }
+        },
+        include: {
+            model: conselours,
+            as: 'conselour',
         }
     }).then(function (data) {
         if (data == null) {
@@ -68,16 +72,14 @@ const searchStudentByNimWithReservations = (nim) => {
 }
 
 const searchStudentByNimWithHistory = (nim) => {
-    return students.findOne({
+    return reservations.findOne({
         where: {
-            nim: nim
+            nim: nim,
+            status: 4
         },
         include: {
-            model: reservations,
-            as: 'reservations',
-            where: {
-                status: 4
-            }
+            model: conselours,
+            as: 'conselour',
         }
     }).then(function (data) {
         if (data == null) {

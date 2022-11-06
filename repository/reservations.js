@@ -1,5 +1,6 @@
 const reservations = require('../model/entity_model').reservations
 const students = require('../model/entity_model').students
+const conselour = require('../model/entity_model').conselours
 const { Op } = require('sequelize');
 
 const createReservation = (nim, reservation_time, time_hours, description, type) => {
@@ -20,6 +21,10 @@ const getAll = () => {
     return reservations.findAll({
         where: {
             status: 4,
+        },
+        include : {
+            model : reservations,
+            as : 'reservations'
         }
     }).then(function (data) {
         if (data == null) {
@@ -32,9 +37,13 @@ const getAll = () => {
 }
 
 const getById = (id) => {
-    return reservations.findOne({
-        where: {
-            id: id
+    return conselour.findOne({
+        where : {
+            id : id
+        },
+        include : {
+            model : reservations,
+            as : 'reservations'
         }
     }).then(function (data) {
         return data
