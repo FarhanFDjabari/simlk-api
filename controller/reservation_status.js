@@ -33,6 +33,8 @@ reservationsStatus.get('/', jwt.validateToken, async (req, res) => {
 
     const reservation = await reservationsService.getById(id)
 
+    console.log(reservation)
+
     const mahasiswa = await studentsService.getProfile(reservation.nim)
 
     let fcm = mahasiswa.fcm_token

@@ -22,9 +22,9 @@ const getAll = () => {
         where: {
             status: 4,
         },
-        include : {
-            model : reservations,
-            as : 'reservations'
+        include: {
+            model: students,
+            as: 'student'
         }
     }).then(function (data) {
         if (data == null) {
@@ -37,17 +37,32 @@ const getAll = () => {
 }
 
 const getById = (id) => {
-    return conselour.findOne({
-        where : {
-            id : id
+    return reservations.findOne({
+        where: {
+            id: id
         },
-        include : {
-            model : reservations,
-            as : 'reservations'
-        }
     }).then(function (data) {
+        console.log(data)
         return data
     }).catch(function (_error) {
+        return null
+    })
+}
+
+const getByIdWithconselour = (id) => {
+    return reservations.findOne({
+        where: {
+            id: id
+        },
+        include : {
+            model : conselour,
+            as : 'conselour'
+        }
+    }).then(function (data) {
+        console.log(data)
+        return data
+    }).catch(function (error) {
+        console.log(error)
         return null
     })
 }
@@ -257,7 +272,7 @@ const getByDay = (day) => {
 const updateReport = (id, report) => {
     return reservations.update({
         report: report,
-        status : 4,
+        status: 4,
     }, {
         where: {
             id: id
@@ -272,7 +287,7 @@ const updateReport = (id, report) => {
 const updateFileReport = (id, file_report) => {
     return reservations.update({
         file_report: file_report,
-        status : 4,
+        status: 4,
     }, {
         where: {
             id: id
@@ -376,10 +391,10 @@ const getReservationFromTimeAndNim = (nim, time, time_hours) => {
 
 const setKonselor = (id_conselour, id) => {
     return reservations.update({
-        id_conselour : id_conselour
+        id_conselour: id_conselour
     }, {
-        where : {
-            id : id
+        where: {
+            id: id
         }
     }).then(function (data) {
         return data
@@ -408,5 +423,6 @@ module.exports = {
     getByIdAndProfile,
     getReservationFromTimeAndNim,
     updateFileReport,
-    setKonselor
+    setKonselor,
+    getByIdWithconselour
 }

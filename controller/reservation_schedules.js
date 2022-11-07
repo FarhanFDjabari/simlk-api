@@ -9,7 +9,9 @@ const sendNotif = require('../utils/push_notification')
 const date = require('../utils/date_format')
 const notifService = require('../repository/notifications_conselour')
 const uploadFile = require('../utils/supabase_storage')
-const generateLink = require('../utils/link_image')
+const generateLink = require('../utils/link_image');
+const conselorService = require('../repository/conselour')
+
 
 reservationsSchedule.post('/', jwt.validateToken, async (req, res) => {
     const nim = req.user.id
@@ -66,12 +68,20 @@ reservationsSchedule.get('/:id', jwt.validateToken, async (req, res) => {
     console.log(id)
     let role = req.user.role
     console.log(role)
+    var temp
     if (role == 1) {
-        const data = await reservationsService.getById(id)
+        var data = await reservationsService.getById(id)
         if (!data) {
             return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Failed query in database")
         }
-        return response.responseSuccess(res, StatusCodes.OK, data, "success query data in database")
+        if (data.id_conselour){
+            var conselour = await conselorService.searchById(data.id_conselour)
+            console.log(conselour)
+            var temp2 = data.dataValues
+            temp = {...temp2, conselour}
+        }
+        if (temp == null) return response.responseSuccess(res, StatusCodes.OK, data, "success query data in database")
+        return response.responseSuccess(res, StatusCodes.OK, temp, "success query data in database")
     } else if (role == 0) {
         const data = await reservationsService.getByIdAndProfile(id)
         if (!data) {
