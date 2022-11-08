@@ -1,5 +1,6 @@
 const { students, reservations, conselours } = require('../model/entity_model')
 const { Op } = require('sequelize');
+const conselorService = require('../repository/conselour')
 
 const createStudents = (nim, name, major, profile_image_url, fcm_token) => {
     return students.create({
@@ -57,7 +58,7 @@ const searchStudentByNimWithReservations = (nim) => {
             }
         },
     }).then(function (data) {
-        var returnData =  []
+        var returnData = []
         if (data == null) {
             data = []
             return data
@@ -90,17 +91,32 @@ const searchStudentByNimWithHistory = (nim) => {
         where: {
             nim: nim,
             status: 4
-        },
-        include: {
-            model: conselours,
-            as: 'conselour',
         }
     }).then(function (data) {
+        var returnData = []
         if (data == null) {
             data = []
+            return data
         }
-        return data
-    }).catch(function (_error) {
+        for (let index = 0; index < data.length; index++) {
+            if (data.id_conselour) {
+                var conselour = conselorService.searchById(data.id_conselour).then(function (data) {
+                    if (data == null) {
+                        data = []
+                    }
+                    return data
+                }).catch(function (_error) {
+                    return null
+                })
+                console.log(conselour)
+                var temp2 = data.dataValues
+                var temp = { ...temp2, conselour }
+                returnData.push(temp)
+            }
+        }
+        return returnData
+    }).catch(function (error) {
+        console.log(error)
         return null
     })
 }
