@@ -51,20 +51,34 @@ const updateFcmToken = (nim, token) => {
 const searchStudentByNimWithReservations = (nim) => {
     return reservations.findAll({
         where: {
-            nim : nim,
+            nim: nim,
             status: {
                 [Op.between]: [1, 3]
             }
         },
-        include: {
-            model: conselours,
-            as: 'conselour',
-        }
     }).then(function (data) {
+        var returnData =  []
         if (data == null) {
             data = []
+            return data
         }
-        return data
+        for (let index = 0; index < data.length; index++) {
+            if (data.id_conselour) {
+                var conselour = conselorService.searchById(data.id_conselour).then(function (data) {
+                    if (data == null) {
+                        data = []
+                    }
+                    return data
+                }).catch(function (_error) {
+                    return null
+                })
+                console.log(conselour)
+                var temp2 = data.dataValues
+                var temp = { ...temp2, conselour }
+                returnData.push(temp)
+            }
+        }
+        return returnData
     }).catch(function (error) {
         console.log(error)
         return null
