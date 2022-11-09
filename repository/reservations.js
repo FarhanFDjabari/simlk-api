@@ -3,18 +3,19 @@ const students = require('../model/entity_model').students
 const conselour = require('../model/entity_model').conselours
 const { Op } = require('sequelize');
 
-const createReservation = (nim, reservation_time, time_hours, description, type) => {
-    return reservations.create({
-        nim: nim,
-        reservation_time: reservation_time,
-        time_hours: time_hours,
-        description: description,
-        type: type
-    }).then(function (data) {
-        return data
-    }).catch(function (_error) {
-        return null
-    })
+const createReservation = async (nim, reservation_time, time_hours, description, type) => {
+    try {
+        const data = await reservations.create({
+            nim: nim,
+            reservation_time: reservation_time,
+            time_hours: time_hours,
+            description: description,
+            type: type
+        });
+        return data;
+    } catch (_error) {
+        return null;
+    }
 }
 
 const getAll = () => {

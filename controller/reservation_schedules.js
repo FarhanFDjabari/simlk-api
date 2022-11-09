@@ -76,7 +76,6 @@ reservationsSchedule.get('/:id', jwt.validateToken, async (req, res) => {
         }
         if (data.id_conselour){
             var conselour = await conselorService.searchById(data.id_conselour)
-            console.log(conselour)
             var temp2 = data.dataValues
             temp = {...temp2, conselour}
         }

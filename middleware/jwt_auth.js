@@ -15,12 +15,12 @@ const generateToken = (userId, userRole) => {
 }
 
 //middleware validate token
-const validateToken = async (req, res, done) =>{
-    var tokenAuth =  req.headers['x-access-token'] || req.headers['authorization'] || req.query.token
+const validateToken = async (req, res, done) => {
+    var tokenAuth = req.headers['x-access-token'] || req.headers['authorization'] || req.query.token
     //remove Bearer from token
     //convert auth to string
     tokenAuth = String(tokenAuth).replace(/Bearer\s/i, '');
-    if (!tokenAuth){
+    if (!tokenAuth) {
         return res.status(401).json({
             message: 'No token provided'
         })

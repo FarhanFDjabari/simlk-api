@@ -58,27 +58,24 @@ const searchStudentByNimWithReservations = (nim) => {
             }
         },
     }).then(function (data) {
-        var returnData = []
-        if (data == null) {
-            data = []
-            return data
-        }
-        for (let index = 0; index < data.length; index++) {
-            if (data.id_conselour) {
-                var conselour = conselorService.searchById(data.id_conselour).then(function (data) {
-                    if (data == null) {
-                        data = []
-                    }
-                    return data
-                }).catch(function (_error) {
-                    return null
-                })
-                console.log(conselour)
-                var temp2 = data.dataValues
-                var temp = { ...temp2, conselour }
-                returnData.push(temp)
-            }
-        }
+        const dataWithConselourId = data.filter(
+            (singleData) => singleData.id_conselour !== null
+        );
+
+        const arrOfPromise = dataWithConselourId.map((singleData) =>
+            conselorService.searchById(singleData.id_conselour).then(res=> {
+                return ({...res.toJSON(), reservation : singleData.toJSON()})
+            })
+        );
+
+        const returnData = Promise.all(arrOfPromise).then((res) =>
+            res.map((singleData) =>{
+                const structured ={...singleData.reservation};
+                delete singleData.reservation
+                return ({...structured, conselour : singleData})
+            })
+        );
+
         return returnData
     }).catch(function (error) {
         console.log(error)
@@ -93,27 +90,24 @@ const searchStudentByNimWithHistory = (nim) => {
             status: 4
         }
     }).then(function (data) {
-        var returnData = []
-        if (data == null) {
-            data = []
-            return data
-        }
-        for (let index = 0; index < data.length; index++) {
-            if (data.id_conselour) {
-                var conselour = conselorService.searchById(data.id_conselour).then(function (data) {
-                    if (data == null) {
-                        data = []
-                    }
-                    return data
-                }).catch(function (_error) {
-                    return null
-                })
-                console.log(conselour)
-                var temp2 = data.dataValues
-                var temp = { ...temp2, conselour }
-                returnData.push(temp)
-            }
-        }
+        const dataWithConselourId = data.filter(
+            (singleData) => singleData.id_conselour !== null
+        );
+
+        const arrOfPromise = dataWithConselourId.map((singleData) =>
+            conselorService.searchById(singleData.id_conselour).then(res=> {
+                return ({...res.toJSON(), reservation : singleData.toJSON()})
+            })
+        );
+
+        const returnData = Promise.all(arrOfPromise).then((res) =>
+            res.map((singleData) =>{
+                const structured ={...singleData.reservation};
+                delete singleData.reservation
+                return ({...structured, conselour : singleData})
+            })
+        );
+
         return returnData
     }).catch(function (error) {
         console.log(error)
