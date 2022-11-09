@@ -4,7 +4,8 @@ const createNotif = (title, body, id_reservasi) => {
     return notificationsConselour.create({
         title: title,
         body: body,
-        id_reservasi: id_reservasi
+        id_reservasi: id_reservasi,
+
     }).then(function (data) {
         return data
     }).catch(function (_error) {

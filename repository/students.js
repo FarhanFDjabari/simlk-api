@@ -58,6 +58,7 @@ const searchStudentByNimWithReservations = (nim) => {
             }
         },
     }).then(function (data) {
+
         const dataWithConselourId = data.filter(
             (singleData) => singleData.id_conselour !== null
         );
@@ -84,12 +85,16 @@ const searchStudentByNimWithReservations = (nim) => {
 }
 
 const searchStudentByNimWithHistory = (nim) => {
-    return reservations.findOne({
+    return reservations.findAll({
         where: {
             nim: nim,
             status: 4
         }
     }).then(function (data) {
+        console.log(data)
+        if (data == null){
+            return []
+        }
         const dataWithConselourId = data.filter(
             (singleData) => singleData.id_conselour !== null
         );

@@ -153,8 +153,9 @@ const notificationsStudent = sequelize.define('notifications_student', {
     id_reservasi: {
         type: DataTypes.INTEGER,
     },
-    status : {
-        type : DataTypes.INTEGER
+    status: {
+        type: DataTypes.INTEGER,
+        defaultValue: 1,
     }
 })
 
@@ -177,7 +178,7 @@ const notificationsConselour = sequelize.define('notifications_conselour', {
     },
     id_reservasi: {
         type: DataTypes.INTEGER
-    }
+    },
 })
 
 students.hasMany(reservations, {

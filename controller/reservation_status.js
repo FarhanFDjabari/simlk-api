@@ -53,7 +53,7 @@ reservationsStatus.get('/', jwt.validateToken, async (req, res) => {
         title = "Permintaan Bimbingan Konseling Kamu Dalam Penanganan"
         body = "Konselor telah selesai memproses permintaan bimbingan konselingmu. Silahkan cek informasi lebih detail."
     }
-    const saveNotif = await notifService.createNotif(reservation.nim, title, body, reservation.id)
+    const saveNotif = await notifService.createNotif(reservation.nim, title, body, reservation.id, reservation.status)
     if (!saveNotif) {
         return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail save notif")
     }
