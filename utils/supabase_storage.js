@@ -5,16 +5,15 @@ const supabase = createClient('https://sjdijscmtkwnljhhfeuu.supabase.co', 'eyJhb
 
 const uploadToSupabase = (avatar) => {
     return supabase.storage.from('simplk-images').upload(`public/${avatar.name}`, avatar.data, {
-        cacheControl: '3600',
+        cacheControl: '4800',
         upsert: false,
-        contentType : avatar.mimetype,
-    }).then(function(_data){
+        contentType: avatar.mimetype,
+    }).then(function (_data) {
         return true
-    }).catch(function(_err){
+    }).catch(function (_err) {
         return false
     })
 }
-
 module.exports = {
     uploadToSupabase
 }

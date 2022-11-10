@@ -4,7 +4,6 @@ const { authToSiam } = require('../utils/siam_request')
 const response = require('../utils/response')
 const studentsService = require('../repository/students')
 const conselorService = require('../repository/conselour')
-const reserService = require('../repository/reservations')
 const jwt = require('../middleware/jwt_auth')
 const { StatusCodes } = require('http-status-codes')
 const { generateLink } = require('../utils/link_image')
@@ -35,8 +34,8 @@ auth.post('/login-siam', async (req, res) => {
         return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail to create student")
     }
 
-    const updateFcm = await studentsService.updateFcmToken(nim,fcm_token)
-    if (!updateFcm){
+    const updateFcm = await studentsService.updateFcmToken(nim, fcm_token)
+    if (!updateFcm) {
         return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail to login student")
     }
     return response.responseSuccess(res, StatusCodes.OK, { token: token }, "Success auth with siam")
@@ -71,25 +70,29 @@ auth.post('/login-konselor', async (req, res) => {
 
 auth.post('/register-conselour-dummy', async (req, res) => {
     const { name, email, password, major, fcm_token } = req.body
-
-    const { avatar } = req.files
-    let nameFile = `${email}${avatar.name}`
-    avatar.name = nameFile
-    let link = generateLink(avatar.name)
-    let status = await uploadToSupabase(avatar)
-
-    if (!status) {
-        return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail when upload image")
+    if (req.files) {
+        const { avatar } = req.files
+        let nameFile = `${email}${avatar.name}`
+        avatar.name = nameFile
+        let link = generateLink(avatar.name)
+        let status = await uploadToSupabase(avatar)
+        if (!status) {
+            return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail when upload image")
+        }
+        const conselor = await conselorService.createCounselor(name, email, password, major, link, fcm_token)
+        if (conselor == null) {
+            return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail to save conselor")
+        }
+        const token = jwt.generateToken(conselor.id, 0)
+        return response.responseSuccess(res, StatusCodes.CREATED, { token: token }, "Success create conselour")
+    } else {
+        const conselor = await conselorService.createCounselor(name, email, password, major, "", fcm_token)
+        if (conselor == null) {
+            return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail to save conselor")
+        }
+        const token = jwt.generateToken(conselor.id, 0)
+        return response.responseSuccess(res, StatusCodes.CREATED, { token: token }, "Success create conselour")
     }
-
-    const conselor = await conselorService.createCounselor(name, email, password, major, link, fcm_token)
-    if (conselor == null) {
-        return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail to save conselor")
-    }
-
-    const token = jwt.generateToken(conselor.id, 0)
-
-    return response.responseSuccess(res, StatusCodes.CREATED, { token: token }, "Success create conselour")
 })
 
 auth.get('/logout', jwt.validateToken, async (req, res) => {
@@ -115,24 +118,6 @@ auth.get('/logout', jwt.validateToken, async (req, res) => {
     return response.responseFailure(res, StatusCodes.BAD_REQUEST, "Fail logout")
 
 })
-
-
-// auth.get('/dummy-data', async (req, res) => {
-//     const data = await conselorService.getAllToken()
-//     console.log(data)
-//     const tokens = []
-//     for (i = 0; i < data.length; i++) {
-//         tokens[i] = data[i].fcm_token
-//     }
-//     return response.responseSuccess(res, StatusCodes.OK, tokens, "success")
-// })
-
-// auth.get('/dummy-tanggal', async (req, res) => {
-//     const { date } = req.query
-//     const data = await reserService.getReservationsByDate(date)
-//     console.log(data)
-//     return response.responseSuccess(res, StatusCodes.OK, data, "success")
-// })
 
 module.exports = {
     auth
