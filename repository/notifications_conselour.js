@@ -22,13 +22,17 @@ const getAllNotif = () => {
 
         for (i = 0; i < data.length; i++) {
             var temp = {
+                id: data[i].id,
                 nim: data[i].nim,
                 title: data[i].title,
                 body: data[i].body,
                 data: {
                     id_reservasi: data[i].id_reservasi,
                     status: data[i].status
-                }
+                },
+                createdAt: data[i].createdAt,
+                updatedAt: data[i].updatedAt,
+                is_read: data[i].is_read
             }
             returnData.push(temp)
         }
@@ -54,11 +58,14 @@ const getById = (id) => {
             data: {
                 id_reservasi: data.id_reservasi,
                 status: data.status
-            }
+            },
+            id: data.id,
+            createdAt: data.createdAt,
+            updatedAt: data.updatedAt,
+            is_read: data.is_read
         }
 
         return temp
-        return data
     }).catch(function (_error) {
         return null
     })

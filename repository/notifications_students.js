@@ -33,7 +33,11 @@ const getAllNotif = (nim) => {
                 data: {
                     id_reservasi: data[i].id_reservasi,
                     status: data[i].status
-                }
+                },
+                id: data[i].id,
+                createdAt: data[i].createdAt,
+                updatedAt: data[i].updatedAt,
+                is_read: data[i].is_read
             }
             returnData.push(temp)
         }
@@ -49,7 +53,7 @@ const getById = (id) => {
             id: id
         }
     }).then(function (data) {
-        if (!data){
+        if (!data) {
             return {}
         }
         var temp = {
@@ -59,7 +63,11 @@ const getById = (id) => {
             data: {
                 id_reservasi: data.id_reservasi,
                 status: data.status
-            }
+            },
+            id: data.id,
+            createdAt: data.createdAt,
+            updatedAt: data.updatedAt,
+            is_read: data.is_read
         }
 
         return temp
