@@ -18,7 +18,21 @@ const getAllNotif = () => {
         if (data == null) {
             data = []
         }
-        return data
+        var returnData = []
+
+        for (i = 0; i < data.length; i++) {
+            var temp = {
+                nim: data[i].nim,
+                title: data[i].title,
+                body: data[i].body,
+                data: {
+                    id_reservasi: data[i].id_reservasi,
+                    status: data[i].status
+                }
+            }
+            returnData.push(temp)
+        }
+        return returnData
     }).catch(function (_error) {
         return null
     })
@@ -30,6 +44,20 @@ const getById = (id) => {
             id: id
         }
     }).then(function (data) {
+        if (!data) {
+            return {}
+        }
+        var temp = {
+            nim: data.nim,
+            title: data.title,
+            body: data.body,
+            data: {
+                id_reservasi: data.id_reservasi,
+                status: data.status
+            }
+        }
+
+        return temp
         return data
     }).catch(function (_error) {
         return null
