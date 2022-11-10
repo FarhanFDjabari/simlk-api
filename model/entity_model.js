@@ -126,6 +126,7 @@ const reservations = sequelize.define('reservations', {
     },
     id_conselour: {
         type: DataTypes.INTEGER,
+        defaultValue : 0,
     }
 })
 
@@ -184,16 +185,6 @@ const notificationsConselour = sequelize.define('notifications_conselour', {
 students.hasMany(reservations, {
     foreignKey: 'nim',
     as: 'reservations'
-})
-
-conselours.hasMany(reservations, {
-    foreignKey: 'id_conselour',
-    as: 'reservations'
-})
-
-reservations.belongsTo(students, {
-    foreignKey: 'id_conselour',
-    as: 'conselour'
 })
 
 students.hasMany(notificationsStudent, {

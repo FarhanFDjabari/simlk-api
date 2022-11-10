@@ -65,6 +65,9 @@ const searchStudentByNimWithReservations = (nim) => {
 
         const arrOfPromise = dataWithConselourId.map((singleData) =>
             conselorService.searchById(singleData.id_conselour).then(res=> {
+                if (!res){
+                    return ({reservation : singleData.toJSON()})
+                }
                 return ({...res.toJSON(), reservation : singleData.toJSON()})
             })
         );
@@ -101,6 +104,9 @@ const searchStudentByNimWithHistory = (nim) => {
 
         const arrOfPromise = dataWithConselourId.map((singleData) =>
             conselorService.searchById(singleData.id_conselour).then(res=> {
+                if (!res){
+                    return ({reservation : singleData.toJSON()})
+                }
                 return ({...res.toJSON(), reservation : singleData.toJSON()})
             })
         );

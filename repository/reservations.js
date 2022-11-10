@@ -13,7 +13,8 @@ const createReservation = async (nim, reservation_time, time_hours, description,
             type: type
         });
         return data;
-    } catch (_error) {
+    } catch (error) {
+        console.log(error)
         return null;
     }
 }
