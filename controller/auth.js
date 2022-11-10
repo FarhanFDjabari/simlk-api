@@ -68,7 +68,7 @@ auth.post('/login-konselor', async (req, res) => {
     return response.responseSuccess(res, StatusCodes.OK, { token: token }, "Login success")
 })
 
-auth.post('/register-conselour-dummy', async (req, res) => {
+auth.post('/register-conselour', async (req, res) => {
     const { name, email, password, major, fcm_token } = req.body
     if (req.files) {
         const { avatar } = req.files
