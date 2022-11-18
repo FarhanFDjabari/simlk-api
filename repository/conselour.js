@@ -2,49 +2,52 @@ const { conselours } = require('../model/entity_model')
 const bcrypt = require('bcrypt')
 const { Op } = require('sequelize');
 
-const searchByEmail = (email) => {
-    return conselours.findOne({
-        where: {
-            email: email
-        }
-    }).then(function (data) {
-        return data
-    }).catch(function (_error) {
-        return null
-    })
+const searchByEmail = async (email) => {
+    try {
+        const data = await conselours.findOne({
+            where: {
+                email: email
+            }
+        });
+        return data;
+    } catch (_error) {
+        return null;
+    }
 }
 
-const searchById = (id) => {
-    return conselours.findOne({
-        where: {
-            id: id
-        }
-    }).then(function (data) {
-        return data
-    }).catch(function (_error) {
-        return null
-    })
+const searchById = async (id) => {
+    try {
+        const data = await conselours.findOne({
+            where: {
+                id: id
+            }
+        });
+        return data;
+    } catch (_error) {
+        return null;
+    }
 }
 
-const createCounselor = (name, email, password, major, profile_image_url, fcm_token) => {
+const createCounselor = async (name, email, password, major, profile_image_url, fcm_token) => {
     let bcryptPassword = bcrypt.hashSync(password, 10);
-    return conselours.create({
-        email: email,
-        password: bcryptPassword,
-        name: name,
-        major: major,
-        role: 0,
-        profile_image_url: profile_image_url,
-        fcm_token: fcm_token
-    }).then(function (data) {
-        return data
-    }).catch(function (error) {
-        console.log(error)
-        return null
-    })
+    try {
+        const data_1 = await conselours.create({
+            email: email,
+            password: bcryptPassword,
+            name: name,
+            major: major,
+            role: 2,
+            profile_image_url: profile_image_url,
+            fcm_token: fcm_token
+        });
+        return data_1;
+    } catch (error) {
+        console.log(error);
+        return null;
+    }
 }
 
-const loginConselours = (email, password) => {
+const loginConselours = async (email, password) => {
     return conselours.findOne({
         where: {
             email: email,
@@ -64,7 +67,7 @@ const loginConselours = (email, password) => {
     });
 }
 
-const updateFcmToken = (id, fcmToken) => {
+const updateFcmToken = async (id, fcmToken) => {
     return conselours.update({
         fcm_token: fcmToken
     }, {
@@ -78,7 +81,7 @@ const updateFcmToken = (id, fcmToken) => {
     })
 }
 
-const updateAvatar = (id, profile_image_url) => {
+const updateAvatar = async (id, profile_image_url) => {
     return conselours.update({
         profile_image_url: profile_image_url
     }, {
@@ -92,7 +95,7 @@ const updateAvatar = (id, profile_image_url) => {
     })
 }
 
-const getAllToken = () => {
+const getAllToken = async () => {
     return conselours.findAll({
         attributes : ['fcm_token'],
         where : {

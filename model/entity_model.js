@@ -18,7 +18,7 @@ const students = sequelize.define('students', {
     },
     role: {
         type: DataTypes.INTEGER,
-        allowNull: false
+        allowNull: false,
     },
     profile_image_url: {
         type: DataTypes.TEXT,
@@ -81,6 +81,78 @@ const conselours = sequelize.define('conselours', {
     }
 })
 
+
+// 0
+const pengawas = sequelize.define('pengawas', {
+    id: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true,
+        allowNull: false
+    },
+    email: {
+        type: DataTypes.TEXT,
+        allowNull: false,
+        unique: true
+    },
+    password: {
+        type: DataTypes.TEXT,
+        allowNull: false
+    },
+    name: {
+        type: DataTypes.TEXT,
+        allowNull: false
+    },
+    role: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    },
+    profile_image_url: {
+        type: DataTypes.TEXT,
+        allowNull: false
+    },
+    fcm_token: {
+        type: DataTypes.TEXT,
+        allowNull: true
+    }
+})
+
+
+// 1
+const koordinator = sequelize.define('koordinator', {
+    id: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true,
+        allowNull: false
+    },
+    email: {
+        type: DataTypes.TEXT,
+        allowNull: false,
+        unique: true
+    },
+    password: {
+        type: DataTypes.TEXT,
+        allowNull: false
+    },
+    name: {
+        type: DataTypes.TEXT,
+        allowNull: false
+    },
+    role: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+    },
+    profile_image_url: {
+        type: DataTypes.TEXT,
+        allowNull: false
+    },
+    fcm_token: {
+        type: DataTypes.TEXT,
+        allowNull: true
+    }
+})
+
 const reservations = sequelize.define('reservations', {
     id: {
         type: DataTypes.INTEGER,
@@ -126,7 +198,7 @@ const reservations = sequelize.define('reservations', {
     },
     id_conselour: {
         type: DataTypes.INTEGER,
-        defaultValue : 0,
+        defaultValue: 0,
     }
 })
 
@@ -204,5 +276,7 @@ module.exports = {
     conselours,
     students,
     notificationsConselour,
-    notificationsStudent
+    notificationsStudent,
+    koordinator,
+    pengawas
 }

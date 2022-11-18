@@ -7,7 +7,7 @@ const createStudents = (nim, name, major, profile_image_url, fcm_token) => {
         nim: nim,
         name: name,
         major: major,
-        role: 1,
+        role: 3,
         profile_image_url: profile_image_url,
         fcm_token: fcm_token
     }).then(function (data) {
