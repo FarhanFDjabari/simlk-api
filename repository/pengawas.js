@@ -1,32 +1,29 @@
-const { koordinator } = require('../model/entity_model')
+const { pengawas } = require('../model/entity_model')
 const bcrypt = require('bcrypt')
-// const { Op } = require('sequelize');
 
-const createKoordinator = async (email, password, name, profile_image_url, fcm_token) => {
+const createPengawas = async (email, password, name, profile_image_url, fcm_token) => {
     var returnData = { data: null, error: null }
     try {
         let enPass = bcrypt.hashSync(password, 10)
-        const isCreated = await koordinator.create({
-            email: email,
-            password: enPass,
-            name: name,
-            role: 1,
-            profile_image_url: profile_image_url,
-            fcm_token: fcm_token
+        let saveData = await pengawas.create({
+            email : email,
+            password : enPass,
+            name : name,
+            profile_image_url : profile_image_url,
+            fcm_token : fcm_token,
+            role : 0,
         })
-        returnData.data = isCreated.dataValues
-        return returnData
-    } catch (error) {
+        returnData.data = saveData.dataValues
+    } catch (error){
         returnData.error = error
-        returnData.data = null
-        return returnData
     }
+    return returnData
 }
 
 const readAll = async () => {
     var returnData = { data: null, error: null }
     try {
-        const dataAll = await koordinator.findAll()
+        const dataAll = await pengawas.findAll()
         returnData.data = dataAll
         return returnData
     } catch (error) {
@@ -39,7 +36,7 @@ const readAll = async () => {
 const readById = async (id) => {
     var returnData = { data: null, error: null }
     try {
-        const dataId = await koordinator.findOne({
+        const dataId = await pengawas.findOne({
             where: {
                 id: id,
             }
@@ -53,14 +50,14 @@ const readById = async (id) => {
     }
 }
 
-const update = async (id, profile_image_url, fcm_token, name, nim) => {
+const update = async (id, profile_image_url, fcm_token, name, email) => {
     var returnData = { data: null, error: null }
     if (!profile_image_url) {
         try {
-            const dataId = await koordinator.update({
+            const dataId = await pengawas.update({
                 fcm_token: fcm_token,
                 name : name,
-                nim : nim
+                email : email
             }, {
                 where: {
                     id: id
@@ -75,7 +72,7 @@ const update = async (id, profile_image_url, fcm_token, name, nim) => {
         }
     } else if (!fcm_token) {
         try {
-            const dataId = await koordinator.update({
+            const dataId = await pengawas.update({
                 profile_image_url: profile_image_url
             }, {
                 where: {
@@ -91,7 +88,7 @@ const update = async (id, profile_image_url, fcm_token, name, nim) => {
         }
     } else {
         try {
-            const dataId = await koordinator.update({
+            const dataId = await pengawas.update({
                 profile_image_url: profile_image_url,
                 fcm_token: fcm_token
             }, {
@@ -109,10 +106,10 @@ const update = async (id, profile_image_url, fcm_token, name, nim) => {
     }
 }
 
-const deleteKoordinator = async (id) => {
+const deletePengawas = async (id) => {
     var returnData = { data: null, error: null }
     try {
-        const dataId = await koordinator.destroy({
+        const dataId = await pengawas.destroy({
             where: {
                 id: id
             }
@@ -126,10 +123,4 @@ const deleteKoordinator = async (id) => {
     }
 }
 
-module.exports = {
-    createKoordinator,
-    readAll,
-    readAll,
-    update,
-    deleteKoordinator
-}
+

@@ -131,6 +131,10 @@ const koordinator = sequelize.define('koordinator', {
         allowNull: false,
         unique: true
     },
+    nim : {
+        type: DataTypes.TEXT,
+        allowNull: true
+    },
     password: {
         type: DataTypes.TEXT,
         allowNull: false
