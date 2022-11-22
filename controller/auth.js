@@ -4,6 +4,7 @@ const { authToSiam } = require('../utils/siam_request')
 const response = require('../utils/response')
 const studentsService = require('../repository/students')
 const conselorService = require('../repository/conselour')
+const pengawasService = require('../repository/pengawas')
 const jwt = require('../middleware/jwt_auth')
 const { StatusCodes } = require('http-status-codes')
 const { generateLink } = require('../utils/link_image')
@@ -24,7 +25,7 @@ auth.post('/login-siam', async (req, res) => {
 
 
     const isStudentExist = await studentsService.isStudentExist(result.nim)
-    const token = jwt.generateToken(result.nim, 1)
+    const token = jwt.generateToken(result.nim, 3)
 
     if (!isStudentExist) {
         const student = await studentsService.createStudents(result.nim, result.nama, result.prodi, result.image, fcm_token)
@@ -57,7 +58,7 @@ auth.post('/login-konselor', async (req, res) => {
         return response.responseFailure(res, StatusCodes.BAD_REQUEST, "Email not found")
     }
 
-    const token = jwt.generateToken(conselor.id, 0)
+    const token = jwt.generateToken(conselor.id, 2)
 
     const isFail = await conselorService.updateFcmToken(conselor.id, fcm_token)
 
@@ -83,16 +84,34 @@ auth.post('/register-conselour', async (req, res) => {
         if (conselor == null) {
             return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail to save conselor")
         }
-        const token = jwt.generateToken(conselor.id, 0)
+        const token = jwt.generateToken(conselor.id, 2)
         return response.responseSuccess(res, StatusCodes.CREATED, { token: token }, "Success create conselour")
     } else {
         const conselor = await conselorService.createCounselor(name, email, password, major, "", fcm_token)
         if (conselor == null) {
             return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail to save conselor")
         }
-        const token = jwt.generateToken(conselor.id, 0)
+        const token = jwt.generateToken(conselor.id, 2)
         return response.responseSuccess(res, StatusCodes.CREATED, { token: token }, "Success create conselour")
     }
+})
+
+auth.post('/register-pengawas', async (req, res) => {
+    const { email, password, name, fcm_token } = req.body
+    const { avatar } = req.files
+    let nameFile = `${email}${avatar.name}`
+    avatar.name = nameFile
+    let link = generateLink(avatar.name)
+    let status = await uploadToSupabase(avatar)
+    if (!status) {
+        return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail when upload image")
+    }
+    const data = await pengawasService.createPengawas(email, password, name, link, fcm_token)
+    if (data.error){
+        return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail when save to db")
+    }
+    const token = jwt.generateToken(conselor.id, 0)
+        return response.responseSuccess(res, StatusCodes.CREATED, { token: token }, "Success create conselour")
 })
 
 auth.get('/logout', jwt.validateToken, async (req, res) => {
@@ -100,7 +119,7 @@ auth.get('/logout', jwt.validateToken, async (req, res) => {
     const role = req.user.role
     const id = req.user.id
 
-    if (role == 0) {
+    if (role == 2) {
         const data = await conselorService.updateFcmToken(id, null)
         if (!data) {
             return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail to logout conselor")
@@ -108,7 +127,7 @@ auth.get('/logout', jwt.validateToken, async (req, res) => {
         return response.responseSuccess(res, StatusCodes.OK, null, "Success logout")
     }
 
-    if (role == 1) {
+    if (role == 3) {
         const data = await studentsService.updateFcmToken(id, null)
         if (!data) {
             return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail to logout conselor")
