@@ -203,6 +203,10 @@ const reservations = sequelize.define('reservations', {
     id_conselour: {
         type: DataTypes.INTEGER,
         defaultValue: 0,
+    },
+    is_approved : {
+        type : DataTypes.BOOLEAN,
+        defaultValue : false
     }
 })
 

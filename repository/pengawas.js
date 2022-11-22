@@ -288,11 +288,11 @@ const getAllStudentByNimWithHistoryWithStudentsAndConseolour = () => {
     })
 }
 
-const setConselour = async (id_conselour, id_reservation) => {
+const toCoordinator = async (id_reservation) => {
     var data = {data : null, error : null}
     try{
         let res = await reservations.update({
-            id_conselour : id_conselour
+            is_approved : true
         }, {
             where : {
                 id : id_reservation
@@ -315,6 +315,6 @@ module.exports = {
     searchStudentByNimWithReservationWithStudentsAndConseolour,
     getAllStudentByNimWithHistoryWithStudentsAndConseolour,
     getAllStudentByNimWithReservationWithStudentsAndConseolour,
-    setConselour
+    toCoordinator
 }
 
