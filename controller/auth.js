@@ -43,30 +43,50 @@ auth.post('/login-siam', async (req, res) => {
 })
 
 
-auth.post('/login-konselor', async (req, res) => {
+auth.post('/login-default', async (req, res) => {
 
     //Kurang fcm token service
     const { email, password, fcm_token } = req.body
 
     const conselor = await conselorService.loginConselours(email, password)
-
-    if (conselor == false) {
-        return response.responseFailure(res, StatusCodes.UNAUTHORIZED, "Password don't match")
-    }
-
-    if (conselor == null) {
+    const pengawas = await pengawasService.loginPengawas(email, password)
+    if (!conselor && !pengawas) {
         return response.responseFailure(res, StatusCodes.BAD_REQUEST, "Email not found")
     }
 
-    const token = jwt.generateToken(conselor.id, 2)
+    if (conselor) {
+        if (!conselor.login) {
+            return response.responseFailure(res, StatusCodes.UNAUTHORIZED, "Password don't match")
+        }
+        const token = jwt.generateToken(conselor.id, 2)
 
-    const isFail = await conselorService.updateFcmToken(conselor.id, fcm_token)
+        const isFail = await conselorService.updateFcmToken(conselor.id, fcm_token)
 
-    if (isFail == null) {
-        return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail to login")
+        if (isFail == null) {
+            return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail to login")
+        }
+
+        return response.responseSuccess(res, StatusCodes.OK, { token: token }, "Login success")
     }
 
-    return response.responseSuccess(res, StatusCodes.OK, { token: token }, "Login success")
+    if (pengawas) {
+        console.log(pengawas.login)
+        if (pengawas.login == false) {
+
+            return response.responseFailure(res, StatusCodes.UNAUTHORIZED, "Password don't match")
+        }
+        const token = jwt.generateToken(pengawas.id, 2)
+
+        const isFail = await pengawasService.updateFcmToken(pengawas.id, fcm_token)
+
+        if (isFail == null) {
+            return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail to login")
+        }
+
+        return response.responseSuccess(res, StatusCodes.OK, { token: token }, "Login success")
+    }
+
+
 })
 
 auth.post('/register-conselour', async (req, res) => {
@@ -107,11 +127,11 @@ auth.post('/register-pengawas', async (req, res) => {
         return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail when upload image")
     }
     const data = await pengawasService.createPengawas(email, password, name, link, fcm_token)
-    if (data.error){
+    if (data.error) {
         return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail when save to db")
     }
-    const token = jwt.generateToken(conselor.id, 0)
-        return response.responseSuccess(res, StatusCodes.CREATED, { token: token }, "Success create conselour")
+    const token = jwt.generateToken(data.data.id, 0)
+    return response.responseSuccess(res, StatusCodes.CREATED, { token: token }, "Success create conselour")
 })
 
 auth.get('/logout', jwt.validateToken, async (req, res) => {

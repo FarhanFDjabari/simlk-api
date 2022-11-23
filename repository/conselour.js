@@ -48,6 +48,7 @@ const createCounselor = async (name, email, password, major, profile_image_url, 
 }
 
 const loginConselours = async (email, password) => {
+    const retDat = { login: false, id: 0 }
     return conselours.findOne({
         where: {
             email: email,
@@ -55,9 +56,11 @@ const loginConselours = async (email, password) => {
     }).then(function (data) {
         if (data) {
             if (bcrypt.compareSync(password, data.password)) {
-                return data
+                retDat.login = true
+                retDat.id = data.id
+                return retDat
             } else {
-                return false;
+                return retDat;
             }
         } else {
             return null;
@@ -97,10 +100,10 @@ const updateAvatar = async (id, profile_image_url) => {
 
 const getAllToken = async () => {
     return conselours.findAll({
-        attributes : ['fcm_token'],
-        where : {
-            fcm_token : {
-                [Op.ne] : null
+        attributes: ['fcm_token'],
+        where: {
+            fcm_token: {
+                [Op.ne]: null
             }
         }
     }).then(function (data) {

@@ -1,7 +1,7 @@
 const { DataTypes } = require("sequelize");
 const { sequelize } = require("../utils/database_connection");
 
-
+// 3
 const students = sequelize.define('students', {
     nim: {
         type: DataTypes.TEXT,
@@ -43,6 +43,8 @@ const students = sequelize.define('students', {
     }
 })
 
+
+// 2
 const conselours = sequelize.define('conselours', {
     id: {
         type: DataTypes.INTEGER,
@@ -207,6 +209,9 @@ const reservations = sequelize.define('reservations', {
     is_approved : {
         type : DataTypes.BOOLEAN,
         defaultValue : false
+    },
+    model : {
+        type: DataTypes.INTEGER,
     }
 })
 

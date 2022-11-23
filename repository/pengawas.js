@@ -289,20 +289,77 @@ const getAllStudentByNimWithHistoryWithStudentsAndConseolour = () => {
 }
 
 const toCoordinator = async (id_reservation) => {
-    var data = {data : null, error : null}
-    try{
+    var data = { data: null, error: null }
+    try {
         let res = await reservations.update({
-            is_approved : true
+            is_approved: true,
+            model: 2
         }, {
-            where : {
-                id : id_reservation
+            where: {
+                id: id_reservation
             }
         })
         data.data = res.dataValues
-    }catch(error){
+    } catch (error) {
         data.error = error
     }
     return data
+}
+
+const takeByPengawas = async (id_reservation, id_pengawas) => {
+    var data = { data: null, error: null }
+    try {
+        let res = await reservations.update({
+            model: 0,
+            id_conselour: id_pengawas,
+        }, {
+            where: {
+                id: id_reservation
+            }
+        })
+        data.data = res.dataValues
+    } catch (error) {
+        data.error = error
+    }
+    return data
+}
+
+const loginPengawas = async (email, password) => {
+    const retDat = { login: false, id: 0 }
+    return pengawas.findOne({
+        where: {
+            email: email,
+        }
+    }).then(function (data) {
+        if (data) {
+            if (bcrypt.compareSync(password, data.password)) {
+                retDat.login = true
+                retDat.id = data.id
+                console.log(true)
+                return retDat
+            } else {
+                return retDat;
+            }
+        } else {
+            return null;
+        }
+    }).catch(function (_err) {
+        return null;
+    });
+}
+
+const updateFcmToken = async (id, fcmToken) => {
+    return pengawas.update({
+        fcm_token: fcmToken
+    }, {
+        where: {
+            id: id
+        }
+    }).then(function (data) {
+        return data
+    }).catch(function (_error) {
+        return
+    })
 }
 
 module.exports = {
@@ -315,6 +372,9 @@ module.exports = {
     searchStudentByNimWithReservationWithStudentsAndConseolour,
     getAllStudentByNimWithHistoryWithStudentsAndConseolour,
     getAllStudentByNimWithReservationWithStudentsAndConseolour,
-    toCoordinator
+    toCoordinator,
+    takeByPengawas,
+    loginPengawas,
+    updateFcmToken
 }
 

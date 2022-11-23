@@ -6,6 +6,7 @@ const { reservationsStatus } = require('./controller/reservation_status');
 const { conselour } = require('./controller/konselor');
 const { reservationsStudent } = require('./controller/reservation_students');
 const { reservationsHistory } = require('./controller/reservation_history');
+const { pengawasController } = require('./controller/pengawas')
 const { notifications } = require('./controller/notifications');
 const express = require('express');
 const cors = require("cors");
@@ -56,7 +57,7 @@ app.use(bodyParser.json());
 
 app.get('/test', async (req, res) => {
     res.status(200).json({
-        text : "Hello World",
+        text: "Hello World",
     })
 })
 app.use('/auth', auth)
@@ -67,6 +68,7 @@ app.use('/konselor', conselour)
 app.use('/reservation-mahasiswa', reservationsStudent)
 app.use('/reservation-history', reservationsHistory)
 app.use('/notifications', notifications)
+app.use('/pengawas', pengawasController)
 
 
 app.listen(process.env.PORT, () => {

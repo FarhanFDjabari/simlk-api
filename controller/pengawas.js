@@ -62,6 +62,26 @@ pengawasController.get('/approved/:id', jwt.validateToken, async (req, res) => {
 })
 
 
+// take by pengawas
+pengawasController.get('/take/:id', jwt.validateToken, async (req, res) => {
+    let role = req.user.role
+    let idUser = req.user.id
+    if (role != 0) {
+        return response.responseFailure(res, StatusCodes.UNAUTHORIZED, "Unauthorized")
+    }
+    let idRes = req.params.id
+    let result = await pengawasService.takeByPengawas(idRes, idUser)
+    if (result.error) {
+        if (!result) {
+            let error = data.error
+            return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, error)
+        }
+    }
+    let dataValues = data.data
+    return response.responseSuccess(res, StatusCodes.OK, dataValues)
+})
+
+
 
 
 module.exports = {
