@@ -8,6 +8,8 @@ const { reservationsStudent } = require('./controller/reservation_students');
 const { reservationsHistory } = require('./controller/reservation_history');
 const { pengawasController } = require('./controller/pengawas')
 const { notifications } = require('./controller/notifications');
+const { koordinatorController } = require('./controller/koordinator');
+
 const express = require('express');
 const cors = require("cors");
 const bodyParser = require('body-parser');
@@ -69,6 +71,7 @@ app.use('/reservation-mahasiswa', reservationsStudent)
 app.use('/reservation-history', reservationsHistory)
 app.use('/notifications', notifications)
 app.use('/pengawas', pengawasController)
+app.use('/koordinator', koordinatorController)
 
 
 app.listen(process.env.PORT, () => {

@@ -77,9 +77,16 @@ const conselours = sequelize.define('conselours', {
         type: DataTypes.TEXT,
         allowNull: false
     },
+    is_available : {
+        type : DataTypes.INTEGER,
+        defaultValue : 0
+    },
     fcm_token: {
         type: DataTypes.TEXT,
         allowNull: true
+    },
+    jadwal : {
+        type : DataTypes.TEXT
     }
 })
 
@@ -205,10 +212,6 @@ const reservations = sequelize.define('reservations', {
     id_conselour: {
         type: DataTypes.INTEGER,
         defaultValue: 0,
-    },
-    is_approved : {
-        type : DataTypes.BOOLEAN,
-        defaultValue : false
     },
     model : {
         type: DataTypes.INTEGER,

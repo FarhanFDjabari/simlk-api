@@ -14,7 +14,7 @@ pengawasController.get('/profile', jwt.validateToken, async (req, res) => {
         return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, error)
     }
     let dataValues = data.data
-    return response.responseSuccess(res, StatusCodes.OK, dataValues)
+    return response.responseSuccess(res, StatusCodes.OK, dataValues, "Success Query")
 })
 
 // get reservation mahasiswa (all)
@@ -27,7 +27,7 @@ pengawasController.get('/reservation-uncompleted', jwt.validateToken, async (req
     if (!result) {
         return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail query")
     }
-    return response.responseSuccess(res, StatusCodes.OK, result)
+    return response.responseSuccess(res, StatusCodes.OK, result, "Success Query")
 })
 
 // get history
@@ -40,7 +40,7 @@ pengawasController.get('/reservation-completed', jwt.validateToken, async (req, 
     if (!result) {
         return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail query")
     }
-    return response.responseSuccess(res, StatusCodes.OK, result)
+    return response.responseSuccess(res, StatusCodes.OK, result, "Success Query")
 })
 
 // assign to coordinator
@@ -58,7 +58,7 @@ pengawasController.get('/approved/:id', jwt.validateToken, async (req, res) => {
         }
     }
     let dataValues = data.data
-    return response.responseSuccess(res, StatusCodes.OK, dataValues)
+    return response.responseSuccess(res, StatusCodes.OK, dataValues, "Success Query")
 })
 
 

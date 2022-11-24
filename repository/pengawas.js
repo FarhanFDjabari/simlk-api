@@ -292,7 +292,7 @@ const toCoordinator = async (id_reservation) => {
     var data = { data: null, error: null }
     try {
         let res = await reservations.update({
-            is_approved: true,
+            status : 2,
             model: 2
         }, {
             where: {
@@ -312,6 +312,7 @@ const takeByPengawas = async (id_reservation, id_pengawas) => {
         let res = await reservations.update({
             model: 0,
             id_conselour: id_pengawas,
+            status : 3
         }, {
             where: {
                 id: id_reservation
