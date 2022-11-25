@@ -14,6 +14,7 @@ koordinatorController.get('/profile', jwt.validateToken, async (req, res) => {
     return response.responseSuccess(res, StatusCodes.OK, result.data, "Success Query")
 })
 
+// Menjadwalkan konselor ke reservasi
 koordinatorController.get('/reservation/:idres/konselor/:idkon', jwt.validateToken, async (req, res) => {
     let idRes = req.params.idres
     let idKon = req.params.idkon
@@ -28,6 +29,7 @@ koordinatorController.get('/reservation/:idres/konselor/:idkon', jwt.validateTok
     return response.responseSuccess(res, StatusCodes.OK, result.data, "Success Update")
 })
 
+// Melihat reservasi yang diajukan
 koordinatorController.get('/reservasi-diajukan', jwt.validateToken, async (req, res) => {
     let role = req.user.role
     if (role != 1) {
@@ -40,6 +42,7 @@ koordinatorController.get('/reservasi-diajukan', jwt.validateToken, async (req, 
     return response.responseSuccess(res, StatusCodes.OK, result.data, "Success Query")
 })
 
+// Melihat konselor yang tersedia
 koordinatorController.get('/conselor-tersedia/reservasi/:idres', jwt.validateToken, async (req, res) => {
     let role = req.user.role
     if (role != 1) {
@@ -52,6 +55,8 @@ koordinatorController.get('/conselor-tersedia/reservasi/:idres', jwt.validateTok
     }
     return response.responseSuccess(res, StatusCodes.OK, result.data, "Success Query")
 })
+
+//Lengkapi profile
 
 
 module.exports = {

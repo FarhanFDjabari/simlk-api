@@ -6,7 +6,7 @@ const authToSiam =  async (nim, password) => {
 
     var config = {
         method: 'post',
-        url: 'https://bemfilkom-rest.vercel.app/auth',
+        url: 'http://siam.adityaariizkyy.my.id/auth',
         headers: {
         },
         data: data
@@ -14,9 +14,11 @@ const authToSiam =  async (nim, password) => {
 
     return axios(config)
         .then(function (response) {
+            console.log(response)
             return response.data.data
         })
-        .catch(function (_error) {
+        .catch(function (error) {
+            console.log(error)
             return null
         });
 }

@@ -29,7 +29,7 @@ auth.post('/login-siam', async (req, res) => {
     const token = jwt.generateToken(result.nim, 3)
 
     if (!isStudentExist) {
-        const student = await studentsService.createStudents(result.nim, result.nama, result.prodi, result.image, fcm_token)
+        const student = await studentsService.createStudents(result.NIM, result.Nama, result.ProgramStudi, result.FotoProfile, fcm_token)
         if (student) {
             return response.responseSuccess(res, StatusCodes.CREATED, { token: token }, "Success auth with siam")
         }
