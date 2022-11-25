@@ -175,9 +175,9 @@ const updateFcmToken = async (id, fcmToken) => {
             id: id
         }
     }).then(function (data) {
-        return data
+        return data.dataValues
     }).catch(function (_error) {
-        return
+        return null
     })
 }
 

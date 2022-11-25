@@ -21,7 +21,7 @@ koordinatorController.get('/reservation/:idres/konselor/:idkon', jwt.validateTok
     if (role != 1) {
         return response.responseFailure(res, StatusCodes.UNAUTHORIZED, "Unauthorized")
     }
-    var result = await koordinatorService.selectKonselor(idRes, idKon)
+    var result = await koordinatorService.selectKonselor(idRes, idKon, 3)
     if (result.error) {
         return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, result.error)
     }

@@ -5,6 +5,7 @@ const response = require('../utils/response')
 const studentsService = require('../repository/students')
 const conselorService = require('../repository/conselour')
 const pengawasService = require('../repository/pengawas')
+const koordinatorService = require('../repository/koordinator')
 const jwt = require('../middleware/jwt_auth')
 const { StatusCodes } = require('http-status-codes')
 const { generateLink } = require('../utils/link_image')
@@ -50,6 +51,7 @@ auth.post('/login-default', async (req, res) => {
 
     const conselor = await conselorService.loginConselours(email, password)
     const pengawas = await pengawasService.loginPengawas(email, password)
+    const koordinator = await koordinatorService.loginKoordinator(email, password)
     if (!conselor && !pengawas) {
         return response.responseFailure(res, StatusCodes.BAD_REQUEST, "Email not found")
     }
@@ -75,7 +77,7 @@ auth.post('/login-default', async (req, res) => {
 
             return response.responseFailure(res, StatusCodes.UNAUTHORIZED, "Password don't match")
         }
-        const token = jwt.generateToken(pengawas.id, 2)
+        const token = jwt.generateToken(pengawas.id, 0)
 
         const isFail = await pengawasService.updateFcmToken(pengawas.id, fcm_token)
 
@@ -85,6 +87,23 @@ auth.post('/login-default', async (req, res) => {
 
         return response.responseSuccess(res, StatusCodes.OK, { token: token }, "Login success")
     }
+
+    if (koordinator) {
+        if (koordinator.login == false) {
+
+            return response.responseFailure(res, StatusCodes.UNAUTHORIZED, "Password don't match")
+        }
+        const token = jwt.generateToken(koordinator.id, 0)
+
+        const isFail = await koordinatorService.updateFcmToken(koordinator.id, fcm_token)
+
+        if (isFail == null) {
+            return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail to login")
+        }
+
+        return response.responseSuccess(res, StatusCodes.OK, { token: token }, "Login success")
+    }
+
 
 
 })
@@ -116,6 +135,14 @@ auth.post('/register-conselour', async (req, res) => {
     }
 })
 
+auth.post('/register-koordinator', async (req, res) => {
+    const { email, password } = req.body
+    let result = await koordinatorService.createKoordinator(email, password)
+    if (result.error){
+        return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, result.error)
+    }
+})
+
 auth.post('/register-pengawas', async (req, res) => {
     const { email, password, name, fcm_token } = req.body
     const { avatar } = req.files
@@ -138,11 +165,25 @@ auth.get('/logout', jwt.validateToken, async (req, res) => {
     //claims jwt
     const role = req.user.role
     const id = req.user.id
+    if (role == 0) {
+        const data = await pengawasService.updateFcmToken(id, null)
+        if (!data) {
+            return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail to logout pengawas")
+        }
+        return response.responseSuccess(res, StatusCodes.OK, null, "Success logout")
+    }
+    if (role == 1) {
+        const data = await koordinatorService.updateFcmToken(id, null)
+        if (!data) {
+            return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail to logout conselor")
+        }
+        return response.responseSuccess(res, StatusCodes.OK, null, "Success logout")
+    }
 
     if (role == 2) {
         const data = await conselorService.updateFcmToken(id, null)
         if (!data) {
-            return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail to logout conselor")
+            return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail to logout koordinator")
         }
         return response.responseSuccess(res, StatusCodes.OK, null, "Success logout")
     }
@@ -150,7 +191,7 @@ auth.get('/logout', jwt.validateToken, async (req, res) => {
     if (role == 3) {
         const data = await studentsService.updateFcmToken(id, null)
         if (!data) {
-            return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail to logout conselor")
+            return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail to logout mahasiswa")
         }
         return response.responseSuccess(res, StatusCodes.OK, null, "Success logout")
     }

@@ -359,7 +359,7 @@ const updateFcmToken = async (id, fcmToken) => {
     }).then(function (data) {
         return data
     }).catch(function (_error) {
-        return
+        return null
     })
 }
 
