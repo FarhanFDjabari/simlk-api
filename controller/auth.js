@@ -25,8 +25,8 @@ auth.post('/login-siam', async (req, res) => {
     }
 
 
-    const isStudentExist = await studentsService.isStudentExist(result.nim)
-    const token = jwt.generateToken(result.nim, 3)
+    const isStudentExist = await studentsService.isStudentExist(result.NIM)
+    const token = jwt.generateToken(result.NIM, 3)
 
     if (!isStudentExist) {
         const student = await studentsService.createStudents(result.NIM, result.Nama, result.ProgramStudi, result.FotoProfile, fcm_token)
