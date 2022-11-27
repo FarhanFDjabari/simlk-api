@@ -98,6 +98,20 @@ const updateAvatar = async (id, profile_image_url) => {
     })
 }
 
+const updateJadwal = async (id, jadwal) => {
+    return conselours.update({
+        jadwal : jadwal
+    }, {
+        where: {
+            id: id
+        }
+    }).then(function (data) {
+        return data
+    }).catch(function (_error) {
+        return
+    })
+}
+
 const getAllToken = async () => {
     return conselours.findAll({
         attributes: ['fcm_token'],
@@ -120,5 +134,6 @@ module.exports = {
     loginConselours,
     updateFcmToken,
     updateAvatar,
-    getAllToken
+    getAllToken,
+    updateJadwal
 }

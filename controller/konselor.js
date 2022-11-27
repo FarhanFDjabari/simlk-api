@@ -22,6 +22,7 @@ conselour.get('/profile', jwt.validateToken, async (req, res) => {
 })
 
 conselour.put('/profile', jwt.validateToken, async (req, res) => {
+    let { jadwal } = req.body
     let id = req.user.id
     if (req.files) {
         const { avatar } = req.files
@@ -33,13 +34,25 @@ conselour.put('/profile', jwt.validateToken, async (req, res) => {
         if (!status) {
             return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail when upload image")
         }
-        const updateData = await conseloursService.updateAvatar(id, link)
+        var updateData = await conseloursService.updateAvatar(id, link)
+        if (!updateData) {
+            return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail when update database")
+        }
+        if (jadwal) {
+            updateData = await conseloursService.updateJadwal(id, jadwal)
+            if (!updateData) {
+                return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail when update database")
+            }
+            return response.responseSuccess(res, StatusCodes.OK, null, "Success update profile")
+        }
+        return response.responseSuccess(res, StatusCodes.OK, null, "Success update profile")
+    } else {
+        const updateData = await conseloursService.updateJadwal(id, jadwal)
         if (!updateData) {
             return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail when update database")
         }
         return response.responseSuccess(res, StatusCodes.OK, null, "Success update profile")
     }
-    return response.responseFailure(res, StatusCodes.BAD_REQUEST, "Profile not update")
 })
 
 conselour.get('/history-completed', jwt.validateToken, async (req, res) => {

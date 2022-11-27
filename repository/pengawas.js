@@ -1,4 +1,5 @@
-const { pengawas, reservations } = require('../model/entity_model')
+const { pengawas, reservations, students } = require('../model/entity_model')
+const conselorService = require('./conselour')
 const bcrypt = require('bcrypt')
 const { Op } = require('sequelize');
 
@@ -33,20 +34,17 @@ const readAll = async () => {
     return returnData
 }
 
-const readById = async (id) => {
-    var returnData = { data: null, error: null }
-    try {
-        const dataId = await pengawas.findOne({
-            where: {
-                id: id,
-            }
-        })
-        returnData.data = dataId
-    } catch (error) {
-        returnData.error = error
-        returnData.data = null
-    }
-    return returnData
+const readById = (id) => {
+    return pengawas.findOne({
+        where: {
+            id: id,
+        }
+    }).then(function (data) {
+        console.log(data)
+        return data
+    }).catch(function (_error) {
+        return null
+    })
 }
 
 const update = async (id, profile_image_url, fcm_token, name, email) => {
@@ -120,7 +118,7 @@ const searchStudentByNimWithHistoryWithStudentsAndConseolour = (nim) => {
     return reservations.findAll({
         where: {
             nim: nim,
-            status: 4
+            status: 6
         },
         include: {
             model: students,
@@ -158,12 +156,12 @@ const searchStudentByNimWithHistoryWithStudentsAndConseolour = (nim) => {
     })
 }
 
-const searchStudentByNimWithReservationWithStudentsAndConseolour = (nim) => {
+const searchStudentByNimWithReservationWithStudentsAndConseolour = async (nim) => {
     return reservations.findAll({
         where: {
             nim: nim,
             status: {
-                [Op.between]: [1, 3]
+                [Op.between]: [1, 5]
             }
         },
         include: {
@@ -206,7 +204,7 @@ const getAllStudentByNimWithReservationWithStudentsAndConseolour = () => {
     return reservations.findAll({
         where: {
             status: {
-                [Op.between]: [1, 3]
+                [Op.between]: [1, 5]
             }
         },
         include: {
@@ -219,7 +217,89 @@ const getAllStudentByNimWithReservationWithStudentsAndConseolour = () => {
             return []
         }
         const dataWithConselourId = data.filter(
-            (singleData) => singleData.id_conselour !== null
+            (singleData) => singleData.id_conselour !== null && singleData.model != 0
+        );
+
+        const arrOfPromise = dataWithConselourId.map((singleData) =>
+            conselorService.searchById(singleData.id_conselour).then(res => {
+                if (!res && singleData.model != 0) {
+                    return ({ reservation: singleData.toJSON() })
+                }
+                return ({ ...res.toJSON(), reservation: singleData.toJSON() })
+            })
+        );
+
+        const returnData = Promise.all(arrOfPromise).then((res) =>
+            res.map((singleData) => {
+                const structured = { ...singleData.reservation };
+                delete singleData.reservation
+                return ({ ...structured, conselour: singleData })
+            })
+        );
+
+        return returnData
+    }).catch(function (error) {
+        console.log(error)
+        return null
+    })
+}
+
+const getAllStudentByNimWithReservationWithStudentsAndPengawas = () => {
+    return reservations.findAll({
+        where: {
+            status: {
+                [Op.between]: [1, 5]
+            }
+        },
+        include: {
+            model: students,
+            as: 'student',
+        },
+    }).then(function (data) {
+        console.log(data)
+        if (data == null) {
+            return []
+        }
+        const dataWithConselourId = data.filter(
+            (singleData) => singleData.id_conselour !== null && singleData.model == 0
+        );
+
+        const arrOfPromise = dataWithConselourId.map((singleData) =>
+            readById(singleData.id_conselour).then(res => {
+                return ({ ...res.toJSON(), reservation: singleData.toJSON() })
+            })
+        );
+        const returnData = Promise.all(arrOfPromise).then((res) =>
+            res.map((singleData) => {
+                const structured = { ...singleData.reservation };
+                delete singleData.reservation
+                return ({ ...structured, conselour: singleData })
+            })
+        );
+
+        return returnData
+    }).catch(function (error) {
+        console.log(error)
+        return null
+    })
+}
+
+const getAllStudentByNimWithHistoryWithStudentsAndConseolour = () => {
+    return reservations.findAll({
+        where: {
+            status: 6
+        },
+        include: {
+            model: students,
+            as: 'student',
+        },
+    }).then(function (data) {
+        console.log(data)
+        if (data == null) {
+            return []
+        }
+        const dataWithConselourId = data.filter(
+            (singleData) => singleData.id_conselour !== null && singleData.model != 0
         );
 
         const arrOfPromise = dataWithConselourId.map((singleData) =>
@@ -245,12 +325,10 @@ const getAllStudentByNimWithReservationWithStudentsAndConseolour = () => {
     })
 }
 
-const getAllStudentByNimWithHistoryWithStudentsAndConseolour = () => {
+const getAllStudentByNimWithHistoryWithStudentsAndPengawas = () => {
     return reservations.findAll({
         where: {
-            status: {
-                [Op.between]: [1, 3]
-            }
+            status: 6
         },
         include: {
             model: students,
@@ -262,18 +340,14 @@ const getAllStudentByNimWithHistoryWithStudentsAndConseolour = () => {
             return []
         }
         const dataWithConselourId = data.filter(
-            (singleData) => singleData.id_conselour !== null
+            (singleData) => singleData.id_conselour !== null && singleData.model == 0
         );
 
         const arrOfPromise = dataWithConselourId.map((singleData) =>
-            conselorService.searchById(singleData.id_conselour).then(res => {
-                if (!res) {
-                    return ({ reservation: singleData.toJSON() })
-                }
+            readById(singleData.id_conselour).then(res => {
                 return ({ ...res.toJSON(), reservation: singleData.toJSON() })
             })
         );
-
         const returnData = Promise.all(arrOfPromise).then((res) =>
             res.map((singleData) => {
                 const structured = { ...singleData.reservation };
@@ -281,6 +355,9 @@ const getAllStudentByNimWithHistoryWithStudentsAndConseolour = () => {
                 return ({ ...structured, conselour: singleData })
             })
         );
+
+        return returnData
+
         return returnData
     }).catch(function (error) {
         console.log(error)
@@ -292,7 +369,7 @@ const toCoordinator = async (id_reservation) => {
     var data = { data: null, error: null }
     try {
         let res = await reservations.update({
-            status : 2,
+            status: 2,
             model: 2
         }, {
             where: {
@@ -312,7 +389,7 @@ const takeByPengawas = async (id_reservation, id_pengawas) => {
         let res = await reservations.update({
             model: 0,
             id_conselour: id_pengawas,
-            status : 3
+            status: 3
         }, {
             where: {
                 id: id_reservation
@@ -373,6 +450,8 @@ module.exports = {
     searchStudentByNimWithReservationWithStudentsAndConseolour,
     getAllStudentByNimWithHistoryWithStudentsAndConseolour,
     getAllStudentByNimWithReservationWithStudentsAndConseolour,
+    getAllStudentByNimWithReservationWithStudentsAndPengawas,
+    getAllStudentByNimWithHistoryWithStudentsAndPengawas,
     toCoordinator,
     takeByPengawas,
     loginPengawas,
