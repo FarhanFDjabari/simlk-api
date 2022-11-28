@@ -108,7 +108,7 @@ const updateJadwal = async (id, jadwal) => {
     }).then(function (data) {
         return data
     }).catch(function (_error) {
-        return
+        return null
     })
 }
 
@@ -127,6 +127,20 @@ const getAllToken = async () => {
     })
 }
 
+const updateKetersediaan = async (id,is_available) => {
+    return conselours.update({
+        is_available : is_available
+    }, {
+        where: {
+            id: id
+        }
+    }).then(function (data) {
+        return data
+    }).catch(function (_error) {
+        return null
+    })
+}
+
 module.exports = {
     searchByEmail,
     searchById,
@@ -135,5 +149,6 @@ module.exports = {
     updateFcmToken,
     updateAvatar,
     getAllToken,
-    updateJadwal
+    updateJadwal,
+    updateKetersediaan
 }

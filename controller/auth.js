@@ -141,6 +141,8 @@ auth.post('/register-koordinator', async (req, res) => {
     if (result.error){
         return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, result.error)
     }
+    const token = jwt.generateToken(result.data.id, 1)
+    return response.responseSuccess(res, StatusCodes.CREATED, { token: token }, "Success create conselour")
 })
 
 auth.post('/register-pengawas', async (req, res) => {

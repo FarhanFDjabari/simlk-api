@@ -26,7 +26,8 @@ koordinatorController.get('/reservation/:idres/konselor/:idkon', jwt.validateTok
     if (result.error) {
         return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, result.error)
     }
-    return response.responseSuccess(res, StatusCodes.OK, result.data, "Success Update")
+    let data = result.data
+    return response.responseSuccess(res, StatusCodes.OK, { data }, "Success Update")
 })
 
 // Melihat reservasi yang diajukan
@@ -35,9 +36,14 @@ koordinatorController.get('/reservasi-diajukan', jwt.validateToken, async (req, 
     if (role != 1) {
         return response.responseFailure(res, StatusCodes.UNAUTHORIZED, "Unauthorized")
     }
-    let result = await koordinatorService.findAllResAssign(1)
+    let result = await koordinatorService.findAllResAssign(2)
+    console.log(result)
     if (result.error) {
         return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, result.error)
+    }
+    if (!result.data) {
+        let data = result.data
+        return response.responseSuccess(res, StatusCodes.OK, { data }, "Success Query")
     }
     return response.responseSuccess(res, StatusCodes.OK, result.data, "Success Query")
 })

@@ -181,7 +181,7 @@ const updateFcmToken = async (id, fcmToken) => {
     })
 }
 
-//get reservation where status = 1
+//get reservation where status = 2
 const findAllResAssign = async (status) => {
     var returnData = { data: null, error: null }
     try {
@@ -190,7 +190,7 @@ const findAllResAssign = async (status) => {
                 status: status
             }
         })
-        returnData.data = dataId.dataValues
+        returnData.data = dataId
         return returnData
     } catch (error) {
         returnData.error = error

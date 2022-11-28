@@ -21,6 +21,23 @@ conselour.get('/profile', jwt.validateToken, async (req, res) => {
     return response.responseSuccess(res, StatusCodes.OK, data, "Success get data from database")
 })
 
+conselour.put('/jadwal', jwt.validateToken, async (req, res) => {
+    let id = req.user.id
+    let role = req.user.role
+    if (role != 2) {
+        return response.responseFailure(res, StatusCodes.UNAUTHORIZED, "Unauthorized")
+    }
+    const { jadwal } = req.body
+    let result = await conseloursService.updateJadwal(id, jadwal)
+
+    if (!result) {
+        return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail when query database")
+    }
+
+    result = null
+    return response.responseSuccess(res, StatusCodes.OK, {}, "Success update data from database")
+})
+
 conselour.put('/profile', jwt.validateToken, async (req, res) => {
     let { jadwal } = req.body
     let id = req.user.id
@@ -71,6 +88,21 @@ conselour.get('/history-uncompleted', jwt.validateToken, async (req, res) => {
     return response.responseSuccess(res, StatusCodes.OK, data, "Success get history uncompleted")
 })
 
+conselour.get('/ketersediaan/:is_available', jwt.validateToken, async (req, res) => {
+    let id = req.user.id
+    let role = req.user.role
+    let isAvailable = req.params.is_available
+    if (role != 2) {
+        return response.responseFailure(res, StatusCodes.UNAUTHORIZED, "Unauthorized")
+    }
+    let result = await conseloursService.updateKetersediaan(id, isAvailable)
+    if (!result) {
+        return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail when query database")
+    }
+
+    result = null
+    return response.responseSuccess(res, StatusCodes.OK, {}, "Success update data from database")
+})
 
 module.exports = {
     conselour

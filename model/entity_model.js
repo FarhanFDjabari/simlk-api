@@ -150,7 +150,7 @@ const koordinator = sequelize.define('koordinator', {
     },
     name: {
         type: DataTypes.TEXT,
-        allowNull: false
+        allowNull : true
     },
     role: {
         type: DataTypes.INTEGER,
@@ -158,7 +158,7 @@ const koordinator = sequelize.define('koordinator', {
     },
     profile_image_url: {
         type: DataTypes.TEXT,
-        allowNull: false
+        allowNull: true
     },
     fcm_token: {
         type: DataTypes.TEXT,
