@@ -93,7 +93,7 @@ auth.post('/login-default', async (req, res) => {
 
             return response.responseFailure(res, StatusCodes.UNAUTHORIZED, "Password don't match")
         }
-        const token = jwt.generateToken(koordinator.id, 0)
+        const token = jwt.generateToken(koordinator.id, 1)
 
         const isFail = await koordinatorService.updateFcmToken(koordinator.id, fcm_token)
 
