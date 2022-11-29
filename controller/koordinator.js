@@ -2,6 +2,7 @@ const express = require('express');
 const koordinatorController = express.Router()
 const response = require('../utils/response')
 const koordinatorService = require('../repository/koordinator')
+const conseloursService = require('../repository/conselour')
 const jwt = require('../middleware/jwt_auth')
 const { StatusCodes } = require('http-status-codes')
 
@@ -60,6 +61,23 @@ koordinatorController.get('/conselor-tersedia/reservasi/:idres', jwt.validateTok
         return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, result.error)
     }
     return response.responseSuccess(res, StatusCodes.OK, result.data, "Success Query")
+})
+
+//Mengisi jadwal ke konselor
+koordinatorController.put('/jadwal/konselor', jwt.validateToken, async (req, res) => {
+    let role = req.user.role
+    if (role != 1) {
+        return response.responseFailure(res, StatusCodes.UNAUTHORIZED, "Unauthorized")
+    }
+    const { jadwal, id_konselor } = req.body
+    let result = await conseloursService.updateJadwal(id_konselor, jadwal)
+
+    if (!result) {
+        return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail when query database")
+    }
+
+    result = null
+    return response.responseSuccess(res, StatusCodes.OK, {}, "Success update data from database")
 })
 
 //Lengkapi profile

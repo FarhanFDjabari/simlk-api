@@ -143,6 +143,17 @@ pengawasController.get('/update', jwt.validateToken, async (req, res) => {
     return response.responseSuccess(res, StatusCodes.OK, null, "Success update status")
 })
 
+pengawasController.get('/notapproved', jwt.validateToken, async (req, res) => {
+    let role = req.user.role
+    if (role != 0) {
+        return response.responseFailure(res, StatusCodes.UNAUTHORIZED, "Unauthorized")
+    }
+    let data = await pengawasService.getAllStudentNotApproved()
+    if (!data){
+        return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail query")
+    }
+    return response.responseSuccess(res, StatusCodes.OK, data, "Success")
+})
 
 
 

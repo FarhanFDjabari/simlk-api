@@ -161,7 +161,7 @@ const searchStudentByNimWithReservationWithStudentsAndConseolour = async (nim) =
         where: {
             nim: nim,
             status: {
-                [Op.between]: [1, 5]
+                [Op.between]: [3, 5]
             }
         },
         include: {
@@ -204,7 +204,7 @@ const getAllStudentByNimWithReservationWithStudentsAndConseolour = () => {
     return reservations.findAll({
         where: {
             status: {
-                [Op.between]: [1, 5]
+                [Op.between]: [3, 5]
             }
         },
         include: {
@@ -248,7 +248,7 @@ const getAllStudentByNimWithReservationWithStudentsAndPengawas = () => {
     return reservations.findAll({
         where: {
             status: {
-                [Op.between]: [1, 5]
+                [Op.between]: [3, 5]
             }
         },
         include: {
@@ -319,6 +319,23 @@ const getAllStudentByNimWithHistoryWithStudentsAndConseolour = () => {
             })
         );
         return returnData
+    }).catch(function (error) {
+        console.log(error)
+        return null
+    })
+}
+
+const getAllStudentNotApproved = () => {
+    return reservations.findAll({
+        where: {
+            status: 1
+        },
+        include: {
+            model: students,
+            as: 'student',
+        },
+    }).then(function (data) {
+        return data
     }).catch(function (error) {
         console.log(error)
         return null
@@ -455,6 +472,7 @@ module.exports = {
     toCoordinator,
     takeByPengawas,
     loginPengawas,
-    updateFcmToken
+    updateFcmToken,
+    getAllStudentNotApproved
 }
 
