@@ -47,7 +47,7 @@ auth.post('/login-siam', async (req, res) => {
 auth.post('/login-default', async (req, res) => {
 
     //Kurang fcm token service
-    const { email, password, fcm_token } = req.body
+    const { email, password, fcm_token, role } = req.body
 
     const conselor = await conselorService.loginConselours(email, password)
     const pengawas = await pengawasService.loginPengawas(email, password)
@@ -56,7 +56,7 @@ auth.post('/login-default', async (req, res) => {
         return response.responseFailure(res, StatusCodes.BAD_REQUEST, "Email not found")
     }
 
-    if (conselor) {
+    if (role==2) {
         if (!conselor.login) {
             return response.responseFailure(res, StatusCodes.UNAUTHORIZED, "Password don't match")
         }
@@ -71,7 +71,7 @@ auth.post('/login-default', async (req, res) => {
         return response.responseSuccess(res, StatusCodes.OK, { token: token }, "Login success")
     }
 
-    if (pengawas) {
+    if (role==0) {
         console.log(pengawas.login)
         if (pengawas.login == false) {
 
@@ -88,7 +88,7 @@ auth.post('/login-default', async (req, res) => {
         return response.responseSuccess(res, StatusCodes.OK, { token: token }, "Login success")
     }
 
-    if (koordinator) {
+    if (role==1) {
         if (koordinator.login == false) {
 
             return response.responseFailure(res, StatusCodes.UNAUTHORIZED, "Password don't match")
