@@ -2,7 +2,7 @@ const { DataTypes } = require("sequelize");
 const { sequelize } = require("../utils/database_connection");
 
 // 3
-const students = sequelize.define('students', {
+const students = sequelize.define('mahasiswa', {
     nim: {
         type: DataTypes.TEXT,
         allowNull: false,
@@ -45,7 +45,7 @@ const students = sequelize.define('students', {
 
 
 // 2
-const conselours = sequelize.define('conselours', {
+const conselours = sequelize.define('konselor', {
     id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
@@ -72,6 +72,13 @@ const conselours = sequelize.define('conselours', {
     role: {
         type: DataTypes.INTEGER,
         allowNull: false
+    },
+    no_hp: {
+        type: DataTypes.TEXT,
+
+    },
+    id_line: {
+        type: DataTypes.TEXT,
     },
     profile_image_url: {
         type: DataTypes.TEXT,
@@ -166,7 +173,7 @@ const koordinator = sequelize.define('koordinator', {
     }
 })
 
-const reservations = sequelize.define('reservations', {
+const reservations = sequelize.define('reservation', {
     id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
@@ -218,7 +225,7 @@ const reservations = sequelize.define('reservations', {
     }
 })
 
-const notificationsStudent = sequelize.define('notifications_student', {
+const notificationsStudent = sequelize.define('notification_mahasiswa', {
     id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
@@ -248,7 +255,7 @@ const notificationsStudent = sequelize.define('notifications_student', {
     }
 })
 
-const notificationsConselour = sequelize.define('notifications_conselour', {
+const notificationsConselour = sequelize.define('notification_konselor', {
     id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
