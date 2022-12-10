@@ -113,6 +113,24 @@ conselour.get('/ketersediaan-hari/:hari', jwt.validateToken, async (req, res) =>
     return response.responseSuccess(res, 200, result.data, "success")
 })
 
+conselour.get('/history/:id', jwt.validateToken, async (req, res) =>{
+    let id = req.params.id
+    let result = await conseloursService.getHistoryById(id)
+    if (result.error){
+        return response.responseFailure(res, 500, result.error)
+    }
+    return response.responseSuccess(res, 200, result.data, "success")
+})
+
+conselour.get('/reservation/:id',jwt.validateToken, async (req, res) =>{
+    let id = req.params.id
+    let result = await conseloursService.getReservationById(id)
+    if (result.error){
+        return response.responseFailure(res, 500, result.error)
+    }
+    return response.responseSuccess(res, 200, result.data, "success")
+})
+
 module.exports = {
     conselour
 }

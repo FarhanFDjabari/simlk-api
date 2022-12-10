@@ -1,4 +1,4 @@
-const { conselours } = require('../model/entity_model')
+const { conselours, reservations } = require('../model/entity_model')
 const bcrypt = require('bcrypt')
 const { Op } = require('sequelize');
 
@@ -162,8 +162,46 @@ const getPerhari = async (hari) => {
         data.error = error
         return data
     }
-    return null
+}
 
+const getHistoryById = async (id) => {
+    let data = { data: null, error: null }
+    try {
+        let result = await reservations.findAll({
+            where: {
+                model: 2,
+                id_conselour: id,
+                status: 6
+            }
+        })
+        console.log(result)
+        data.data = result
+        return data
+    } catch (error) {
+        data.error = error
+        return data
+    }
+}
+
+const getReservationById = async (id) => {
+    let data = { data: null, error: null }
+    try {
+        let result = await reservations.findAll({
+            where: {
+                model: 2,
+                id_conselour: id,
+                status: {
+                    [Op.between]: [3, 5]
+                }
+            }
+        })
+        console.log(result)
+        data.data = result
+        return data
+    } catch (error) {
+        data.error = error
+        return data
+    }
 }
 
 module.exports = {
@@ -176,5 +214,7 @@ module.exports = {
     getAllToken,
     updateJadwal,
     updateKetersediaan,
-    getPerhari
+    getPerhari,
+    getHistoryById,
+    getReservationById
 }
