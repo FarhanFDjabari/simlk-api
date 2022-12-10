@@ -100,7 +100,7 @@ const updateAvatar = async (id, profile_image_url) => {
 
 const updateJadwal = async (id, jadwal) => {
     return conselours.update({
-        jadwal : jadwal
+        jadwal: jadwal
     }, {
         where: {
             id: id
@@ -127,9 +127,9 @@ const getAllToken = async () => {
     })
 }
 
-const updateKetersediaan = async (id,is_available) => {
+const updateKetersediaan = async (id, is_available) => {
     return conselours.update({
-        is_available : is_available
+        is_available: is_available
     }, {
         where: {
             id: id
@@ -141,6 +141,31 @@ const updateKetersediaan = async (id,is_available) => {
     })
 }
 
+const getPerhari = async (hari) => {
+    let data = { data: null, error: null }
+    try {
+        if (hari == 0) {
+            let result = await conselours.findAll()
+            data.data = result
+        } else {
+            let result = await conselours.findAll({
+                where: {
+                    jadwal: {
+                        [Op.like]: `%${hari}%`
+                    }
+                }
+            })
+            data.data = result
+        }
+        return data
+    } catch (error) {
+        data.error = error
+        return data
+    }
+    return null
+
+}
+
 module.exports = {
     searchByEmail,
     searchById,
@@ -150,5 +175,6 @@ module.exports = {
     updateAvatar,
     getAllToken,
     updateJadwal,
-    updateKetersediaan
+    updateKetersediaan,
+    getPerhari
 }

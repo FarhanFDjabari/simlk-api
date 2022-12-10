@@ -18,7 +18,7 @@ const uploadExpress = require('express-fileupload');
 
 dotenv.config()
 
-sequelize.sync({ alter: true });
+sequelize.sync({ alter: false });
 
 const app = express()
 

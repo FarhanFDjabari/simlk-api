@@ -104,6 +104,15 @@ conselour.get('/ketersediaan/:is_available', jwt.validateToken, async (req, res)
     return response.responseSuccess(res, StatusCodes.OK, {}, "Success update data from database")
 })
 
+conselour.get('/ketersediaan-hari/:hari', jwt.validateToken, async (req, res) => {
+    let hari = req.params.hari
+    let result = await conseloursService.getPerhari(hari)
+    if (result.error){
+        return response.responseFailure(res, 500, result.error)
+    }
+    return response.responseSuccess(res, 200, result.data, "success")
+})
+
 module.exports = {
     conselour
 }
