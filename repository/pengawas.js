@@ -374,8 +374,6 @@ const getAllStudentByNimWithHistoryWithStudentsAndPengawas = () => {
         );
 
         return returnData
-
-        return returnData
     }).catch(function (error) {
         console.log(error)
         return null
@@ -457,6 +455,45 @@ const updateFcmToken = async (id, fcmToken) => {
     })
 }
 
+const getAllStudentByIDWithStudentsAndPengawas = (id) => {
+    return reservations.findAll({
+        where: {
+            id : id
+        },
+        include: {
+            model: students,
+            as: 'student',
+        },
+    }).then(function (data) {
+        console.log(data)
+        if (data == null) {
+            return []
+        }
+        const dataWithConselourId = data.filter(
+            (singleData) => singleData.id_conselour !== null && singleData.model == 0
+        );
+
+        const arrOfPromise = dataWithConselourId.map((singleData) =>
+            readById(singleData.id_conselour).then(res => {
+                return ({ ...res.toJSON(), reservation: singleData.toJSON() })
+            })
+        );
+        const returnData = Promise.all(arrOfPromise).then((res) =>
+            res.map((singleData) => {
+                const structured = { ...singleData.reservation };
+                delete singleData.reservation
+                return ({ ...structured, conselour: singleData })
+            })
+        );
+
+        return returnData
+    }).catch(function (error) {
+        console.log(error)
+        return null
+    })
+}
+
+
 module.exports = {
     createPengawas,
     readAll,
@@ -473,6 +510,7 @@ module.exports = {
     takeByPengawas,
     loginPengawas,
     updateFcmToken,
-    getAllStudentNotApproved
+    getAllStudentNotApproved,
+    getAllStudentByIDWithStudentsAndPengawas
 }
 

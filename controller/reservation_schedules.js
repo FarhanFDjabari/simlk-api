@@ -3,6 +3,7 @@ const reservationsSchedule = express.Router()
 const response = require('../utils/response')
 const reservationsService = require('../repository/reservations')
 const studentsService = require('../repository/students')
+const pengawasService = require('../repository/pengawas');
 const jwt = require('../middleware/jwt_auth')
 const { StatusCodes } = require('http-status-codes')
 const sendNotif = require('../utils/push_notification')
@@ -69,20 +70,27 @@ reservationsSchedule.get('/:id', jwt.validateToken, async (req, res) => {
     let role = req.user.role
     console.log(role)
     var temp
-    if (role == 1) {
+    if (role == 2) {
         var data = await reservationsService.getById(id)
         if (!data) {
             return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Failed query in database")
         }
-        if (data.id_conselour){
+        if (data.id_conselour) {
             var conselour = await conselorService.searchById(data.id_conselour)
             var temp2 = data.dataValues
-            temp = {...temp2, conselour}
+            temp = { ...temp2, conselour }
         }
-        if (temp == null) return response.responseSuccess(res, StatusCodes.OK, data, "success query data in database")
+        if (temp == null) return response.responseSuccess(res, StatusCodes.INTERNAL_SERVER_ERROR, null, "success query data in database")
         return response.responseSuccess(res, StatusCodes.OK, temp, "success query data in database")
-    } else if (role == 0) {
+    } else if (role == 3) {
         const data = await reservationsService.getByIdAndProfile(id)
+        if (!data) {
+            return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Failed query in database")
+        }
+        return response.responseSuccess(res, StatusCodes.OK, data, "success query data in database")
+    } else if (role == 0 || role == 1) {
+        //Lengkap
+        let data = await pengawasService.getAllStudentByIDWithStudentsAndPengawas(id)
         if (!data) {
             return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Failed query in database")
         }
@@ -118,7 +126,7 @@ reservationsSchedule.put('/:id', jwt.validateToken, async (req, res) => {
 
     const reservasi = await reservationsService.getById(idData)
 
-    if (reservasi.id_conselour != idConselour){
+    if (reservasi.id_conselour != idConselour) {
         return response.responseFailure(res, StatusCodes.UNAUTHORIZED, "You unauthorized to edit data")
     }
 
@@ -126,21 +134,21 @@ reservationsSchedule.put('/:id', jwt.validateToken, async (req, res) => {
 
     var file_report
 
-    if (req.files){
+    if (req.files) {
         file_report = req.files.file_report
-    }else {
+    } else {
         file_report = null
     }
 
     console.log(report)
     var data
 
-    console.log(file_report!=null && report!=null)
+    console.log(file_report != null && report != null)
 
 
-    if (file_report && report){
+    if (file_report && report) {
         const up = uploadFile.uploadToSupabase(file_report)
-        if (!up){
+        if (!up) {
             return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail upload file")
         }
         var link = generateLink.generateLink(file_report.name)
@@ -149,14 +157,14 @@ reservationsSchedule.put('/:id', jwt.validateToken, async (req, res) => {
         data = await reservationsService.updateFileReport(idData, link)
     }
 
-    if (!file_report){
+    if (!file_report) {
         data = await reservationsService.updateReport(idData, report)
     }
 
 
-    if(file_report){
+    if (file_report) {
         const up = uploadFile.uploadToSupabase(file_report)
-        if (!up){
+        if (!up) {
             return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail upload file")
         }
         var link = generateLink.generateLink(file_report.name)
