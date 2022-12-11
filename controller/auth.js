@@ -109,7 +109,7 @@ auth.post('/login-default', async (req, res) => {
 })
 
 auth.post('/register-conselour', async (req, res) => {
-    const { name, email, password, major, fcm_token } = req.body
+    const { name, email, password, nim, major, no_hp, id_line, fcm_token } = req.body
     if (req.files) {
         const { avatar } = req.files
         let nameFile = `${email}${avatar.name}`
@@ -119,7 +119,7 @@ auth.post('/register-conselour', async (req, res) => {
         if (!status) {
             return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail when upload image")
         }
-        const conselor = await conselorService.createCounselor(name, email, password, major, link, fcm_token)
+        const conselor = await conselorService.createCounselor(name, email, password, nim, major, id_line, no_hp, link, fcm_token)
         if (conselor == null) {
             return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail to save conselor")
         }
@@ -136,8 +136,8 @@ auth.post('/register-conselour', async (req, res) => {
 })
 
 auth.post('/register-koordinator', async (req, res) => {
-    const { email, password } = req.body
-    let result = await koordinatorService.createKoordinator(email, password)
+    const { email, password, name, major, no_hp, id_line } = req.body
+    let result = await koordinatorService.createKoordinator(email, password, name, major, no_hp, id_line)
     if (result.error){
         return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, result.error)
     }
