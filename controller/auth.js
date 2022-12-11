@@ -147,20 +147,29 @@ auth.post('/register-koordinator', async (req, res) => {
 
 auth.post('/register-pengawas', async (req, res) => {
     const { email, password, name, fcm_token } = req.body
-    const { avatar } = req.files
-    let nameFile = `${email}${avatar.name}`
-    avatar.name = nameFile
-    let link = generateLink(avatar.name)
-    let status = await uploadToSupabase(avatar)
-    if (!status) {
-        return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail when upload image")
+    if (req.files) {
+        const { avatar } = req.files
+        let nameFile = `${email}${avatar.name}`
+        avatar.name = nameFile
+        let link = generateLink(avatar.name)
+        let status = await uploadToSupabase(avatar)
+        if (!status) {
+            return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail when upload image")
+        }
+        const data = await pengawasService.createPengawas(email, password, name, link, fcm_token)
+        if (data.error) {
+            return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail when save to db")
+        }
+        const token = jwt.generateToken(data.data.id, 0)
+        return response.responseSuccess(res, StatusCodes.CREATED, { token: token }, "Success create conselour")
+    } else {
+        const data = await pengawasService.createPengawas(email, password, name, "", fcm_token)
+        if (data.error) {
+            return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail when save to db")
+        }
+        const token = jwt.generateToken(data.data.id, 0)
+        return response.responseSuccess(res, StatusCodes.CREATED, { token: token }, "Success create conselour")
     }
-    const data = await pengawasService.createPengawas(email, password, name, link, fcm_token)
-    if (data.error) {
-        return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail when save to db")
-    }
-    const token = jwt.generateToken(data.data.id, 0)
-    return response.responseSuccess(res, StatusCodes.CREATED, { token: token }, "Success create conselour")
 })
 
 auth.get('/logout', jwt.validateToken, async (req, res) => {
