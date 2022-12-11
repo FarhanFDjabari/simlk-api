@@ -54,7 +54,7 @@ const searchStudentByNimWithReservations = (nim) => {
         where: {
             nim: nim,
             status: {
-                [Op.between]: [1, 3]
+                [Op.between]: [1, 5]
             }
         },
     }).then(function (data) {
@@ -91,7 +91,7 @@ const searchStudentByNimWithHistory = (nim) => {
     return reservations.findAll({
         where: {
             nim: nim,
-            status: 4
+            status: 6
         }
     }).then(function (data) {
         console.log(data)
@@ -132,7 +132,7 @@ const getStudentByNimWithHistory = () => {
             model: reservations,
             as: 'reservations',
             where: {
-                status: 4
+                status: 6
             }
         }
     }).then(function (data) {
@@ -156,7 +156,7 @@ const getStudentByNimWithReservations = () => {
         },
         where: {
             status: {
-                [Op.between]: [1, 3]
+                [Op.between]: [1, 5]
             }
         }
     }).then(function (data) {
