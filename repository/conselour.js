@@ -28,13 +28,16 @@ const searchById = async (id) => {
     }
 }
 
-const createCounselor = async (name, email, password, major, profile_image_url, fcm_token) => {
+const createCounselor = async (name, email, password, nim, major, id_line, no_hp, profile_image_url, fcm_token) => {
     let bcryptPassword = bcrypt.hashSync(password, 10);
     try {
         const data_1 = await conselours.create({
             email: email,
             password: bcryptPassword,
             name: name,
+            nim: nim,
+            id_line: id_line,
+            no_hp: no_hp,
             major: major,
             role: 2,
             profile_image_url: profile_image_url,
