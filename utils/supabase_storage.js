@@ -14,7 +14,14 @@ const uploadToSupabase = (avatar) => {
         return false
     })
 }
+
+const generateLink = (namefile) => {
+    return `https://sjdijscmtkwnljhhfeuu.supabase.co/storage/v1/object/public/simplk-images/public/${namefile}`
+}
+
+
 module.exports = {
-    uploadToSupabase
+    uploadToSupabase,
+    generateLink
 }
 

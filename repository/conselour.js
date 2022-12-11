@@ -175,6 +175,7 @@ const getHistoryById = async (id) => {
             },
             include : 'student'
         })
+        data.data = result
         return data
     } catch (error) {
         data.error = error
@@ -192,7 +193,8 @@ const getReservationById = async (id) => {
                 status: {
                     [Op.between]: [3, 5]
                 }
-            }
+            },
+            include : 'student'
         })
         console.log(result)
         data.data = result

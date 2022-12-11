@@ -5,6 +5,7 @@ const koordinatorService = require('../repository/koordinator')
 const conseloursService = require('../repository/conselour')
 const jwt = require('../middleware/jwt_auth')
 const { StatusCodes } = require('http-status-codes')
+const { uploadToSupabase, generateLink } = require('../utils/supabase_storage')
 
 koordinatorController.get('/profile', jwt.validateToken, async (req, res) => {
     let id = req.user.id
@@ -80,7 +81,35 @@ koordinatorController.put('/jadwal/konselor', jwt.validateToken, async (req, res
     return response.responseSuccess(res, StatusCodes.OK, {}, "Success update data from database")
 })
 
+
 //Lengkapi profile
+koordinatorController.put('/profile', jwt.validateToken, async (req, res) => {
+    const id = req.user.id
+    const koorData = await koordinatorService.readById(id)
+    const { nim, name } = req.body
+
+    if (!req.files) {
+        const updatedData = await koordinatorService.updateProfile(id, nim, name, koorData.profile_image_url)
+        if (!updatedData) {
+            return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail when update database")
+        }
+        return response.responseSuccess(res, StatusCodes.OK, updatedData, "Success update profile")
+    } else {
+        const { avatar } = req.files
+        let nameFile = `${nim}${avatar.name}`
+        avatar.name = nameFile
+        let link = generateLink(avatar.name)
+        let status = await uploadToSupabase(avatar)
+        if (!status) {
+            return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail when upload image")
+        }
+        const updatedData = await koordinatorService.updateProfile(id, nim, name, link)
+        if (!updatedData) {
+            return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail when update database")
+        }
+        return response.responseSuccess(res, StatusCodes.OK, updatedData, "Success update profile")
+    }
+})
 
 
 module.exports = {

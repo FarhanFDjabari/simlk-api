@@ -47,14 +47,13 @@ const readById = (id) => {
     })
 }
 
-const update = async (id, profile_image_url, fcm_token, name, email) => {
+const update = async (id, profile_image_url, fcm_token, name) => {
     var returnData = { data: null, error: null }
     if (!profile_image_url) {
         try {
             const dataId = await pengawas.update({
                 fcm_token: fcm_token,
                 name: name,
-                email: email
             }, {
                 where: {
                     id: id

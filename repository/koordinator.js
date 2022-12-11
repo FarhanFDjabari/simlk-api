@@ -224,6 +224,26 @@ const getConselorPadaTanggalReservasi = async (id_res) => {
     }
 }
 
+const updateProfile = async (id, nim, name, profile_image_url) => {
+    var returnData = { data: null, error: null }
+    try {
+        let data = await koordinator.update({
+            nim : nim,
+            name : name,
+            profile_image_url : profile_image_url
+        }, {
+            where : {
+                id : id
+            }
+        })
+        return returnData
+    } catch (error) {
+        returnData.error = error
+        returnData.data = null
+        return returnData
+    }
+}
+
 
 
 module.exports = {
@@ -236,5 +256,6 @@ module.exports = {
     updateFcmToken,
     loginKoordinator,
     findAllResAssign,
-    getConselorPadaTanggalReservasi
+    getConselorPadaTanggalReservasi,
+    updateProfile
 }

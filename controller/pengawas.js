@@ -8,6 +8,7 @@ const notifService = require('../repository/notifications_students')
 const { dynamicSort } = require('../utils/sorting')
 const jwt = require('../middleware/jwt_auth')
 const { StatusCodes } = require('http-status-codes');
+const { uploadToSupabase, generateLink } = require('../utils/supabase_storage')
 
 // get profile
 pengawasController.get('/profile', jwt.validateToken, async (req, res) => {
@@ -149,10 +150,33 @@ pengawasController.get('/notapproved', jwt.validateToken, async (req, res) => {
         return response.responseFailure(res, StatusCodes.UNAUTHORIZED, "Unauthorized")
     }
     let data = await pengawasService.getAllStudentNotApproved()
-    if (!data){
+    if (!data) {
         return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail query")
     }
     return response.responseSuccess(res, StatusCodes.OK, data, "Success")
+})
+
+pengawasController.put('/profile', jwt.validateToken, async (req, res) => {
+    let { name } = req.body
+    let id = req.user.id
+    let pengawas = await pengawasService.readById(id)
+    if (req.files) {
+        const { avatar } = req.files
+        let nameFile = `${id}${avatar.name}`
+        avatar.name = nameFile
+        let link = generateLink(avatar.name)
+        let status = await uploadToSupabase(avatar)
+        if (!status) {
+            return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail when upload image")
+        }
+        let data = pengawasService.update(id, link, pengawas.fcm_token, name)
+        if (!data) {
+            return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail query")
+        }
+        return response.responseSuccess(res, StatusCodes.OK, data, "Success")
+    } else {
+        let data = pengawasService.update(id, pengawas.profile_image_url, pengawas.fcm_token, name)
+    }
 })
 
 
