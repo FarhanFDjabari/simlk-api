@@ -2,13 +2,17 @@ const { koordinator, reservations, conselours } = require('../model/entity_model
 const bcrypt = require('bcrypt')
 const { Op } = require('sequelize');
 
-const createKoordinator = async (email, password) => {
+const createKoordinator = async (email, password, name, major, no_hp, id_line) => {
     var returnData = { data: null, error: null }
     try {
         let enPass = bcrypt.hashSync(password, 10)
         const isCreated = await koordinator.create({
             email: email,
             password: enPass,
+            name: name,
+            major: major,
+            no_hp: no_hp,
+            id_line: id_line,
             role: 1,
         })
         returnData.data = isCreated.dataValues
