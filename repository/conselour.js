@@ -172,10 +172,9 @@ const getHistoryById = async (id) => {
                 model: 2,
                 id_conselour: id,
                 status: 6
-            }
+            },
+            include : 'student'
         })
-        console.log(result)
-        data.data = result
         return data
     } catch (error) {
         data.error = error
