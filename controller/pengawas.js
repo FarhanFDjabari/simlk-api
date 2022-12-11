@@ -176,6 +176,7 @@ pengawasController.put('/profile', jwt.validateToken, async (req, res) => {
         return response.responseSuccess(res, StatusCodes.OK, data, "Success")
     } else {
         let data = pengawasService.update(id, pengawas.profile_image_url, pengawas.fcm_token, name)
+        return response.responseSuccess(res, StatusCodes.OK, data, "Success")
     }
 })
 
