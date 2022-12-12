@@ -107,28 +107,37 @@ conselour.get('/ketersediaan/:is_available', jwt.validateToken, async (req, res)
 conselour.get('/ketersediaan-hari/:hari', jwt.validateToken, async (req, res) => {
     let hari = req.params.hari
     let result = await conseloursService.getPerhari(hari)
-    if (result.error){
+    if (result.error) {
         return response.responseFailure(res, 500, result.error)
     }
     return response.responseSuccess(res, 200, result.data, "success")
 })
 
-conselour.get('/history/:id', jwt.validateToken, async (req, res) =>{
+conselour.get('/history/:id', jwt.validateToken, async (req, res) => {
     let id = req.params.id
     let result = await conseloursService.getHistoryById(id)
-    if (result.error){
+    if (result.error) {
         return response.responseFailure(res, 500, result.error)
     }
     return response.responseSuccess(res, 200, result.data, "success")
 })
 
-conselour.get('/reservation/:id',jwt.validateToken, async (req, res) =>{
+conselour.get('/reservation/:id', jwt.validateToken, async (req, res) => {
     let id = req.params.id
     let result = await conseloursService.getReservationById(id)
-    if (result.error){
+    if (result.error) {
         return response.responseFailure(res, 500, result.error)
     }
     return response.responseSuccess(res, 200, result.data, "success")
+})
+
+conselour.get('/mahasiswa-history', jwt.validateToken, async (req, res) => {
+    let id = req.user.id
+    let result = await conseloursService.getMahasiswaYangDitangani(id, { status1: 1, status2: 6 })
+    if (!result) {
+        return response.responseFailure(res, 500, result.error)
+    }
+    return response.responseSuccess(res, 200, result, "success")
 })
 
 module.exports = {

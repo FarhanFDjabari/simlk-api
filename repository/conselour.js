@@ -1,4 +1,4 @@
-const { conselours, reservations } = require('../model/entity_model')
+const { conselours, reservations, students } = require('../model/entity_model')
 const bcrypt = require('bcrypt')
 const { Op } = require('sequelize');
 
@@ -176,7 +176,7 @@ const getHistoryById = async (id) => {
                 id_conselour: id,
                 status: 6
             },
-            include : 'student'
+            include: 'student'
         })
         data.data = result
         return data
@@ -197,7 +197,7 @@ const getReservationById = async (id) => {
                     [Op.between]: [3, 5]
                 }
             },
-            include : 'student'
+            include: 'student'
         })
         console.log(result)
         data.data = result
@@ -205,6 +205,47 @@ const getReservationById = async (id) => {
     } catch (error) {
         data.error = error
         return data
+    }
+}
+
+const getMahasiswaYangDitangani = async (id_conselour, { status1, status2 }) => {
+    try {
+        let result = await reservations.findAll({
+            where: {
+                status: {
+                    [Op.between]: [status1, status2]
+                },
+                id_conselour: id_conselour
+            }
+        })
+        let mahasiswaNim = []
+        result.forEach(element => {
+            console.log(element)
+            if (!mahasiswaNim.includes(element.nim)) {
+                mahasiswaNim.push(element.nim)
+            }
+        });
+        const arrOfPromise = mahasiswaNim.map((singleData) =>
+            students.findOne({
+                where: {
+                    nim: singleData
+                }
+            }).then(res => {
+                if (!res) {
+                    return null
+                }
+                return res
+            })
+        );
+        const returnData = Promise.all(arrOfPromise).then((res) =>
+            res.map((singleData) => {
+                return singleData
+            })
+        );
+        return returnData
+    } catch (error) {
+        console.log(error)
+        return null
     }
 }
 
@@ -220,5 +261,6 @@ module.exports = {
     updateKetersediaan,
     getPerhari,
     getHistoryById,
-    getReservationById
+    getReservationById,
+    getMahasiswaYangDitangani
 }
