@@ -220,7 +220,6 @@ const getMahasiswaYangDitangani = async (id_conselour, { status1, status2 }) => 
         })
         let mahasiswaNim = []
         result.forEach(element => {
-            console.log(element)
             if (!mahasiswaNim.includes(element.nim)) {
                 mahasiswaNim.push(element.nim)
             }

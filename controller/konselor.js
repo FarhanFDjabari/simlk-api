@@ -140,6 +140,26 @@ conselour.get('/mahasiswa-history', jwt.validateToken, async (req, res) => {
     return response.responseSuccess(res, 200, result, "success")
 })
 
+conselour.get('/mahasiswa-reservasi-history/:nim', jwt.validateToken, async (req, res) => {
+    let id = req.user.id
+    let nim = req.params.nim
+    let result = await studentService.searchStudentByNimWithHistory(nim, id)
+    if (!result) {
+        return response.responseFailure(res, 500, result.error)
+    }
+    return response.responseSuccess(res, 200, result, "success")
+})
+
+conselour.get('/mahasiswa-reservasi-uncompleted/:nim', jwt.validateToken, async (req, res) => {
+    let id = req.user.id
+    let nim = req.params.nim
+    let result = await studentService.searchStudentByNimWithReservations(nim, id)
+    if (!result) {
+        return response.responseFailure(res, 500, result.error)
+    }
+    return response.responseSuccess(res, 200, result, "success")
+})
+
 module.exports = {
     conselour
 }

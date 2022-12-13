@@ -49,13 +49,15 @@ const updateFcmToken = (nim, token) => {
     })
 }
 
-const searchStudentByNimWithReservations = (nim) => {
+const searchStudentByNimWithReservations = (nim, id_conselour) => {
     return reservations.findAll({
         where: {
             nim: nim,
             status: {
                 [Op.between]: [1, 5]
-            }
+            },
+            id_conselour: id_conselour,
+            model: 2
         },
     }).then(function (data) {
 
@@ -64,19 +66,19 @@ const searchStudentByNimWithReservations = (nim) => {
         );
 
         const arrOfPromise = dataWithConselourId.map((singleData) =>
-            conselorService.searchById(singleData.id_conselour).then(res=> {
-                if (!res){
-                    return ({reservation : singleData.toJSON()})
+            conselorService.searchById(singleData.id_conselour).then(res => {
+                if (!res) {
+                    return ({ reservation: singleData.toJSON() })
                 }
-                return ({...res.toJSON(), reservation : singleData.toJSON()})
+                return ({ ...res.toJSON(), reservation: singleData.toJSON() })
             })
         );
 
         const returnData = Promise.all(arrOfPromise).then((res) =>
-            res.map((singleData) =>{
-                const structured ={...singleData.reservation};
+            res.map((singleData) => {
+                const structured = { ...singleData.reservation };
                 delete singleData.reservation
-                return ({...structured, conselour : singleData})
+                return ({ ...structured, conselour: singleData })
             })
         );
 
@@ -87,15 +89,17 @@ const searchStudentByNimWithReservations = (nim) => {
     })
 }
 
-const searchStudentByNimWithHistory = (nim) => {
+const searchStudentByNimWithHistory = (nim, id_conselour) => {
     return reservations.findAll({
         where: {
             nim: nim,
-            status: 6
+            status: 6,
+            id_conselour: id_conselour,
+            model: 2
         }
     }).then(function (data) {
         console.log(data)
-        if (data == null){
+        if (data == null) {
             return []
         }
         const dataWithConselourId = data.filter(
@@ -103,19 +107,19 @@ const searchStudentByNimWithHistory = (nim) => {
         );
 
         const arrOfPromise = dataWithConselourId.map((singleData) =>
-            conselorService.searchById(singleData.id_conselour).then(res=> {
-                if (!res){
-                    return ({reservation : singleData.toJSON()})
+            conselorService.searchById(singleData.id_conselour).then(res => {
+                if (!res) {
+                    return ({ reservation: singleData.toJSON() })
                 }
-                return ({...res.toJSON(), reservation : singleData.toJSON()})
+                return ({ ...res.toJSON(), reservation: singleData.toJSON() })
             })
         );
 
         const returnData = Promise.all(arrOfPromise).then((res) =>
-            res.map((singleData) =>{
-                const structured ={...singleData.reservation};
+            res.map((singleData) => {
+                const structured = { ...singleData.reservation };
                 delete singleData.reservation
-                return ({...structured, conselour : singleData})
+                return ({ ...structured, conselour: singleData })
             })
         );
 
