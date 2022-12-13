@@ -43,7 +43,7 @@ conselour.put('/profile', jwt.validateToken, async (req, res) => {
   let id = req.user.id
   const counselorData = await counselorsService.searchById(id)
   if (!req.files) {
-    const updateData = await conseloursService.update(id, nim, id_line, no_hp, is_available, counselorData.profile_image_url)
+    const updateData = await conseloursService.update(id, nim, id_line, no_hp, is_available, counselorData.profile_image_url, counselorsService.jadwal)
     if (!updateData) {
       return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail when update database")
     }

@@ -115,13 +115,14 @@ const updateJadwal = async (id, jadwal) => {
     })
 }
 
-const update = async (id, nim, id_line, no_hp, is_available, profile_image_url) => {
+const update = async (id, nim, id_line, no_hp, is_available, profile_image_url, jadwal) => {
   return conselours.update({
       profile_image_url: profile_image_url,
       nim: nim,
       id_line: id_line,
       no_hp: no_hp,
       is_available: is_available,
+      jadwal: jadwal,
   }, {
       where: {
           id: id
