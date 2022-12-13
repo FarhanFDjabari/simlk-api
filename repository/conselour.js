@@ -115,9 +115,9 @@ const updateJadwal = async (id, jadwal) => {
     })
 }
 
-const update = async (id, nim, id_line, no_hp, is_available, fcm_token) => {
+const update = async (id, nim, id_line, no_hp, is_available, profile_image_url) => {
   return conselours.update({
-      fcm_token: fcm_token,
+      profile_image_url: profile_image_url,
       nim: nim,
       id_line: id_line,
       no_hp: no_hp,
