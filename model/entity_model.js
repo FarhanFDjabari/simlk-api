@@ -26,7 +26,6 @@ const students = sequelize.define('mahasiswa', {
     },
     no_hp: {
         type: DataTypes.TEXT,
-
     },
     id_line: {
         type: DataTypes.TEXT,
@@ -54,7 +53,6 @@ const conselours = sequelize.define('konselor', {
     },
     email: {
         type: DataTypes.TEXT,
-        allowNull: false,
         unique: true
     },
     password: {
@@ -275,6 +273,12 @@ const notificationsConselour = sequelize.define('notification_konselor', {
     id_reservasi: {
         type: DataTypes.INTEGER
     },
+    model : {
+        type : DataTypes.INTEGER
+    },
+    id_konselor : {
+        type : DataTypes.INTEGER
+    }
 })
 
 students.hasMany(reservations, {

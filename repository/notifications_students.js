@@ -91,12 +91,13 @@ const updateIsRead = (id, is_read) => {
     })
 }
 
-const markAllRead = () => {
+const markAllRead = (nim) => {
     return notificationsStudent.update({
         is_read: 1
     }, {
         where: {
-            is_read: 0
+            is_read: 0,
+            nim : nim
         }
     }).then(function (data) {
         return data

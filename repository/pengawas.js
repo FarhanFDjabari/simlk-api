@@ -454,42 +454,33 @@ const updateFcmToken = async (id, fcmToken) => {
     })
 }
 
-const getAllStudentByIDWithStudentsAndPengawas = (id) => {
-    return reservations.findAll({
-        where: {
-            id : id
-        },
-        include: {
-            model: students,
-            as: 'student',
-        },
-    }).then(function (data) {
-        console.log(data)
-        if (data == null) {
-            return []
+const getAllStudentByIDWithStudentsAndPengawas = async (id) => {
+    try {
+        var result = await reservations.findOne({
+            where: {
+                id: id
+            },
+            include: {
+                model: students,
+                as: 'student',
+            },
+        })
+        let cons = null
+        if (result.model == 2){
+            cons = await conselorService.searchById(result.id_conselour)
+            result.konselor = cons
+        } else if (result.model == 0){
+            cons = await readById(result.id_conselour)
+            result.konselor = cons
+            console.log(cons)
         }
-        const dataWithConselourId = data.filter(
-            (singleData) => singleData.id_conselour !== null && singleData.model == 0
-        );
-
-        const arrOfPromise = dataWithConselourId.map((singleData) =>
-            readById(singleData.id_conselour).then(res => {
-                return ({ ...res.toJSON(), reservation: singleData.toJSON() })
-            })
-        );
-        const returnData = Promise.all(arrOfPromise).then((res) =>
-            res.map((singleData) => {
-                const structured = { ...singleData.reservation };
-                delete singleData.reservation
-                return ({ ...structured, conselour: singleData })
-            })
-        );
-
-        return returnData
-    }).catch(function (error) {
+        var returnData = result.dataValues
+        returnData.konselor = cons
+        return result
+    } catch (error) {
         console.log(error)
         return null
-    })
+    }
 }
 
 

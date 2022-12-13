@@ -70,7 +70,7 @@ reservationsSchedule.get('/:id', jwt.validateToken, async (req, res) => {
     let role = req.user.role
     console.log(role)
     var temp
-    if (role == 2) {
+    if (role == 3) {
         var data = await reservationsService.getById(id)
         if (!data) {
             return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Failed query in database")
@@ -82,7 +82,7 @@ reservationsSchedule.get('/:id', jwt.validateToken, async (req, res) => {
         }
         if (temp == null) return response.responseSuccess(res, StatusCodes.INTERNAL_SERVER_ERROR, null, "success query data in database")
         return response.responseSuccess(res, StatusCodes.OK, temp, "success query data in database")
-    } else if (role == 3) {
+    } else if (role == 2) {
         const data = await reservationsService.getByIdAndProfile(id)
         if (!data) {
             return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Failed query in database")

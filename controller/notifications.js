@@ -11,14 +11,14 @@ notifications.get('/', jwt.validateToken, async (req, res) => {
     let id = req.user.id
     var data
 
-    if (userRole == 0) {
+    if (userRole != 3 && userRole != 2) {
         //admin
-        data = await notificationConselour.getAllNotif()
+        data = await notificationConselour.getAllNotif(userRole)
 
         if (!data) {
             return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Failure query database")
         }
-    } else if (userRole == 1) {
+    } else if (userRole == 3) {
         //mahasiswa
         data = await notificationStudent.getAllNotif(id)
 
@@ -34,14 +34,14 @@ notifications.get('/:id', jwt.validateToken, async (req, res) => {
     let idNotif = req.params.id
     var data
 
-    if (userRole == 0) {
+    if (userRole != 3 && userRole != 2) {
         //admin
-        data = await notificationConselour.getById(idNotif)
+        data = await notificationConselour.getById(idNotif, userRole)
 
         if (!data) {
             return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Failure query database")
         }
-    } else if (userRole == 1) {
+    } else if (userRole == 3) {
         //mahasiswa
         data = await notificationStudent.getById(idNotif)
 
@@ -57,8 +57,8 @@ notifications.post('/:id', jwt.validateToken, async (req, res) => {
     let idNotif = req.params.id
     const { is_read } = req.body
     var data
-    if (userRole == 0) {
-        data = await notificationConselour.updateIsRead(idNotif, is_read)
+    if (userRole != 3 && userRole != 2) {
+        data = await notificationConselour.updateIsRead(idNotif, is_read, userRole)
         if (!data) {
             return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Failure update database")
         }
@@ -73,20 +73,24 @@ notifications.post('/:id', jwt.validateToken, async (req, res) => {
 
 notifications.put('/', jwt.validateToken, async (req, res) => {
     let userRole = req.user.role
+    let id = req.user.id
     var data
-    if (userRole == 0) {
-        data = await notificationConselour.markAllRead()
+    if (userRole != 3 && userRole != 2) {
+        data = await notificationConselour.markAllRead(userRole)
         if (!data) {
             return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Failure update database")
         }
-    } else {
-        data = await notificationStudent.markAllRead()
+    } else if (userRole == 3) {
+        data = await notificationStudent.markAllRead(id)
         if (!data) {
             return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Failure update database")
         }
+    } else if (userRole == 2){
+        // data = await notificationConselour.
     }
     return response.responseSuccess(res, StatusCodes.OK, null, "Success update database")
 })
+
 
 
 
