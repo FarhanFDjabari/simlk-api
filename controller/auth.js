@@ -50,6 +50,7 @@ auth.post('/login-default', async (req, res) => {
     const { email, password, fcm_token, role } = req.body
 
     if (role==2) {
+
         const conselor = await conselorService.loginConselours(email, password)
         if (!conselor.login) {
             return response.responseFailure(res, StatusCodes.UNAUTHORIZED, "Password don't match")
