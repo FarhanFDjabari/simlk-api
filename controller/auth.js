@@ -52,7 +52,7 @@ auth.post('/login-default', async (req, res) => {
     const conselor = await conselorService.loginConselours(email, password)
     const pengawas = await pengawasService.loginPengawas(email, password)
     const koordinator = await koordinatorService.loginKoordinator(email, password)
-    if (!conselor && !pengawas) {
+    if (!conselor && !pengawas && !koordinator) {
         return response.responseFailure(res, StatusCodes.BAD_REQUEST, "Email not found")
     }
 
