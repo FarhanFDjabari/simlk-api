@@ -115,6 +115,23 @@ const updateJadwal = async (id, jadwal) => {
     })
 }
 
+const update = async (id, nim, id_line, no_hp, is_available) => {
+  return conselours.update({
+      nim: nim,
+      id_line: id_line,
+      no_hp: no_hp,
+      is_available: is_available,
+  }, {
+      where: {
+          id: id
+      }
+  }).then(function (data) {
+      return data
+  }).catch(function (_error) {
+      return null
+  })
+}
+
 const getAllToken = async () => {
     return conselours.findAll({
         attributes: ['fcm_token'],

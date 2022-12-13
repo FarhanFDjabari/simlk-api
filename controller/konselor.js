@@ -39,8 +39,9 @@ conselour.put('/jadwal', jwt.validateToken, async (req, res) => {
 })
 
 conselour.put('/profile', jwt.validateToken, async (req, res) => {
-    let { jadwal } = req.body
+    let { jadwal, nim, id_line, no_hp, is_available } = req.body
     let id = req.user.id
+    const counselorData = await conseloursService.searchById(id)
     if (req.files) {
         const { avatar } = req.files
         let unique = uuidv4()
@@ -64,10 +65,17 @@ conselour.put('/profile', jwt.validateToken, async (req, res) => {
         }
         return response.responseSuccess(res, StatusCodes.OK, null, "Success update profile")
     } else {
+      if (jadwal) {
         const updateData = await conseloursService.updateJadwal(id, jadwal)
         if (!updateData) {
             return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail when update database")
-        }
+        } 
+      } else {
+        const updateData = await conseloursService.update(id, nim, id_line, no_hp, is_available)
+        if (!updateData) {
+            return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail when update database")
+        } 
+      } 
         return response.responseSuccess(res, StatusCodes.OK, null, "Success update profile")
     }
 })

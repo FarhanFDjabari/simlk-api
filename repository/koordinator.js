@@ -2,7 +2,7 @@ const { koordinator, reservations, conselours } = require('../model/entity_model
 const bcrypt = require('bcrypt')
 const { Op } = require('sequelize');
 
-const createKoordinator = async (email, password, name, major, no_hp, id_line) => {
+const createKoordinator = async (email, password, name, major, nim, no_hp, id_line) => {
     var returnData = { data: null, error: null }
     try {
         let enPass = bcrypt.hashSync(password, 10)
@@ -13,6 +13,7 @@ const createKoordinator = async (email, password, name, major, no_hp, id_line) =
             major: major,
             no_hp: no_hp,
             id_line: id_line,
+            nim: nim,
             role: 1,
         })
         returnData.data = isCreated.dataValues
@@ -54,14 +55,13 @@ const readById = async (id) => {
     }
 }
 
-const update = async (id, profile_image_url, fcm_token, name, nim) => {
+const update = async (id, profile_image_url, fcm_token, nim) => {
     var returnData = { data: null, error: null }
     if (!profile_image_url) {
         try {
             const dataId = await koordinator.update({
                 fcm_token: fcm_token,
-                name: name,
-                nim: nim
+                nim: nim,
             }, {
                 where: {
                     id: id
@@ -94,7 +94,8 @@ const update = async (id, profile_image_url, fcm_token, name, nim) => {
         try {
             const dataId = await koordinator.update({
                 profile_image_url: profile_image_url,
-                fcm_token: fcm_token
+                fcm_token: fcm_token,
+                nim: nim,
             }, {
                 where: {
                     id: id
