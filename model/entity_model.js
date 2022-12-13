@@ -92,6 +92,10 @@ const conselours = sequelize.define('konselor', {
     },
     jadwal : {
         type : DataTypes.TEXT
+    },
+    nim: {
+        type: DataTypes.TEXT,
+        allowNull: true
     }
 })
 
