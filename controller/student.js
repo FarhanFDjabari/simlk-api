@@ -61,7 +61,7 @@ students.get('/history-completed', jwt.validateToken, async (req, res) => {
 
 students.get('/history-uncompleted', jwt.validateToken, async (req, res) => {
     const nim = req.user.id
-    const data = await studentsService.searchStudentByNimWithReservations(nim)
+    const data = await studentsService.searchStudentReservationsByNim(nim)
     if (!data) {
         return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail when query database")
     }
