@@ -22,7 +22,7 @@ const createReservation = async (nim, reservation_time, time_hours, description,
 const getAll = () => {
     return reservations.findAll({
         where: {
-            status: 4,
+            status: 6,
         },
         include: {
             model: students,
@@ -90,7 +90,7 @@ const getByNim = (nim) => {
     return reservations.findAll({
         where: {
             nim: nim,
-            status: 4
+            status: 6
         }
     }).then(function (data) {
         if (data == null) {
@@ -126,7 +126,7 @@ const paginateFinish = (page, limit) => {
             reservation_time: {
                 [Op.between]: [start, end]
             },
-            status: 4
+            status: 6
         }
     }).then(function (data) {
         return data
@@ -158,7 +158,7 @@ const paginateFinishByNim = (page, limit, nim) => {
                 [Op.between]: [start, end]
             },
             nim: nim,
-            status: 4,
+            status: 6,
         }
     }).then(function (data) {
         if (data == null) {
@@ -174,7 +174,7 @@ const finishByNim = (nim) => {
     return reservations.findAll({
         where: {
             nim: nim,
-            status: 4,
+            status: 6,
         }
     }).then(function (data) {
         if (data == null) {
@@ -198,7 +198,7 @@ const findNotFinishByNim = (nim) => {
         // limit: limit,
         where: {
             status: {
-                [Op.between]: [1, 3]
+                [Op.between]: [1, 5]
             },
             nim: nim
         }
@@ -274,7 +274,7 @@ const getByDay = (day) => {
 const updateReport = (id, report) => {
     return reservations.update({
         report: report,
-        status: 4,
+        status: 6,
     }, {
         where: {
             id: id
@@ -289,7 +289,7 @@ const updateReport = (id, report) => {
 const updateFileReport = (id, file_report) => {
     return reservations.update({
         file_report: file_report,
-        status: 4,
+        status: 6,
     }, {
         where: {
             id: id

@@ -89,20 +89,18 @@ const searchStudentByNimWithReservations = (nim, id_conselour) => {
   })
 }
 
-const searchStudentReservationsByNim = (nim) => {
+const searchStudentReservationsByNim = async (nim) => {
   return reservations.findAll({
     where: {
       nim: nim,
       status: {
         [Op.between]: [1, 5]
       }
-    },
+    }
   }).then(function (data) {
-
     if (data == null) {
       data = []
     }
-
     return data
   }).catch(function (error) {
     console.log(error)
