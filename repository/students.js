@@ -255,6 +255,7 @@ module.exports = {
   createStudents,
   searchStudentByNimWithReservations,
   searchStudentByNimWithHistory,
+  searchStudentReservationsByNim,
   getProfile,
   isStudentExist,
   updatePicture,

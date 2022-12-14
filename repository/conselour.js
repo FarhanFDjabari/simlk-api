@@ -280,5 +280,6 @@ module.exports = {
     getPerhari,
     getHistoryById,
     getReservationById,
-    getMahasiswaYangDitangani
+    getMahasiswaYangDitangani,
+    updateProfile,
 }
