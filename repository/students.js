@@ -95,32 +95,15 @@ const searchStudentReservationsByNim = (nim) => {
       nim: nim,
       status: {
         [Op.between]: [1, 5]
-      },
+      }
     },
   }).then(function (data) {
 
-    const dataWithConselourId = data.filter(
-      (singleData) => singleData.id_conselour !== null
-    );
+    if (data == null) {
+      data = []
+    }
 
-    const arrOfPromise = dataWithConselourId.map((singleData) =>
-      conselorService.searchById(singleData.id_conselour).then(res => {
-        if (!res) {
-          return ({ reservation: singleData.toJSON() })
-        }
-        return ({ ...res.toJSON(), reservation: singleData.toJSON() })
-      })
-    );
-
-    const returnData = Promise.all(arrOfPromise).then((res) =>
-      res.map((singleData) => {
-        const structured = { ...singleData.reservation };
-        delete singleData.reservation
-        return ({ ...structured, conselour: singleData })
-      })
-    );
-
-    return returnData
+    return data
   }).catch(function (error) {
     console.log(error)
     return null
