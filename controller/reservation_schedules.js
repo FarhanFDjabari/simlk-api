@@ -38,12 +38,13 @@ reservationsSchedule.post('/', jwt.validateToken, async (req, res) => {
 
     let title = "Permintaan Bimbingan Konseling Baru"
     let body = `${nim} membuat permintaan reservasi baru. Mohon untuk segera di proses`
-    let notif = await notifService.createNotif(title, body, reservation.id)
-
+    let notif = await notifService.createNotif(title, body, reservation.id, 0, 0)
     if (!notif) {
         return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Sucess save in database but fail when save notif")
     }
-    const isSuccess = await sendNotif.sendNotifToAll(title, body)
+
+    const token = await pengawasService.getFcmToken()
+    const isSuccess = await sendNotif.sendNotifToAll(title, body, token)
 
     if (!isSuccess) {
         return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Sucess save in database but fail when send notif")

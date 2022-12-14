@@ -4,6 +4,8 @@ const response = require('../utils/response')
 const koordinatorService = require('../repository/koordinator')
 const conseloursService = require('../repository/conselour')
 const jwt = require('../middleware/jwt_auth')
+const notifService = require('../repository/notifications_conselour')
+const sendNotif = require('../utils/push_notification')
 const { StatusCodes } = require('http-status-codes')
 const { uploadToSupabase, generateLink } = require('../utils/supabase_storage')
 
@@ -29,6 +31,26 @@ koordinatorController.get('/reservation/:idres/konselor/:idkon', jwt.validateTok
         return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, result.error)
     }
     let data = result.data
+
+    let reservasi = await conseloursService.getReservationById(idRes)
+
+    let title = `Permintaan Bimbingan Konseling Baru ${reservasi.nim}`
+    let body = `Terdapat permintaan bimbingan konseling baru yang diserahkan oleh konselor ahli`
+    let notif = await notifService.createNotif(title, body, idRes, 2, idKon)
+    if (!notif) {
+        return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Sucess save in database but fail when save notif")
+    }
+
+    const conselor = await conseloursService.searchById(idKon)
+    if (!conselor.fcm_token){
+        return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Sucess save in database but fail when send notif")
+    }
+    const isSuccess = await sendNotif.sendNotif(conselor.fcm_token, title, body)
+
+    if (!isSuccess) {
+        return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Sucess save in database but fail when send notif")
+    }
+
     return response.responseSuccess(res, StatusCodes.OK, { data }, "Success Update")
 })
 

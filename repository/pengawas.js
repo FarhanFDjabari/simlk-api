@@ -466,10 +466,10 @@ const getAllStudentByIDWithStudentsAndPengawas = async (id) => {
             },
         })
         let cons = null
-        if (result.model == 2){
+        if (result.model == 2) {
             cons = await conselorService.searchById(result.id_conselour)
             result.konselor = cons
-        } else if (result.model == 0){
+        } else if (result.model == 0) {
             cons = await readById(result.id_conselour)
             result.konselor = cons
             console.log(cons)
@@ -478,6 +478,20 @@ const getAllStudentByIDWithStudentsAndPengawas = async (id) => {
         returnData.konselor = cons
         return result
     } catch (error) {
+        console.log(error)
+        return null
+    }
+}
+
+const getFcmToken = async () => {
+    try {
+        return await pengawas.findAll({
+            where : {
+                [Op.ne] : [null]
+            },
+            attributes : ['fcm_token']
+        })
+    }catch (error){
         console.log(error)
         return null
     }
@@ -501,6 +515,7 @@ module.exports = {
     loginPengawas,
     updateFcmToken,
     getAllStudentNotApproved,
-    getAllStudentByIDWithStudentsAndPengawas
+    getAllStudentByIDWithStudentsAndPengawas,
+    getFcmToken
 }
 

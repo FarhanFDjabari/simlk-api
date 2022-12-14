@@ -1,11 +1,12 @@
 const { notificationsConselour } = require('../model/entity_model')
 
-const createNotif = (title, body, id_reservasi, model) => {
+const createNotif = (title, body, id_reservasi, model, id_konselor ) => {
     return notificationsConselour.create({
         title: title,
         body: body,
         id_reservasi: id_reservasi,
-        model : model
+        model : model,
+        id_konselor : id_konselor
     }).then(function (data) {
         return data
     }).catch(function (_error) {
@@ -76,13 +77,14 @@ const getById = (id, model) => {
     })
 }
 
-const updateIsRead = (id, is_read, model) => {
+const updateIsRead = (id, is_read, model, id_konselor) => {
     return notificationsConselour.update({
         is_read: is_read
     }, {
         where: {
             id: id,
-            model : model
+            model : model,
+            id_konselor  : id_konselor
         }
     }).then(function (data) {
         return data
@@ -91,13 +93,14 @@ const updateIsRead = (id, is_read, model) => {
     })
 }
 
-const markAllRead = (model) => {
+const markAllRead = (model, id_konselor ) => {
     return notificationsConselour.update({
         is_read: 1
     }, {
         where: {
             is_read: 0,
-            model : model
+            model : model,
+            id_konselor : id_konselor
         }
     }).then(function (data) {
         return data

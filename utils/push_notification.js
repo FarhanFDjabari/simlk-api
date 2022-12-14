@@ -23,19 +23,7 @@ const sendNotif = (fcmToken, title, body) => {
     })
 }
 
-const sendNotifToAll = async (title, body) => {
-    const dataConselour = await serviceConselour.getAllToken()
-
-    if (!dataConselour) {
-        return null
-    }
-
-    const tokens = []
-
-    for (i = 0; i < dataConselour.length; i++) {
-        if (dataConselour[i].fcm_token == null) continue
-        else tokens[i] = dataConselour[i].fcm_token
-    }
+const sendNotifToAll = async (title, body, tokens) => {
 
     return firebaseApp.messaging().sendMulticast({
         notification: {
