@@ -76,7 +76,7 @@ reservationsSchedule.get('/:id', jwt.validateToken, async (req, res) => {
     if (!data) {
       return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Failed query in database")
     }
-    if (data.id_conselour) {
+    if (data.id_conselour != null) {
       if (data.model == 0) {
         var konselor = await pengawasService.readById(data.id_conselour)
         var temp2 = data.dataValues
