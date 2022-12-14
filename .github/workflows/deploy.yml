@@ -37,6 +37,5 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
             cd /home/simlk-api
-            pm2 delete simlk-api
             npm install
-            pm2 start index.js --name simlk-api
+            pm2 restart simlk-api
