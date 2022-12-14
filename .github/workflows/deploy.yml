@@ -11,10 +11,10 @@ jobs:
       - name: 🚚 Get latest code
         uses: actions/checkout@v3
         
-      - name: 🚚 Specify Node Version
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
+      # - name: 🚚 Specify Node Version
+      #   uses: actions/setup-node@v3
+      #   with:
+      #     node-version: 18
 
       # - name: 🚀 Remove existing directory
       #   uses: appleboy/ssh-action@master
