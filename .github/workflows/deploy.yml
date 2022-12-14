@@ -9,16 +9,18 @@ jobs:
 
     steps:
       - name: 🚚 Get latest code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3.2.0
 
       # - name: 🚀 Remove existing directory
       #   uses: appleboy/ssh-action@master
       #   with:
       #     host: ${{ secrets.SSH_HOST }}
       #     username: ${{ secrets.SSH_USERNAME }}
-      #     key: ${{ secrets.SSH_PRIVATE_KEY }}
+      #     password: ${{ secrets.SSH_PASSWORD }}
       #     script: |
-      #       cd /home/djabari_dev/simlk-api
+      #       cd /home/simlk-api
+      #       rm -rf src dist
+
       - name: 📁 Send files via SFTP
         uses: wlixcc/SFTP-Deploy-Action@v1.2.4
         with:
