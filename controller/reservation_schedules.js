@@ -81,14 +81,16 @@ reservationsSchedule.get('/:id', jwt.validateToken, async (req, res) => {
         var konselor = await pengawasService.readById(data.id_conselour)
         var temp2 = data.dataValues
         temp = { ...temp2, konselor }
-      }
-      else {
+      } else if (data.model == 2) {
         var konselor = await conselorService.searchById(data.id_conselour)
         var temp2 = data.dataValues
         temp = { ...temp2, konselor }
+      } else {
+        var temp2 = data.dataValues
+        temp = { ...temp2 }
       }
     }
-    // if (temp == null) return response.responseSuccess(res, StatusCodes.INTERNAL_SERVER_ERROR, null, "success query data in database")
+    if (temp == null) return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "error fetch data")
     return response.responseSuccess(res, StatusCodes.OK, temp, "success query data in database")
   } else if (role == 2) {
     const data = await reservationsService.getByIdAndProfile(id)
