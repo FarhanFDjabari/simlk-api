@@ -233,7 +233,8 @@ const getMahasiswaYangDitangani = async (id_conselour, { status1, status2 }) => 
                 status: {
                     [Op.between]: [status1, status2]
                 },
-                id_conselour: id_conselour
+                id_conselour: id_conselour,
+                model: 2
             }
         })
         let mahasiswaNim = []
