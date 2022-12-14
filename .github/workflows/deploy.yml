@@ -21,15 +21,15 @@ jobs:
       #       cd /home/simlk-api
       #       rm -rf src dist
 
-      - name: 📁 Send files via SFTP
-        uses: wlixcc/SFTP-Deploy-Action@v1.2.4
-        with:
-          username: ${{ secrets.SSH_USERNAME }}
-          server: ${{ secrets.SSH_HOST }}
-          ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
-          password: ${{ secrets.SSH_PASSWORD }}
-          local_path: "./*"
-          remote_path: "/home/simlk-api"
+#       - name: 📁 Send files via SFTP
+#         uses: wlixcc/SFTP-Deploy-Action@v1.2.4
+#         with:
+#           username: ${{ secrets.SSH_USERNAME }}
+#           server: ${{ secrets.SSH_HOST }}
+#           ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
+#           password: ${{ secrets.SSH_PASSWORD }}
+#           local_path: "./*"
+#           remote_path: "/home/simlk-api"
 
       - name: 🌟 Run server
         uses: appleboy/ssh-action@master
@@ -39,5 +39,6 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
             cd /home/simlk-api
+            git pull origin
             npm install
             pm2 restart simlk-api
