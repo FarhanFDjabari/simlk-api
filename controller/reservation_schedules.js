@@ -70,26 +70,22 @@ reservationsSchedule.get('/:id', jwt.validateToken, async (req, res) => {
   console.log(id)
   let role = req.user.role
   console.log(role)
-  var temp
   if (role == 3) {
+    var temp
+    var konselor
     var data = await reservationsService.getById(id)
     if (!data) {
       return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Failed query in database")
     }
-    if (data.id_conselour != null) {
+    if (data.id_conselour) {
       if (data.model == 0) {
-        var konselor = await pengawasService.readById(data.id_conselour)
-        var temp2 = data.dataValues
-        temp = { ...temp2, konselor }
+        konselor = await pengawasService.readById(data.id_conselour)
       } else if (data.model == 2) {
-        var konselor = await conselorService.searchById(data.id_conselour)
-        var temp2 = data.dataValues
-        temp = { ...temp2, konselor }
-      } else {
-        var temp2 = data.dataValues
-        temp = { ...temp2 }
+        konselor = await conselorService.searchById(data.id_conselour) 
       }
     }
+    var temp2 = data.dataValues
+    temp = { ...temp2, konselor }
     if (temp == null) return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "error fetch data")
     return response.responseSuccess(res, StatusCodes.OK, temp, "success query data in database")
   } else if (role == 2) {
