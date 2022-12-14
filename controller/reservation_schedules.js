@@ -77,9 +77,9 @@ reservationsSchedule.get('/:id', jwt.validateToken, async (req, res) => {
             return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Failed query in database")
         }
         if (data.id_conselour) {
-            var conselour = await conselorService.searchById(data.id_conselour)
+            var konselor = await conselorService.searchById(data.id_conselour)
             var temp2 = data.dataValues
-            temp = { ...temp2, conselour }
+            temp = { ...temp2, konselor }
         }
         if (temp == null) return response.responseSuccess(res, StatusCodes.INTERNAL_SERVER_ERROR, null, "success query data in database")
         return response.responseSuccess(res, StatusCodes.OK, temp, "success query data in database")
