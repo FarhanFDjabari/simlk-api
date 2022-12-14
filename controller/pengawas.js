@@ -4,11 +4,14 @@ const response = require('../utils/response')
 const pengawasService = require('../repository/pengawas')
 const reservationsService = require('../repository/reservations')
 const studentsService = require('../repository/students')
-const notifService = require('../repository/notifications_students')
+const notifService = require('../repository/notifications_conselour')
+const koorService = require('../repository/koordinator')
 const { dynamicSort } = require('../utils/sorting')
 const jwt = require('../middleware/jwt_auth')
 const { StatusCodes } = require('http-status-codes');
-const { uploadToSupabase, generateLink } = require('../utils/supabase_storage')
+const sendNotif = require('../utils/push_notification')
+const { uploadToSupabase, generateLink } = require('../utils/supabase_storage');
+
 
 // get profile
 pengawasController.get('/profile', jwt.validateToken, async (req, res) => {
@@ -71,6 +74,35 @@ pengawasController.get('/approved/:id', jwt.validateToken, async (req, res) => {
             return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, error)
         }
     }
+
+    let title = `Permintaan Bimbingan Konseling Baru ${nim_mahasiswa}`
+    let body = "Terdapat permintaan bimbingan konseling baru yang diserahkan oleh konselor ahli"
+    let notif = await notifService.createNotif(title, body, reservation.id, 1, 0)
+    if (!notif) {
+        return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Sucess save in database but fail when save notif")
+    }
+
+    const tokens = await koorService.getFcmToken()
+    const isSuccess = await sendNotif.sendNotifToAll(title, body, tokens)
+
+
+    let title2 = "Konselor Ditugaskan"
+    let body2 = `Sistem telah menugaskan konselor kepada kamu. Mohon tunggu update lokasi pertemuan`
+    let notif2 = await notifServiceMahasiswa.createNotif(reservasi.nim, title, body, idRes)
+    if (!notif2) {
+        return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Failed save database")
+    }
+
+    let reservasi = await reservationsService.getById(idRes)
+    let mahasiswa = await studentsService.getProfile(reservasi.nim)
+
+    const token = mahasiswa.fcm_token
+    const isSuccess2 = await sendNotif.sendNotif(token, title2, body2)
+
+
+    if (!isSuccess || !isSuccess2) {
+        return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Sucess save in database but fail when send notif")
+    }
     let dataValues = data.data
     return response.responseSuccess(res, StatusCodes.OK, { dataValues }, "Success Query")
 })
@@ -123,23 +155,6 @@ pengawasController.get('/update', jwt.validateToken, async (req, res) => {
     console.log(reservation)
 
     const mahasiswa = await studentsService.getProfile(reservation.nim)
-
-    // let fcm = mahasiswa.fcm_token
-    // let title, body
-    // if (reservation.status == 2) {
-    // } else if (reservation.status == 3) {
-    // }
-    // const saveNotif = await notifService.createNotif(reservation.nim, title, body, reservation.id, reservation.status)
-    // if (!saveNotif) {
-    //     return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail save notif")
-    // }
-    // if (fcm) {
-
-    //     let isSuccess = await sendNotif.sendNotif(fcm, title, body)
-    //     if (!isSuccess) {
-    //         return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Sucess save in database but fail when send notif")
-    //     }
-    // }
 
     return response.responseSuccess(res, StatusCodes.OK, null, "Success update status")
 })

@@ -39,19 +39,19 @@ reservationsStatus.get('/', jwt.validateToken, async (req, res) => {
 
     let fcm = mahasiswa.fcm_token
     let title, body
-    if (reservation.status == 2) {
+    if (reservation.status == 4) {
         const setCounselor = await reservationsService.setKonselor(idConselour, id)
         if (!setCounselor){
             return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Failed set conselour")
         }
-        title = "Permintaan Bimbingan Konseling Telah Dijadwalkan"
-        body = "Permintaan bimbingan konselingmu sudah dijadwalkan oleh konselor. Cek informasi lebih detail di dalam aplikasi."
-    } else if (reservation.status == 3) {
+        title = "Permintaan Bimbingan Konseling Kamu Sedang Telah Dijadwalkan"
+        body = "Konselor telah selesai memproses permintaan bimbingan konselingmu."
+    } else if (reservation.status == 5) {
         if (idConselour != reservation.id_conselour){
             return response.responseFailure(res, StatusCodes.UNAUTHORIZED, "You are not allowed to use this endpoint")
         }
         title = "Permintaan Bimbingan Konseling Kamu Dalam Penanganan"
-        body = "Konselor telah selesai memproses permintaan bimbingan konselingmu. Silahkan cek informasi lebih detail."
+        body = "Mohon untuk menunggu sebentar, konselor akan menghubungi ke informasi kontak yang tersedia."
     }
     const saveNotif = await notifService.createNotif(reservation.nim, title, body, reservation.id, reservation.status)
     if (!saveNotif) {

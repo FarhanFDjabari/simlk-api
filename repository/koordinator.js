@@ -241,11 +241,25 @@ const updateProfile = async (id, nim, name, profile_image_url) => {
                 id : id
             }
         })
-        return returnData
+        return data
     } catch (error) {
         returnData.error = error
         returnData.data = null
         return returnData
+    }
+}
+
+const getFcmToken = async () => {
+    try {
+        return await koordinator.findAll({
+            where : {
+                [Op.ne] : [null]
+            },
+            attributes : ['fcm_token']
+        })
+    }catch (error){
+        console.log(error)
+        return null
     }
 }
 
@@ -262,5 +276,6 @@ module.exports = {
     loginKoordinator,
     findAllResAssign,
     getConselorPadaTanggalReservasi,
-    updateProfile
+    updateProfile,
+    getFcmToken
 }

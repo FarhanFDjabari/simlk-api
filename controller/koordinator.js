@@ -3,11 +3,14 @@ const koordinatorController = express.Router()
 const response = require('../utils/response')
 const koordinatorService = require('../repository/koordinator')
 const conseloursService = require('../repository/conselour')
+const mahasiswaService = require('../repository/students')
+const reservasiService = require('../repository/reservations')
 const jwt = require('../middleware/jwt_auth')
 const notifService = require('../repository/notifications_conselour')
+const notifServiceMahasiswa = require('../repository/notifications_students')
 const sendNotif = require('../utils/push_notification')
 const { StatusCodes } = require('http-status-codes')
-const { uploadToSupabase, generateLink } = require('../utils/supabase_storage')
+const { uploadToSupabase, generateLink } = require('../utils/supabase_storage');
 
 koordinatorController.get('/profile', jwt.validateToken, async (req, res) => {
     let id = req.user.id
@@ -32,25 +35,32 @@ koordinatorController.get('/reservation/:idres/konselor/:idkon', jwt.validateTok
     }
     let data = result.data
 
-    let reservasi = await conseloursService.getReservationById(idRes)
+    let reservasi = await reservasiService.getById(idRes)
 
-    let title = `Permintaan Bimbingan Konseling Baru ${reservasi.nim}`
-    let body = `Terdapat permintaan bimbingan konseling baru yang diserahkan oleh konselor ahli`
-    let notif = await notifService.createNotif(title, body, idRes, 2, idKon)
+    let title = "Konselor Ditugaskan"
+    let body = `Sistem telah menugaskan konselor kepada kamu. Mohon tunggu update lokasi pertemuan`
+    let notif = await notifServiceMahasiswa.createNotif(reservasi.nim, title, body, idRes)
     if (!notif) {
+        return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Failed save database")
+    }
+
+    let mahasiswa = await mahasiswaService.getProfile(reservasi.nim)
+
+    const token = mahasiswa.fcm_token
+    const isSuccess = await sendNotif.sendNotif(token, title, body)
+
+    var title2 = "Permintaan Bimbingan Konseling Baru"
+    var body2 = "Terdapat permintaan bimbingan konseling baru yang ditugaskan kepada kamu"
+    let notif2 = await notifService.createNotif(title2, body2, idRes, 2, idKon)
+    let konselor = await conseloursService.searchById(idKon)
+    if (!notif2) {
+        return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Failed save database")
+    }
+    const isSuccess2 = await sendNotif.sendNotif(konselor.fcm_token, title, body)
+
+    if (!isSuccess || !isSuccess2){
         return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Sucess save in database but fail when save notif")
     }
-
-    const conselor = await conseloursService.searchById(idKon)
-    if (!conselor.fcm_token){
-        return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Sucess save in database but fail when send notif")
-    }
-    const isSuccess = await sendNotif.sendNotif(conselor.fcm_token, title, body)
-
-    if (!isSuccess) {
-        return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Sucess save in database but fail when send notif")
-    }
-
     return response.responseSuccess(res, StatusCodes.OK, { data }, "Success Update")
 })
 
