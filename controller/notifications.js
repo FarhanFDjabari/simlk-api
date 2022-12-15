@@ -66,7 +66,7 @@ notifications.post('/:id', jwt.validateToken, async (req, res) => {
     const { is_read } = req.body
     var data
     if (userRole != 3 && userRole != 2) {
-        data = await notificationConselour.updateIsRead(idNotif, is_read, userRole)
+        data = await notificationConselour.updateIsRead(idNotif, is_read, userRole, userId)
         if (!data) {
             return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Failure update database")
         }
