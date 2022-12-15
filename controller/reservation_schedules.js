@@ -126,7 +126,7 @@ reservationsSchedule.put('/:id', jwt.validateToken, async (req, res) => {
   let idData = req.params.id
   let idConselour = req.user.id
 
-  if (role == 1) {
+  if (role == 1 || role == 3) {
     return response.responseFailure(res, StatusCodes.UNAUTHORIZED, "You unauthorized to edit data")
   }
 
