@@ -132,7 +132,7 @@ auth.post('/register-conselour', async (req, res) => {
         const token = jwt.generateToken(conselor.id, 2)
         return response.responseSuccess(res, StatusCodes.CREATED, { token: token }, "Success create conselour")
     } else {
-        const conselor = await conselorService.createCounselor(name, email, password, nim, major, id_line, no_hp, null, fcm_token)
+        const conselor = await conselorService.createCounselor(name, email, password, nim, major, id_line, no_hp, "", fcm_token)
         if (conselor == null) {
             return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail to save conselor")
         }
@@ -169,7 +169,7 @@ auth.post('/register-pengawas', async (req, res) => {
         const token = jwt.generateToken(data.data.id, 0)
         return response.responseSuccess(res, StatusCodes.CREATED, { token: token }, "Success create conselour")
     } else {
-        const data = await pengawasService.createPengawas(email, password, name, null, fcm_token)
+        const data = await pengawasService.createPengawas(email, password, name, "", fcm_token)
         if (data.error) {
             return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail when save to db")
         }
