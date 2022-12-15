@@ -35,7 +35,7 @@ conselour.put('/jadwal', jwt.validateToken, async (req, res) => {
   }
 
   result = null
-  return response.responseSuccess(res, StatusCodes.OK, {}, "Success update data from database")
+  return response.responseSuccess(res, StatusCodes.OK, null, "Success update data from database")
 })
 
 conselour.put('/profile', jwt.validateToken, async (req, res) => {
@@ -98,7 +98,7 @@ conselour.get('/ketersediaan/:is_available', jwt.validateToken, async (req, res)
   }
 
   result = null
-  return response.responseSuccess(res, StatusCodes.OK, {}, "Success update data from database")
+  return response.responseSuccess(res, StatusCodes.OK, null, "Success update data from database")
 })
 
 conselour.get('/ketersediaan-hari/:hari', jwt.validateToken, async (req, res) => {
