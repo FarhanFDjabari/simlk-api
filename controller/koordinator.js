@@ -56,7 +56,13 @@ koordinatorController.get('/reservation/:idres/konselor/:idkon', jwt.validateTok
     if (!notif2) {
         return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Failed save database")
     }
+
+    if (konselor.fcm_token == null) {
+      return response.responseSuccess(res, StatusCodes.OK, { data }, "Success Update")  
+    }
+    
     const isSuccess2 = await sendNotif.sendNotif(konselor.fcm_token, title, body)
+    
 
     if (!isSuccess || !isSuccess2){
         return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Sucess save in database but fail when save notif")
