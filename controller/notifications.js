@@ -61,6 +61,7 @@ notifications.get('/:id', jwt.validateToken, async (req, res) => {
 
 notifications.post('/:id', jwt.validateToken, async (req, res) => {
     let userRole = req.user.role
+    let userId = req.user.id
     let idNotif = req.params.id
     const { is_read } = req.body
     var data
@@ -69,8 +70,13 @@ notifications.post('/:id', jwt.validateToken, async (req, res) => {
         if (!data) {
             return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Failure update database")
         }
-    } else {
+    } else if (userRole == 3) {
         data = await notificationStudent.updateIsRead(idNotif, is_read)
+        if (!data) {
+            return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Failure update database")
+        }
+    } else {
+      data = await notificationConselour.updateIsRead(idNotif, is_read, 2, userId)
         if (!data) {
             return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Failure update database")
         }
@@ -93,7 +99,10 @@ notifications.put('/', jwt.validateToken, async (req, res) => {
             return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Failure update database")
         }
     } else if (userRole == 2){
-        // data = await notificationConselour.
+        data = await notificationConselour.markAllRead(2, id)
+        if (!data) {
+          return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Failure update database")
+      }
     }
     return response.responseSuccess(res, StatusCodes.OK, null, "Success update database")
 })
