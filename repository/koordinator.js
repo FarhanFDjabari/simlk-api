@@ -193,7 +193,8 @@ const findAllResAssign = async (status) => {
         const dataId = await reservations.findAll({
             where: {
                 status: status
-            }
+            },
+            include: 'student'
         })
         returnData.data = dataId
         return returnData
