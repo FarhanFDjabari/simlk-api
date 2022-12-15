@@ -16,9 +16,6 @@ reservationsStatus.get('/', jwt.validateToken, async (req, res) => {
     const { status, id, location } = req.query
     let role = req.user.role
     let idConselour = req.user.id
-    if (role != 0) {
-        return response.responseFailure(res, StatusCodes.UNAUTHORIZED, "You are not allowed to use this endpoint")
-    }
     if (!status && !id && !location) {
         return response.responseFailure(res, StatusCodes.BAD_REQUEST, "Failure, need query arguments")
     }
