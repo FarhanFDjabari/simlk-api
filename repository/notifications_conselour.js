@@ -127,6 +127,20 @@ const updateIsRead = (id, is_read, model, id_konselor) => {
     })
 }
 
+const updateIsReadAllCounselor = (id, is_read) => {
+  return notificationsConselour.update({
+      is_read: is_read
+  }, {
+      where: {
+          id: id,
+      }
+  }).then(function (data) {
+      return data
+  }).catch(function (_error) {
+      return null
+  })
+}
+
 const markAllRead = (model, id_konselor ) => {
     return notificationsConselour.update({
         is_read: 1
@@ -150,5 +164,6 @@ module.exports = {
     getById,
     getAllNotifForId,
     updateIsRead,
+    updateIsReadAllCounselor,
     markAllRead,
 }
