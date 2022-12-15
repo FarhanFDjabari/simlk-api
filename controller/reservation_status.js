@@ -44,7 +44,7 @@ reservationsStatus.get('/', jwt.validateToken, async (req, res) => {
         if (!setCounselor) {
             return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Failed set conselour")
         }
-        title = "Permintaan Bimbingan Konseling Kamu Sedang Telah Dijadwalkan"
+        title = "Permintaan Bimbingan Konseling Kamu Telah Dijadwalkan"
         body = "Konselor telah selesai memproses permintaan bimbingan konselingmu."
     } else if (reservation.status == 5) {
         if (idConselour != reservation.id_conselour) {
