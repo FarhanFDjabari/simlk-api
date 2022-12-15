@@ -47,6 +47,40 @@ const getAllNotif = (model) => {
     })
 }
 
+const getAllNotifForId = (id, model) => {
+  return notificationsConselour.findAll({
+      where : {
+          id_konselor: id,
+          model : model
+      }
+  }).then(function (data) {
+      if (data == null) {
+          data = []
+      }
+      var returnData = []
+
+      for (i = 0; i < data.length; i++) {
+          var temp = {
+              id: data[i].id,
+              nim: data[i].nim,
+              title: data[i].title,
+              body: data[i].body,
+              data: {
+                  id_reservasi: data[i].id_reservasi,
+                  status: data[i].status
+              },
+              createdAt: data[i].createdAt,
+              updatedAt: data[i].updatedAt,
+              is_read: data[i].is_read
+          }
+          returnData.push(temp)
+      }
+      return returnData
+  }).catch(function (_error) {
+      return null
+  })
+}
+
 const getById = (id, model) => {
     return notificationsConselour.findOne({
         where: {
@@ -114,6 +148,7 @@ module.exports = {
     createNotif,
     getAllNotif,
     getById,
+    getAllNotifForId,
     updateIsRead,
     markAllRead,
 }

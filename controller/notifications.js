@@ -25,6 +25,13 @@ notifications.get('/', jwt.validateToken, async (req, res) => {
         if (!data) {
             return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Failure query database")
         }
+    } else {
+      // konselor
+      data = await notificationConselour.getAllNotifForId(id, 2)
+
+      if (!data) {
+        return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Failure query database")
+      }
     }
     return response.responseSuccess(res, StatusCodes.OK, data, "Success query database")
 })
