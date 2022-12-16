@@ -199,7 +199,7 @@ reservationsSchedule.put('/:id', jwt.validateToken, async (req, res) => {
       title = "Bimbingan Konseling Telah Selesai";
       body = `Konselor telah selesai menulis laporan akhir sesi bimbingan konseling pada tanggal ${tanggal_reservasi}.`;
     }
-    const saveNotif = await notifMahasiswaService.createNotif(reservation.nim, title, body, reservasi.id, reservasi.status)
+    const saveNotif = await notifMahasiswaService.createNotif(reservasi.nim, title, body, reservasi.id, reservasi.status)
     if (!saveNotif) {
       return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail save notif")
     }
