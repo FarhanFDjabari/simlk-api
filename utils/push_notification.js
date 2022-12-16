@@ -24,7 +24,6 @@ const sendNotif = (fcmToken, title, body) => {
 }
 
 const sendNotifToAll = async (title, body, tokens) => {
-
     return firebaseApp.messaging().sendMulticast({
         notification: {
             title: title,
