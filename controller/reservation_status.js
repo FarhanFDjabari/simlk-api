@@ -60,9 +60,9 @@ reservationsStatus.get('/', jwt.validateToken, async (req, res) => {
         title2 = `Laporan Akhir Sesi Bimbingan Konseling ${reservation.nim} Telah Selesai`
         body2 = `Konselor ${konselor.name} telah selesai menulis laporan akhir sesi bimbingan konseling pada tanggal ${reservation.reservation_time}.`
         var tokens = await pengawasService.getFcmToken()
-        const tokenStr = JSON.stringify(tokens)
+        const tokenArr = Object.values(token)
         if (tokens) {
-            let isSuccess = await sendNotif.sendNotifToAll(title2, body2, tokenStr)
+            let isSuccess = await sendNotif.sendNotifToAll(title2, body2, tokenArr)
             if (!isSuccess) {
                 return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Sucess save in database but fail when send notif")
             }

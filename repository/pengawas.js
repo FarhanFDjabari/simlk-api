@@ -344,35 +344,36 @@ const getAllStudentNotApproved = () => {
 const getAllStudentByNimWithHistoryWithStudentsAndPengawas = () => {
     return reservations.findAll({
         where: {
-            status: 6
+            status: 6,
+            model: 0,
         },
         include: {
             model: students,
             as: 'student',
         },
     }).then(function (data) {
-        console.log(data)
+        // console.log(data)
         if (data == null) {
             return []
         }
-        const dataWithConselourId = data.filter(
-            (singleData) => singleData.id_conselour !== null && singleData.model == 0
-        );
+        // const dataWithConselourId = data.filter(
+        //     (singleData) => singleData.id_conselour !== null && singleData.model == 0
+        // );
 
-        const arrOfPromise = dataWithConselourId.map((singleData) =>
-            readById(singleData.id_conselour).then(res => {
-                return ({ ...res.toJSON(), reservation: singleData.toJSON() })
-            })
-        );
-        const returnData = Promise.all(arrOfPromise).then((res) =>
-            res.map((singleData) => {
-                const structured = { ...singleData.reservation };
-                delete singleData.reservation
-                return ({ ...structured, conselour: singleData })
-            })
-        );
+        // const arrOfPromise = dataWithConselourId.map((singleData) =>
+        //     readById(singleData.id_conselour).then(res => {
+        //         return ({ ...res.toJSON(), reservation: singleData.toJSON() })
+        //     })
+        // );
+        // const returnData = Promise.all(arrOfPromise).then((res) =>
+        //     res.map((singleData) => {
+        //         const structured = { ...singleData.reservation };
+        //         delete singleData.reservation
+        //         return ({ ...structured, conselour: singleData })
+        //     })
+        // );
 
-        return returnData
+        return data
     }).catch(function (error) {
         console.log(error)
         return null

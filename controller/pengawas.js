@@ -48,16 +48,16 @@ pengawasController.get('/reservation-completed', jwt.validateToken, async (req, 
   if (role != 0) {
     return response.responseFailure(res, StatusCodes.UNAUTHORIZED, "Unauthorized")
   }
-  let result = await pengawasService.getAllStudentByNimWithHistoryWithStudentsAndConseolour()
+  // let result = await pengawasService.getAllStudentByNimWithHistoryWithStudentsAndConseolour()
   let resultTwo = await pengawasService.getAllStudentByNimWithHistoryWithStudentsAndPengawas()
-  if (!result && !resultTwo) {
+  if (!resultTwo) {
     return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail query")
   }
-  Array.prototype.push.apply(result, resultTwo)
-  result.sort(dynamicSort("id"))
-  console.log(result)
-  console.log(resultTwo)
-  return response.responseSuccess(res, StatusCodes.OK, result, "Success Query")
+  // Array.prototype.push.apply(result, resultTwo)
+  // result.sort(dynamicSort("id"))
+  // console.log(result)
+  // console.log(resultTwo)
+  return response.responseSuccess(res, StatusCodes.OK, resultTwo, "Success Query")
 })
 
 // assign to coordinator
@@ -83,8 +83,8 @@ pengawasController.get('/approved/:id', jwt.validateToken, async (req, res) => {
   }
 
   const tokens = await koorService.getFcmToken()
-  const tokenStr = JSON.stringify(tokens)
-  const isSuccess = await sendNotif.sendNotifToAll(title, body, tokenStr)
+  const tokenArr = Object.values(token)
+  const isSuccess = await sendNotif.sendNotifToAll(title, body, tokenArr)
 
 
   let title2 = "Konselor Ditugaskan"
