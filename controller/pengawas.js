@@ -86,9 +86,8 @@ pengawasController.get('/approved/:id', jwt.validateToken, async (req, res) => {
     return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Sucess save in database but fail when save notif")
   }
 
-  let tokensArr = []
   const tokens = await koorService.getFcmToken()
-  tokens.map((e) => tokensArr.push(JSON.stringify(e['fcm_token'])))
+  let tokensArr = tokens.map((e) => e.fcm_token)
 
   if (tokensArr.length > 0) {
     const isSuccess = await sendNotif.sendNotifToAll(title, body, tokensArr)

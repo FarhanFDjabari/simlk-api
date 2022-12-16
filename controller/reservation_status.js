@@ -60,8 +60,7 @@ reservationsStatus.get('/', jwt.validateToken, async (req, res) => {
         title2 = `Laporan Akhir Sesi Bimbingan Konseling ${reservation.nim} Telah Selesai`
         body2 = `Konselor ${konselor.name} telah selesai menulis laporan akhir sesi bimbingan konseling pada tanggal ${reservation.reservation_time}.`
         var tokens = await pengawasService.getFcmToken()
-        let tokensArr = []
-        tokens.map((e) => tokensArr.push(JSON.stringify(e['fcm_token'])))
+        let tokensArr = tokens.map((e) => e.fcm_token)
 
         if (tokensArr.length > 0) {
             let isSuccess = await sendNotif.sendNotifToAll(title2, body2, tokensArr)

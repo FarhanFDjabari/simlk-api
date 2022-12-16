@@ -3,7 +3,7 @@ const serviceConselour = require('../repository/conselour')
 
 
 //bikin function
-const sendNotif = (fcmToken, title, body) => {
+const sendNotif = async (fcmToken, title, body) => {
     const tokens = []
     tokens.push(fcmToken)
     console.log(fcmToken)
@@ -24,16 +24,20 @@ const sendNotif = (fcmToken, title, body) => {
 }
 
 const sendNotifToAll = async (title, body, tokens) => {
+    const tokensArr = []
+    tokens.map((token) => {
+        tokensArr.push(token)
+    })
     return firebaseApp.messaging().sendMulticast({
         notification: {
             title: title,
             body: body,
         },
-        tokens: tokens
+        tokens: tokensArr
     }).then(function (dataSendNotif) {
         return dataSendNotif
     }).catch(function (err) {
-        console.log(err)
+        console.log('notif error' + err)
         return null
     })
 }
