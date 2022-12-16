@@ -9,6 +9,7 @@ const { StatusCodes } = require('http-status-codes')
 const sendNotif = require('../utils/push_notification')
 const date = require('../utils/date_format')
 const notifService = require('../repository/notifications_conselour')
+const notifMahasiswaService = require('../repository/notifications_students')
 const uploadFile = require('../utils/supabase_storage')
 const generateLink = require('../utils/link_image');
 const conselorService = require('../repository/conselour')
@@ -82,7 +83,7 @@ reservationsSchedule.get('/:id', jwt.validateToken, async (req, res) => {
       if (data.model == 0) {
         konselor = await pengawasService.readById(data.id_conselour)
       } else if (data.model == 2) {
-        konselor = await conselorService.searchById(data.id_conselour) 
+        konselor = await conselorService.searchById(data.id_conselour)
       }
     }
     var temp2 = data.dataValues
@@ -189,7 +190,20 @@ reservationsSchedule.put('/:id', jwt.validateToken, async (req, res) => {
     console.log(fcm)
     let tanggal_reservasi = date.formatDate(reservasi.reservation_time)
     tanggal_reservasi = tanggal_reservasi + " " + reservasi.time_hours
-    let isSuccess = await sendNotif.sendNotif(fcm, "Bimbingan Konseling Telah Selesai", `Konselor telah selesai menulis laporan akhir sesi bimbingan konseling pada tanggal ${tanggal_reservasi}.`, "data")
+    let title
+    let body
+    if (reservasi.file_report != null || reservasi.report != null) {
+      title = "Perubahan Laporan Akhir Sesi Bimbingan Konseling";
+      body = `Konselor melakukan perubahan pada laporan akhir sesi bimbingan konseling pada tanggal ${tanggal_reservasi}.`;
+    } else {
+      title = "Bimbingan Konseling Telah Selesai";
+      body = `Konselor telah selesai menulis laporan akhir sesi bimbingan konseling pada tanggal ${tanggal_reservasi}.`;
+    }
+    const saveNotif = await notifMahasiswaService.createNotif(reservation.nim, title, body, reservasi.id, reservasi.status)
+    if (!saveNotif) {
+      return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail save notif")
+    }
+    let isSuccess = await sendNotif.sendNotif(fcm, title, body)
     if (!isSuccess) {
       return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Sucess save in database but fail when send notif")
     }
