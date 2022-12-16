@@ -44,7 +44,8 @@ reservationsSchedule.post('/', jwt.validateToken, async (req, res) => {
   }
 
   const token = await pengawasService.getFcmToken()
-  const isSuccess = await sendNotif.sendNotifToAll(title, body, token)
+  const tokenStr = JSON.stringify(token)
+  const isSuccess = await sendNotif.sendNotifToAll(title, body, tokenStr)
 
   if (!isSuccess) {
     return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Sucess save in database but fail when send notif")

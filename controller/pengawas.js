@@ -83,7 +83,8 @@ pengawasController.get('/approved/:id', jwt.validateToken, async (req, res) => {
   }
 
   const tokens = await koorService.getFcmToken()
-  const isSuccess = await sendNotif.sendNotifToAll(title, body, tokens)
+  const tokenStr = JSON.stringify(tokens)
+  const isSuccess = await sendNotif.sendNotifToAll(title, body, tokenStr)
 
 
   let title2 = "Konselor Ditugaskan"
