@@ -485,17 +485,23 @@ const getAllStudentByIDWithStudentsAndPengawas = async (id) => {
 }
 
 const getFcmToken = async () => {
-    try {
-        return await pengawas.findAll({
-            where : {
-                [Op.ne] : [null]
-            },
-            attributes : ['fcm_token']
+        return pengawas.findAll({
+            attributes : ['fcm_token'],
+            where: {
+                fcm_token: {
+                    [Op.ne]: null
+                }
+            }
+        }).then(function (data) {
+            if (data == null) {
+                return []
+            }
+            return data
+        }).catch(function (_error) {
+            console.log(_error)
+            return null
         })
-    }catch (error){
-        console.log(error)
-        return null
-    }
+    
 }
 
 

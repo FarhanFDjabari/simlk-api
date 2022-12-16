@@ -82,10 +82,16 @@ pengawasController.get('/approved/:id', jwt.validateToken, async (req, res) => {
     return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Sucess save in database but fail when save notif")
   }
 
+  let tokensArr = []
   const tokens = await koorService.getFcmToken()
-  const tokenArr = Object.values(token)
-  const isSuccess = await sendNotif.sendNotifToAll(title, body, tokenArr)
+  tokens.map((e) => tokensArr.push(JSON.stringify(e['fcm_token'])))
 
+  if (tokensArr.length > 0) {
+    const isSuccess = await sendNotif.sendNotifToAll(title, body, tokensArr)
+    if (!isSuccess) {
+      return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Sucess save in database but fail when send notif")
+    }
+  }
 
   let title2 = "Konselor Ditugaskan"
   let body2 = `Sistem telah menugaskan konselor kepada kamu. Mohon tunggu update lokasi pertemuan`

@@ -251,17 +251,22 @@ const updateProfile = async (id, nim, name, profile_image_url) => {
 }
 
 const getFcmToken = async () => {
-    try {
-        return await koordinator.findAll({
-            where : {
-                [Op.ne] : [null]
-            },
-            attributes : ['fcm_token']
+        return koordinator.findAll({
+            attributes : ['fcm_token'],
+            where: {
+                fcm_token: {
+                    [Op.ne]: null
+                }
+            }
+        }).then(function (data) {
+            if (data == null) {
+                return []
+            }
+            return data
+        }).catch(function (_error) {
+            console.log(_error)
+            return null
         })
-    }catch (error){
-        console.log(error)
-        return null
-    }
 }
 
 
