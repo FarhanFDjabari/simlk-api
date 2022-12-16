@@ -61,7 +61,7 @@ koordinatorController.get('/reservation/:idres/konselor/:idkon', jwt.validateTok
     return response.responseSuccess(res, StatusCodes.OK, null, "Success Update")
   }
 
-  const isSuccess2 = await sendNotif.sendNotif(konselor.fcm_token, title, body)
+  const isSuccess2 = await sendNotif.sendNotif(konselor.fcm_token, title2, body2)
 
 
   if (!isSuccess || !isSuccess2) {
