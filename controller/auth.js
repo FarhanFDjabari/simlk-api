@@ -142,8 +142,8 @@ auth.post('/register-conselour', async (req, res) => {
 })
 
 auth.post('/register-koordinator', async (req, res) => {
-    const { email, password, name, major, no_hp, id_line } = req.body
-    let result = await koordinatorService.createKoordinator(email, password, name, major, no_hp, id_line)
+    const { email, password, name, nim, no_hp, id_line } = req.body
+    let result = await koordinatorService.createKoordinator(email, password, name, nim, no_hp, id_line)
     if (result.error) {
         return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, result.error)
     }
