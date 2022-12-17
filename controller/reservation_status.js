@@ -10,11 +10,9 @@ const notifPengawasService = require('../repository/notifications_conselour')
 const jwt = require('../middleware/jwt_auth')
 const { StatusCodes } = require('http-status-codes')
 const sendNotif = require('../utils/push_notification')
-const date = require('../utils/date_format')
 
 reservationsStatus.get('/', jwt.validateToken, async (req, res) => {
     const { status, id, location } = req.query
-    let role = req.user.role
     let idConselour = req.user.id
     if (!status && !id && !location) {
         return response.responseFailure(res, StatusCodes.BAD_REQUEST, "Failure, need query arguments")
@@ -32,8 +30,6 @@ reservationsStatus.get('/', jwt.validateToken, async (req, res) => {
     }
 
     const reservation = await reservationsService.getById(id)
-
-    console.log(reservation)
 
     const mahasiswa = await studentsService.getProfile(reservation.nim)
 

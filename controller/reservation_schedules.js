@@ -4,6 +4,7 @@ const response = require('../utils/response')
 const reservationsService = require('../repository/reservations')
 const studentsService = require('../repository/students')
 const pengawasService = require('../repository/pengawas');
+const koorService = require('../repository/koordinator')
 const jwt = require('../middleware/jwt_auth')
 const { StatusCodes } = require('http-status-codes')
 const sendNotif = require('../utils/push_notification')
@@ -213,6 +214,43 @@ reservationsSchedule.put('/:id', jwt.validateToken, async (req, res) => {
     return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Failed update report")
   }
 
+  return response.responseSuccess(res, StatusCodes.OK, null, "Success update report")
+})
+
+
+reservationsSchedule.put('/file-update/:id', jwt.validateToken, async (req, res) => {
+  const { file_report } = req.files
+  const id = req.params.id
+  const reservasi = await reservationsService.getById(id)
+  if (!reservasi) {
+    return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail search reservation")
+  }
+  const mahasiswa = await studentsService.getProfile(reservasi.nim)
+  const tokenKoor = await koorService.getFcmToken()
+  let tokensArr = tokenKoor.map((e) => e.fcm_token)
+  const up = uploadFile.uploadToSupabase(file_report)
+  if (!up) {
+    return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail upload file")
+  }
+  var link = generateLink.generateLink(file_report.name)
+  const updateRes = await reservationsService.updateFileReport(id, link)
+  if (!updateRes) {
+    return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail update file")
+  }
+  let titleNotifMhs = "Perubahan Laporan Akhir Sesi Bimbingan Konseling"
+  let bodyNotifMhs = `Konselor melakukan perubahan pada laporan akhir sesi bimbingan konseling pada tanggal ${reservasi.reservation_time}.`
+  let notifMahasiswa = await notifMahasiswaService.createNotif(mahasiswa.nim, titleNotifMhs, bodyNotifMhs, id, reservasi.status)
+  let sendNotifMhs = await sendNotif.sendNotif(mahasiswa.fcm_token, titleNotifMhs, bodyNotifMhs)
+  if (!notifMahasiswa && !sendNotifMhs) {
+    return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail send notif")
+  }
+  let titleNotifKoor = `"Perubahan Laporan Akhir Sesi Bimbingan Konseling ${mahasiswa.nim}"`
+  let bodyNotifKoor = `Konselor {nama_konselor} melakukan perubahan pada laporan akhir sesi bimbingan konseling pada tanggal ${reservasi.reservation_time}.`
+  let notifKoor = await notifService.createNotif(titleNotifKoor, bodyNotifKoor, id, 1, 0)
+  let sendNotifKoor = await sendNotif.sendNotifToAll(titleNotifKoor, bodyNotifKoor, tokensArr)
+  if (!notifKoor && !sendNotifKoor) {
+    return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail send notif")
+  }
   return response.responseSuccess(res, StatusCodes.OK, null, "Success update report")
 })
 
