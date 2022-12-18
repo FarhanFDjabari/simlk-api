@@ -197,13 +197,13 @@ reservationsSchedule.put('/:id', jwt.validateToken, async (req, res) => {
     let titleNotifKoor
     let bodyNotifKoor
     
-    title = "Bimbingan Konseling Telah Selesai";
+    title = `Laporan Akhir Bimbingan Konseling ${tanggal_reservasi}`;
     body = `Konselor telah selesai menulis laporan akhir sesi bimbingan konseling pada tanggal ${tanggal_reservasi}.`;
     titleNotifKoor = `Laporan Akhir Sesi Bimbingan Konseling ${students.nim} Telah Selesai`
     bodyNotifKoor = `Konselor ${konselor.name} telah selesai menulis laporan akhir sesi bimbingan konseling pada tanggal ${reservasi.reservation_time}.`
 
     if (reservasi.file_report != null || reservasi.report != null) {
-      title = "Perubahan Laporan Akhir Sesi Bimbingan Konseling"
+      title = `Perubahan Laporan Akhir Bimbingan Konseling ${tanggal_reservasi}`
       body = `Konselor melakukan perubahan pada laporan akhir sesi bimbingan konseling pada tanggal ${tanggal_reservasi}`
       titleNotifKoor = `Perubahan Laporan Akhir Sesi Bimbingan Konseling ${students.nim}`
       bodyNotifKoor = `Konselor ${konselor.name} melakukan perubahan pada laporan akhir sesi bimbingan konseling pada tanggal ${reservasi.reservation_time}.`

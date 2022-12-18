@@ -243,12 +243,13 @@ const getAllStudentByNimWithReservationWithStudentsAndConseolour = () => {
     })
 }
 
-const getAllStudentByNimWithReservationWithStudentsAndPengawas = () => {
+const getAllStudentByNimWithReservationWithStudentsAndPengawas = async () => {
     return reservations.findAll({
         where: {
             status: {
                 [Op.between]: [3, 5]
-            }
+            },
+            model: 0,
         },
         include: {
             model: students,
@@ -259,24 +260,24 @@ const getAllStudentByNimWithReservationWithStudentsAndPengawas = () => {
         if (data == null) {
             return []
         }
-        const dataWithConselourId = data.filter(
-            (singleData) => singleData.id_conselour !== null && singleData.model == 0
-        );
+        // const dataWithConselourId = data.filter(
+        //     (singleData) => singleData.id_conselour !== null && singleData.model == 0
+        // );
 
-        const arrOfPromise = dataWithConselourId.map((singleData) =>
-            readById(singleData.id_conselour).then(res => {
-                return ({ ...res.toJSON(), reservation: singleData.toJSON() })
-            })
-        );
-        const returnData = Promise.all(arrOfPromise).then((res) =>
-            res.map((singleData) => {
-                const structured = { ...singleData.reservation };
-                delete singleData.reservation
-                return ({ ...structured, conselour: singleData })
-            })
-        );
+        // const arrOfPromise = dataWithConselourId.map((singleData) =>
+        //     readById(singleData.id_conselour).then(res => {
+        //         return ({ ...res.toJSON(), reservation: singleData.toJSON() })
+        //     })
+        // );
+        // const returnData = Promise.all(arrOfPromise).then((res) =>
+        //     res.map((singleData) => {
+        //         const structured = { ...singleData.reservation };
+        //         delete singleData.reservation
+        //         return ({ ...structured, conselour: singleData })
+        //     })
+        // );
 
-        return returnData
+        return data
     }).catch(function (error) {
         console.log(error)
         return null

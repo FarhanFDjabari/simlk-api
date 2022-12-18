@@ -8,6 +8,7 @@ const notifService = require('../repository/notifications_conselour')
 const notifServiceMahasiswa = require('../repository/notifications_students')
 const koorService = require('../repository/koordinator')
 const { dynamicSort } = require('../utils/sorting')
+const date = require('../utils/date_format')
 const jwt = require('../middleware/jwt_auth')
 const { StatusCodes } = require('http-status-codes');
 const sendNotif = require('../utils/push_notification')
@@ -36,7 +37,7 @@ pengawasController.get('/reservation-uncompleted', jwt.validateToken, async (req
   if (!result) {
     return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail query")
   }
-  
+
   // Array.prototype.push.apply(result, resultTwo)
   // result.sort(dynamicSort("id"))
   return response.responseSuccess(res, StatusCodes.OK, result, "Success Query")
@@ -181,6 +182,35 @@ pengawasController.get('/update', jwt.validateToken, async (req, res) => {
   console.log(reservation)
 
   const mahasiswa = await studentsService.getProfile(reservation.nim)
+
+  let fcm = mahasiswa.fcm_token
+  let tanggal_reservasi = date.formatDate(reservation.reservation_time)
+  tanggal_reservasi = tanggal_reservasi + " " + reservation.time_hours
+  let title, body
+    if (reservation.status == 4) {
+        const setCounselor = await reservationsService.setKonselor(idConselour, id)
+        if (!setCounselor) {
+            return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Failed set conselour")
+        }
+        title = "Permintaan Bimbingan Konseling Kamu Telah Dijadwalkan"
+        body = "Konselor telah selesai memproses permintaan bimbingan konselingmu."
+    } else if (reservation.status == 5) {
+        title = "Permintaan Bimbingan Konseling Kamu Dalam Penanganan"
+        body = "Mohon untuk menunggu sebentar, konselor akan menghubungi ke informasi kontak yang tersedia."
+    } else if (reservation.status == 6) {
+        title = "Bimbingan Konseling Telah Selesai"
+        body = `Bimbingan konseling pada tanggal ${tanggal_reservasi} telah selesai. Konselor sedang dalam proses menulis laporan akhir`
+    }
+    const saveNotif = await notifService.createNotif(reservation.nim, title, body, reservation.id, reservation.status)
+    if (!saveNotif) {
+        return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail save notif")
+    }
+    if (mahasiswa.fcm_token) {
+        let isSuccess = await sendNotif.sendNotif(fcm, title, body)
+        if (!isSuccess) {
+            return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Sucess save in database but fail when send notif")
+        }
+    }
 
   return response.responseSuccess(res, StatusCodes.OK, null, "Success update status")
 })
