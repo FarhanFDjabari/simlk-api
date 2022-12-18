@@ -34,7 +34,9 @@ reservationsStatus.get('/', jwt.validateToken, async (req, res) => {
     const mahasiswa = await studentsService.getProfile(reservation.nim)
 
     let fcm = mahasiswa.fcm_token
-    let title, body, title2, body2
+    let tanggal_reservasi = date.formatDate(reservation.reservation_time)
+    tanggal_reservasi = tanggal_reservasi + " " + reservation.time_hours
+    let title, body
     if (reservation.status == 4) {
         const setCounselor = await reservationsService.setKonselor(idConselour, id)
         if (!setCounselor) {
@@ -50,24 +52,25 @@ reservationsStatus.get('/', jwt.validateToken, async (req, res) => {
         body = "Mohon untuk menunggu sebentar, konselor akan menghubungi ke informasi kontak yang tersedia."
     } else if (reservation.status == 6) {
         title = "Bimbingan Konseling Telah Selesai"
-        body = `Bimbingan konseling pada tanggal ${reservation.reservation_time} telah selesai. Konselor sedang dalam proses menulis laporan akhir`
+        body = `Bimbingan konseling pada tanggal ${tanggal_reservasi} telah selesai. Konselor sedang dalam proses menulis laporan akhir`
 
-        var konselor = await konsService.searchById(reservation.id_conselour)
-        title2 = `Laporan Akhir Sesi Bimbingan Konseling ${reservation.nim} Telah Selesai`
-        body2 = `Konselor ${konselor.name} telah selesai menulis laporan akhir sesi bimbingan konseling pada tanggal ${reservation.reservation_time}.`
-        var tokens = await pengawasService.getFcmToken()
-        let tokensArr = tokens.map((e) => e.fcm_token)
+        // var konselor = await konsService.searchById(reservation.id_conselour)
+        // title2 = `Laporan Akhir Sesi Bimbingan Konseling ${reservation.nim} Telah Selesai`
+        // body2 = `Konselor ${konselor.name} telah selesai menulis laporan akhir sesi bimbingan konseling pada tanggal ${tanggal_reservasi}.`
+        // var tokens = await pengawasService.getFcmToken()
+        // let tokensArr = tokens.map((e) => e.fcm_token)
 
-        if (tokensArr.length > 0) {
-            let isSuccess = await sendNotif.sendNotifToAll(title2, body2, tokensArr)
-            if (!isSuccess) {
-                return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Sucess save in database but fail when send notif")
-            }
-        }
-        const saveNotif2 = await notifPengawasService.createNotif(title2, body2, reservation.id, 0, 0)
-        if (!saveNotif2) {
-            return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail save notif")
-        }
+        // const saveNotif2 = await notifPengawasService.createNotif(title2, body2, reservation.id, 0, 0)
+        // if (!saveNotif2) {
+        //     return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail save notif")
+        // }
+
+        // if (tokensArr.length > 0) {
+        //     let isSuccess = await sendNotif.sendNotifToAll(title2, body2, tokensArr)
+        //     if (!isSuccess) {
+        //         return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Sucess save in database but fail when send notif")
+        //     }
+        // }
 
     }
     const saveNotif = await notifService.createNotif(reservation.nim, title, body, reservation.id, reservation.status)

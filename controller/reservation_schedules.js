@@ -200,13 +200,13 @@ reservationsSchedule.put('/:id', jwt.validateToken, async (req, res) => {
     title = `Laporan Akhir Bimbingan Konseling ${tanggal_reservasi}`;
     body = `Konselor telah selesai menulis laporan akhir sesi bimbingan konseling pada tanggal ${tanggal_reservasi}.`;
     titleNotifKoor = `Laporan Akhir Sesi Bimbingan Konseling ${students.nim} Telah Selesai`
-    bodyNotifKoor = `Konselor ${konselor.name} telah selesai menulis laporan akhir sesi bimbingan konseling pada tanggal ${reservasi.reservation_time}.`
+    bodyNotifKoor = `Konselor ${konselor.name} telah selesai menulis laporan akhir sesi bimbingan konseling pada tanggal ${tanggal_reservasi}.`
 
     if (reservasi.file_report != null || reservasi.report != null) {
       title = `Perubahan Laporan Akhir Bimbingan Konseling ${tanggal_reservasi}`
       body = `Konselor melakukan perubahan pada laporan akhir sesi bimbingan konseling pada tanggal ${tanggal_reservasi}`
       titleNotifKoor = `Perubahan Laporan Akhir Sesi Bimbingan Konseling ${students.nim}`
-      bodyNotifKoor = `Konselor ${konselor.name} melakukan perubahan pada laporan akhir sesi bimbingan konseling pada tanggal ${reservasi.reservation_time}.`
+      bodyNotifKoor = `Konselor ${konselor.name} melakukan perubahan pada laporan akhir sesi bimbingan konseling pada tanggal ${tanggal_reservasi}.`
     }
 
     if (role == 2) {
@@ -223,6 +223,10 @@ reservationsSchedule.put('/:id', jwt.validateToken, async (req, res) => {
           return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail send coordinator notif")
         }
       }
+      const notifPengawas = await notifService.createNotif(titleNotifKoor, bodyNotifKoor, idData, 0, 0)
+        if (!notifPengawas) {
+            return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail save notif pengawas")
+        }
     }
 
     const saveNotif = await notifMahasiswaService.createNotif(reservasi.nim, title, body, reservasi.id, reservasi.status)
