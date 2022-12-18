@@ -201,7 +201,7 @@ pengawasController.get('/update', jwt.validateToken, async (req, res) => {
         title = "Bimbingan Konseling Telah Selesai"
         body = `Bimbingan konseling pada tanggal ${tanggal_reservasi} telah selesai. Konselor sedang dalam proses menulis laporan akhir`
     }
-    const saveNotif = await notifService.createNotif(reservation.nim, title, body, reservation.id, reservation.status)
+    const saveNotif = await notifServiceMahasiswa.createNotif(reservation.nim, title, body, reservation.id, reservation.status)
     if (!saveNotif) {
         return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail save notif")
     }
