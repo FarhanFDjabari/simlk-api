@@ -128,7 +128,6 @@ reservationsSchedule.put('/:id', jwt.validateToken, async (req, res) => {
   let role = req.user.role
   let idData = req.params.id
   let idConselour = req.user.id
-  let userName = req.user.name
 
   if (role == 1 || role == 3) {
     return response.responseFailure(res, StatusCodes.UNAUTHORIZED, "You unauthorized to edit data")
@@ -189,6 +188,7 @@ reservationsSchedule.put('/:id', jwt.validateToken, async (req, res) => {
 
 
   if (fcm) {
+    const konselor = await conselorService.searchById(idConselour)
     console.log(fcm)
     let tanggal_reservasi = date.formatDate(reservasi.reservation_time)
     tanggal_reservasi = tanggal_reservasi + " " + reservasi.time_hours
@@ -200,13 +200,13 @@ reservationsSchedule.put('/:id', jwt.validateToken, async (req, res) => {
     title = "Bimbingan Konseling Telah Selesai";
     body = `Konselor telah selesai menulis laporan akhir sesi bimbingan konseling pada tanggal ${tanggal_reservasi}.`;
     titleNotifKoor = `Laporan Akhir Sesi Bimbingan Konseling ${students.nim} Telah Selesai`
-    bodyNotifKoor = `Konselor ${userName} telah selesai menulis laporan akhir sesi bimbingan konseling pada tanggal ${reservasi.reservation_time}.`
+    bodyNotifKoor = `Konselor ${konselor.name} telah selesai menulis laporan akhir sesi bimbingan konseling pada tanggal ${reservasi.reservation_time}.`
 
     if (reservasi.file_report != null || reservasi.report != null) {
       title = "Perubahan Laporan Akhir Sesi Bimbingan Konseling"
       body = `Konselor melakukan perubahan pada laporan akhir sesi bimbingan konseling pada tanggal ${tanggal_reservasi}`
       titleNotifKoor = `Perubahan Laporan Akhir Sesi Bimbingan Konseling ${students.nim}`
-      bodyNotifKoor = `Konselor ${userName} melakukan perubahan pada laporan akhir sesi bimbingan konseling pada tanggal ${reservasi.reservation_time}.`
+      bodyNotifKoor = `Konselor ${konselor.name} melakukan perubahan pada laporan akhir sesi bimbingan konseling pada tanggal ${reservasi.reservation_time}.`
     }
 
     if (role == 2) {
