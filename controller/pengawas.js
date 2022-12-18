@@ -32,14 +32,13 @@ pengawasController.get('/reservation-uncompleted', jwt.validateToken, async (req
   if (role != 0) {
     return response.responseFailure(res, StatusCodes.UNAUTHORIZED, "Unauthorized")
   }
-  let result = await pengawasService.getAllStudentByNimWithReservationWithStudentsAndConseolour()
-  let resultTwo = await pengawasService.getAllStudentByNimWithReservationWithStudentsAndPengawas()
-  if (!result || !resultTwo) {
+  let result = await pengawasService.getAllStudentByNimWithReservationWithStudentsAndPengawas()
+  if (!result) {
     return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail query")
   }
-  Array.prototype.push.apply(result, resultTwo)
-
-  result.sort(dynamicSort("id"))
+  
+  // Array.prototype.push.apply(result, resultTwo)
+  // result.sort(dynamicSort("id"))
   return response.responseSuccess(res, StatusCodes.OK, result, "Success Query")
 })
 
