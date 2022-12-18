@@ -193,12 +193,27 @@ reservationsSchedule.put('/:id', jwt.validateToken, async (req, res) => {
     tanggal_reservasi = tanggal_reservasi + " " + reservasi.time_hours
     let title
     let body
-    if (reservasi.file_report != null || reservasi.report != null) {
-      title = "Perubahan Laporan Akhir Sesi Bimbingan Konseling";
-      body = `Konselor melakukan perubahan pada laporan akhir sesi bimbingan konseling pada tanggal ${tanggal_reservasi}.`;
+    if (reservasi.status != 6) {
+      if (reservasi.file_report != null || reservasi.report != null) {
+        title = "Perubahan Laporan Akhir Sesi Bimbingan Konseling";
+        body = `Konselor melakukan perubahan pada laporan akhir sesi bimbingan konseling pada tanggal ${tanggal_reservasi}.`;
+      } else {
+        title = "Bimbingan Konseling Telah Selesai";
+        body = `Konselor telah selesai menulis laporan akhir sesi bimbingan konseling pada tanggal ${tanggal_reservasi}.`;
+      }
     } else {
-      title = "Bimbingan Konseling Telah Selesai";
-      body = `Konselor telah selesai menulis laporan akhir sesi bimbingan konseling pada tanggal ${tanggal_reservasi}.`;
+      const tokenKoor = await koorService.getFcmToken()
+      console.log(tokenKoor)
+      let tokensArr = tokenKoor.map((e) => e.fcm_token)
+      title = "Perubahan Laporan Akhir Sesi Bimbingan Konseling"
+      body = `Konselor melakukan perubahan pada laporan akhir sesi bimbingan konseling pada tanggal ${tanggal_reservasi}`
+      let titleNotifKoor = `"Perubahan Laporan Akhir Sesi Bimbingan Konseling ${mahasiswa.nim}"`
+      let bodyNotifKoor = `Konselor {nama_konselor} melakukan perubahan pada laporan akhir sesi bimbingan konseling pada tanggal ${reservasi.reservation_time}.`
+      let notifKoor = await notifService.createNotif(titleNotifKoor, bodyNotifKoor, id, 1, 0)
+      let sendNotifKoor = await sendNotif.sendNotifToAll(titleNotifKoor, bodyNotifKoor, tokensArr)
+      if (!notifKoor && !sendNotifKoor) {
+        return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail send notif")
+      }
     }
     const saveNotif = await notifMahasiswaService.createNotif(reservasi.nim, title, body, reservasi.id, reservasi.status)
     if (!saveNotif) {
@@ -227,6 +242,7 @@ reservationsSchedule.put('/file-update/:id', jwt.validateToken, async (req, res)
   }
   const mahasiswa = await studentsService.getProfile(reservasi.nim)
   const tokenKoor = await koorService.getFcmToken()
+  console.log(tokenKoor)
   let tokensArr = tokenKoor.map((e) => e.fcm_token)
   const up = uploadFile.uploadToSupabase(file_report)
   if (!up) {
@@ -247,6 +263,7 @@ reservationsSchedule.put('/file-update/:id', jwt.validateToken, async (req, res)
   let titleNotifKoor = `"Perubahan Laporan Akhir Sesi Bimbingan Konseling ${mahasiswa.nim}"`
   let bodyNotifKoor = `Konselor {nama_konselor} melakukan perubahan pada laporan akhir sesi bimbingan konseling pada tanggal ${reservasi.reservation_time}.`
   let notifKoor = await notifService.createNotif(titleNotifKoor, bodyNotifKoor, id, 1, 0)
+  console.log(tokensArr)
   let sendNotifKoor = await sendNotif.sendNotifToAll(titleNotifKoor, bodyNotifKoor, tokensArr)
   if (!notifKoor && !sendNotifKoor) {
     return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail send notif")
