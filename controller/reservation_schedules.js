@@ -128,6 +128,7 @@ reservationsSchedule.put('/:id', jwt.validateToken, async (req, res) => {
   let role = req.user.role
   let idData = req.params.id
   let idConselour = req.user.id
+  let userName = req.user.name
 
   if (role == 1 || role == 3) {
     return response.responseFailure(res, StatusCodes.UNAUTHORIZED, "You unauthorized to edit data")
@@ -193,28 +194,37 @@ reservationsSchedule.put('/:id', jwt.validateToken, async (req, res) => {
     tanggal_reservasi = tanggal_reservasi + " " + reservasi.time_hours
     let title
     let body
-    if (reservasi.status != 6) {
-      if (reservasi.file_report != null || reservasi.report != null) {
-        title = "Perubahan Laporan Akhir Sesi Bimbingan Konseling";
-        body = `Konselor melakukan perubahan pada laporan akhir sesi bimbingan konseling pada tanggal ${tanggal_reservasi}.`;
-      } else {
-        title = "Bimbingan Konseling Telah Selesai";
-        body = `Konselor telah selesai menulis laporan akhir sesi bimbingan konseling pada tanggal ${tanggal_reservasi}.`;
-      }
-    } else {
+    let titleNotifKoor
+    let bodyNotifKoor
+    
+    title = "Bimbingan Konseling Telah Selesai";
+    body = `Konselor telah selesai menulis laporan akhir sesi bimbingan konseling pada tanggal ${tanggal_reservasi}.`;
+    titleNotifKoor = `Laporan Akhir Sesi Bimbingan Konseling ${students.nim} Telah Selesai`
+    bodyNotifKoor = `Konselor ${userName} telah selesai menulis laporan akhir sesi bimbingan konseling pada tanggal ${reservasi.reservation_time}.`
+
+    if (reservasi.file_report != null || reservasi.report != null) {
+      title = "Perubahan Laporan Akhir Sesi Bimbingan Konseling"
+      body = `Konselor melakukan perubahan pada laporan akhir sesi bimbingan konseling pada tanggal ${tanggal_reservasi}`
+      titleNotifKoor = `Perubahan Laporan Akhir Sesi Bimbingan Konseling ${students.nim}`
+      bodyNotifKoor = `Konselor ${userName} melakukan perubahan pada laporan akhir sesi bimbingan konseling pada tanggal ${reservasi.reservation_time}.`
+    }
+
+    if (role == 2) {
       const tokenKoor = await koorService.getFcmToken()
       console.log(tokenKoor)
       let tokensArr = tokenKoor.map((e) => e.fcm_token)
-      title = "Perubahan Laporan Akhir Sesi Bimbingan Konseling"
-      body = `Konselor melakukan perubahan pada laporan akhir sesi bimbingan konseling pada tanggal ${tanggal_reservasi}`
-      let titleNotifKoor = `"Perubahan Laporan Akhir Sesi Bimbingan Konseling ${mahasiswa.nim}"`
-      let bodyNotifKoor = `Konselor {nama_konselor} melakukan perubahan pada laporan akhir sesi bimbingan konseling pada tanggal ${reservasi.reservation_time}.`
-      let notifKoor = await notifService.createNotif(titleNotifKoor, bodyNotifKoor, id, 1, 0)
-      let sendNotifKoor = await sendNotif.sendNotifToAll(titleNotifKoor, bodyNotifKoor, tokensArr)
-      if (!notifKoor && !sendNotifKoor) {
-        return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail send notif")
+      let notifKoor = await notifService.createNotif(titleNotifKoor, bodyNotifKoor, idData, 1, 0)
+      if (!notifKoor) {
+        return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail create coordinator notif")
+      }
+      if (tokensArr.length > 0) {
+        let sendNotifKoor = await sendNotif.sendNotifToAll(titleNotifKoor, bodyNotifKoor, tokensArr)
+        if (!sendNotifKoor) {
+          return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail send coordinator notif")
+        }
       }
     }
+
     const saveNotif = await notifMahasiswaService.createNotif(reservasi.nim, title, body, reservasi.id, reservasi.status)
     if (!saveNotif) {
       return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail save notif")

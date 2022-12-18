@@ -142,13 +142,13 @@ auth.post('/register-conselour', async (req, res) => {
 })
 
 auth.post('/register-koordinator', async (req, res) => {
-    const { email, password, name, major, no_hp, id_line, fcm_token } = req.body
-    let result = await koordinatorService.createKoordinator(email, password, name, major, no_hp, id_line, fcm_token)
+    const { email, password, name, nim, no_hp, id_line, fcm_token } = req.body
+    let result = await koordinatorService.createKoordinator(email, password, name, nim, no_hp, id_line, fcm_token)
     if (result.error) {
         return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, result.error)
     }
     const token = jwt.generateToken(result.data.id, 1)
-    return response.responseSuccess(res, StatusCodes.CREATED, { token: token }, "Success create conselour")
+    return response.responseSuccess(res, StatusCodes.CREATED, { token: token }, "Success create koordinator")
 })
 
 auth.post('/register-pengawas', async (req, res) => {
@@ -167,14 +167,14 @@ auth.post('/register-pengawas', async (req, res) => {
             return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail when save to db")
         }
         const token = jwt.generateToken(data.data.id, 0)
-        return response.responseSuccess(res, StatusCodes.CREATED, { token: token }, "Success create conselour")
+        return response.responseSuccess(res, StatusCodes.CREATED, { token: token }, "Success create pengawas")
     } else {
         const data = await pengawasService.createPengawas(email, password, name, "", fcm_token)
         if (data.error) {
             return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail when save to db")
         }
         const token = jwt.generateToken(data.data.id, 0)
-        return response.responseSuccess(res, StatusCodes.CREATED, { token: token }, "Success create conselour")
+        return response.responseSuccess(res, StatusCodes.CREATED, { token: token }, "Success create pengawas")
     }
 })
 
