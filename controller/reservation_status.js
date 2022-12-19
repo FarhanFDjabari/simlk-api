@@ -1,13 +1,12 @@
 const express = require('express');
 const reservationsStatus = express.Router()
 const response = require('../utils/response')
-const konsService = require('../repository/conselour')
-const pengawasService = require('../repository/pengawas')
 const reservationsService = require('../repository/reservations')
 const studentsService = require('../repository/students')
 const notifService = require('../repository/notifications_students')
-const notifPengawasService = require('../repository/notifications_conselour')
 const jwt = require('../middleware/jwt_auth')
+const date = require('../utils/date_format')
+
 const { StatusCodes } = require('http-status-codes')
 const sendNotif = require('../utils/push_notification')
 
@@ -73,12 +72,11 @@ reservationsStatus.get('/', jwt.validateToken, async (req, res) => {
         // }
 
     }
-    const saveNotif = await notifService.createNotif(reservation.nim, title, body, reservation.id, reservation.status)
+    const saveNotif = await notifService.createNotif(reservation.nim, title, body, id, reservation.status)
     if (!saveNotif) {
         return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Fail save notif")
     }
-    if (mahasiswa.fcm_token) {
-
+    if (fcm) {
         let isSuccess = await sendNotif.sendNotif(fcm, title, body)
         if (!isSuccess) {
             return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Sucess save in database but fail when send notif")
