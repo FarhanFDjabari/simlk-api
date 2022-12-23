@@ -47,7 +47,9 @@ koordinatorController.get('/reservation/:idres/konselor/:idkon', jwt.validateTok
   let mahasiswa = await mahasiswaService.getProfile(reservasi.nim)
 
   const token = mahasiswa.fcm_token
-  const isSuccess = await sendNotif.sendNotif(token, title, body)
+  if (token != null) {
+    await sendNotif.sendNotif(token, title, body)
+  }
 
   var title2 = "Permintaan Bimbingan Konseling Baru"
   var body2 = "Terdapat permintaan bimbingan konseling baru yang ditugaskan kepada kamu"
@@ -57,16 +59,11 @@ koordinatorController.get('/reservation/:idres/konselor/:idkon', jwt.validateTok
     return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Failed save database")
   }
 
-  if (konselor.fcm_token == null) {
-    return response.responseSuccess(res, StatusCodes.OK, null, "Success Update")
+  if (konselor.fcm_token != null) {
+    await sendNotif.sendNotif(konselor.fcm_token, title2, body2)
   }
 
-  const isSuccess2 = await sendNotif.sendNotif(konselor.fcm_token, title2, body2)
 
-
-  if (!isSuccess || !isSuccess2) {
-    return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Sucess save in database but fail when save notif")
-  }
   return response.responseSuccess(res, StatusCodes.OK, null, "Success Update")
 })
 
