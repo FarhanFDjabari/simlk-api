@@ -157,16 +157,17 @@ const markAllRead = (model, id_konselor ) => {
     })
 }
 
-const deleteByResId = (resId) => {
-    return notificationsConselour.destroy({
-        where: {
-            id_reservasi: resId
-        }
-    }).then(function (data) {
+const deleteByResId = async (resId) => {
+    try {
+        const data = await notificationsConselour.destroy({
+            where: {
+                id_reservasi: resId
+            }
+        })
         return data
-    }).catch(function (_error) {
+    } catch (_error) {
         return null
-    })
+    }
 }
 
 

@@ -302,9 +302,9 @@ reservationsSchedule.delete('/:id', jwt.validateToken, async (req, res) => {
     return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Delete reservation failed")
   }
 
-  await notifService.deleteByResId(id)
+  await notifService.deleteByResId(parseInt(id))
 
-  await notifMahasiswaService.deleteByResId(id)
+  await notifMahasiswaService.deleteByResId(parseInt(id))
 
   return response.responseSuccess(res, StatusCodes.OK, null, "Success delete reservation")
 })
