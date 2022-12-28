@@ -106,10 +106,23 @@ const markAllRead = (nim) => {
     })
 }
 
+const deleteByResId = (resId) => {
+    return notificationsStudent.destroy({
+        where: {
+            id_reservasi: resId
+        }
+    }).then(function (data) {
+        return data
+    }).catch(function (_error) {
+        return null
+    })
+}
+
 module.exports = {
     createNotif,
     getAllNotif,
     getById,
+    deleteByResId,
     updateIsRead,
     markAllRead
 }

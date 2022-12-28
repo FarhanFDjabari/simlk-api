@@ -285,7 +285,6 @@ reservationsSchedule.put('/file-update/:id', jwt.validateToken, async (req, res)
   return response.responseSuccess(res, StatusCodes.OK, null, "Success update report")
 })
 
-
 reservationsSchedule.get('/reservation-date/:date', jwt.validateToken, async (req, res) => {
   const date = req.params.date
   const data = await reservationsService.getReservationsByDate(date)
@@ -293,6 +292,21 @@ reservationsSchedule.get('/reservation-date/:date', jwt.validateToken, async (re
     return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Failure query database")
   }
   return response.responseSuccess(res, StatusCodes.OK, data, "Success query")
+})
+
+reservationsSchedule.delete('/:id', jwt.validateToken, async (req, res) => {
+  const id = req.params.id
+  const data = await reservationsService.deleteById(id)
+
+  if (!data) {
+    return response.responseFailure(res, StatusCodes.INTERNAL_SERVER_ERROR, "Delete reservation failed")
+  }
+
+  await notifService.deleteByResId(id)
+
+  await notifMahasiswaService.deleteByResId(id)
+
+  return response.responseSuccess(res, StatusCodes.OK, null, "Success delete reservation")
 })
 
 module.exports = {
