@@ -6,7 +6,7 @@ const authToSiam =  async (nim, password) => {
 
     var config = {
         method: 'post',
-        url: 'http://siam.adityaariizkyy.my.id/auth',
+        url: 'https://bemfilkom-rest.vercel.app/auth',
         headers: {
         },
         data: data
